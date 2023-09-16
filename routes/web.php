@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ThemeController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//// Home Controller
+Route::get('/', [HomeController::class, 'index']) -> name('home.index');
+
+//// Theme Controller
+Route::get('/theme/{name}', [ThemeController::class, 'switch']) -> name('theme.switch');
