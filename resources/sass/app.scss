@@ -1,0 +1,33 @@
+// Fonts
+@import url('https://fonts.bunny.net/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+//Icons
+@import 'bootstrap-icons/font/bootstrap-icons';
+
+
+:root {
+	--bs-border-radius: 0.7rem !important;
+
+	transition: 0.5s;
+}
+
+.mr-2 {
+	margin-right: 0.5rem !important;
+}
+
+.mr-1 {
+	margin-right: 0.25rem !important;
+}
+
+
+.img-wide {
+	width: 100%;
+	height: auto;
+	object-position: center;
+}
