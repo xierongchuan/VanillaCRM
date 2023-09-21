@@ -9,7 +9,7 @@ class TelegramBotController extends Controller
 {
 	public function handle(): void
 	{
-		$updates = Telegram::getWebhookUpdates();
+		$updates = Telegram::getWebhookUpdate();
 
 		Telegram::sendMessage([
 			'chat_id' => 5577711248,
