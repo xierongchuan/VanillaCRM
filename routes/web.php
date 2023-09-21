@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ThemeController;
+use App\Http\Controllers\TelegramBotController;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +23,11 @@ Route::get('/', [HomeController::class, 'index']) -> name('home.index');
 
 //// Theme Controller
 Route::get('/theme/{name}', [ThemeController::class, 'switch']) -> name('theme.switch');
+
+//// Telegram Bot Controller
+Route::post('/webhook', function() {
+	$updates = Telegram::getUpdates();
+	return (json_encode($updates));
+});
+//Route::post('/webhook', [TelegramBotController::class, 'handle']) -> withoutMiddleware(['csrf']);
+//Route::get('/webhook', [TelegramBotController::class, 'handle']) -> withoutMiddleware(['csrf']);
