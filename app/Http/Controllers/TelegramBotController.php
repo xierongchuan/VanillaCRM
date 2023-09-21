@@ -7,14 +7,27 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 
 class TelegramBotController extends Controller
 {
-	public function handle(): void
-	{
-		$updates = Telegram::getWebhookUpdate();
 
-		Telegram::sendMessage([
-			'chat_id' => 5577711248,
-			'text' => (string)json_encode($updates)
-		]);
+	public function index(): void
+	{
+		$req = Telegram::getWebhookUpdate();
+
+		switch ($req -> message -> text) {
+
+			case '/start':
+				Telegram::sendMessage([
+					'chat_id' => $req -> message -> chat -> id,
+					'text' => 'Добро пожаловать '.$req -> message -> from -> firstName.'!'
+				]);
+				break;
+
+			default:
+				Telegram::sendMessage([
+					'chat_id' => $req -> message -> chat -> id,
+					'text' => 'Неизвестная команда!'
+				]);
+				break;
+		}
 
 	}
 }

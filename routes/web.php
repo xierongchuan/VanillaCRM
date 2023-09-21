@@ -25,4 +25,4 @@ Route::get('/', [HomeController::class, 'index']) -> name('home.index');
 Route::get('/theme/{name}', [ThemeController::class, 'switch']) -> name('theme.switch');
 
 //// Telegram Bot Controller
-Route::post('/webhook', [TelegramBotController::class, 'handle']);
+Route::post('/webhook', [TelegramBotController::class, 'index']);
