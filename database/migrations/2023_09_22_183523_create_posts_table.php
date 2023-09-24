@@ -14,12 +14,16 @@ return new class extends Migration
 					Schema::create('posts', function (Blueprint $table) {
 						$table->id();
 						$table->unsignedBigInteger('com_id');
+						$table->unsignedBigInteger('dep_id');
 						$table->string('name');
 						$table->string('permission');
 						$table->timestamps();
 
 						// Добавляем внешний ключ
 						$table->foreign('com_id')->references('id')->on('companies');
+
+						// Добавляем внешний ключ к таблице departments
+						$table->foreign('dep_id')->references('id')->on('departments');
 				});
     }
 

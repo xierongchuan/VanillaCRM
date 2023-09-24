@@ -16,6 +16,7 @@ return new class extends Migration
 						$table->unsignedBigInteger('com_id');
 						$table->string('name');
 						$table->string('value');
+						$table->text('data')->nullable();
 						$table->timestamps();
 
 						// Добавляем внешний ключ

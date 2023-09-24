@@ -122,7 +122,7 @@ return [
     |
     | The command class should extend the \Telegram\Bot\Commands\Command class.
     |
-    | Default: The SDK registers, a help command which when a user sends /help
+    | Default: The SDK registers, a help command which when a admin sends /help
     | will respond with a list of available commands and description.
     |
     */
@@ -164,7 +164,7 @@ return [
         */
 
         /* // Group Type: 3
-            'auth' => [
+            'admin' => [
                 Acme\Project\Commands\LoginCommand::class,
                 Acme\Project\Commands\SomeCommand::class,
             ],
@@ -176,7 +176,7 @@ return [
             ],
 
             'admin' => [
-                'auth', // Command Group Name.
+                'admin', // Command Group Name.
                 'stats' // Command Group Name.
             ],
         */

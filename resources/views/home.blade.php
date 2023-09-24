@@ -4,7 +4,6 @@
 
 @section('content')
 
-	<h1>Hello, world!</h1>
-	My name's Temurumaru!
+	<h1 class="text-center mt-5">Welcome to {{getenv('APP_NAME')}}</h1>
 
 @endsection
