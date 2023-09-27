@@ -16,7 +16,7 @@ return new class extends Migration
 						$table->unsignedBigInteger('com_id');
 						$table->unsignedBigInteger('dep_id');
 						$table->string('name');
-						$table->string('permission');
+						$table->text('permission')->nullable();
 						$table->timestamps();
 
 						// Добавляем внешний ключ

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB" id="filter_1">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 128 0" result="hardAlpha" />
+      <feOffset dx="0" dy="0" />
+      <feGaussianBlur stdDeviation="25" />
+      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.49803922 0" />
+      <feBlend mode="normal" in2="shape" result="effect0_innerShadow" />
+    </filter>
+    <path d="M1024 0L1024 0L1024 1024L0 1024L0 0L1024 0Z" id="path_1" />
+    <path d="M32.6372 183.219C16.7605 311.264 -32.1039 519.495 32.6372 568.697C97.3784 617.9 71.7493 796.759 142.148 816.739C212.547 836.72 444.392 916.246 556.647 816.739C668.901 717.233 922.51 685.811 805.783 544.605C689.056 403.399 717.899 429.478 735.149 311.347C752.398 193.216 848.474 130.275 783.881 63.8526C719.287 -2.57002 500.443 -38.1585 412.639 63.8526C324.836 165.864 204.193 66.4397 142.148 46.3309C80.103 26.2221 48.514 55.1748 32.6372 183.219Z" id="path_2" />
+    <path d="M131.197 331.059C122.566 404.838 179.955 442.677 188.69 537.487C197.425 632.296 201.91 659.867 291.082 684.231C380.255 708.594 488.663 704.394 594.975 629.476C701.287 554.557 615.348 517.803 594.975 431.809C574.601 345.814 657.037 286.842 656.848 217.715C656.659 148.588 608.049 85.6614 540.219 102.729C472.389 119.796 499.689 183.669 360.074 196.361C220.459 209.052 202.988 204.784 188.69 217.715C174.391 230.646 139.828 257.279 131.197 331.059Z" id="path_3" />
+    <path d="M315.473 489.775C263.647 406.278 231.598 351.985 246.183 320.108C260.768 288.23 474.779 231.708 498.058 266.447C521.336 301.186 489.175 369.289 498.058 397.86C506.94 426.432 531.722 544.374 462.467 570.339C393.211 596.305 367.298 573.272 315.473 489.775Z" id="path_4" />
+    <clipPath id="clip_1">
+      <use xlink:href="#path_1" clip-rule="evenodd" fill-rule="evenodd" />
+    </clipPath>
+  </defs>
+  <g id="VanillaCRM Icon" clip-path="url(#clip_1)">
+    <path d="M1024 0L1024 0L1024 1024L0 1024L0 0L1024 0Z" id="VanillaCRM-Icon" fill="#E48362" stroke="none" />
+    <g id="Group" transform="translate(94 79)">
+      <g id="Vector">
+        <use stroke="none" fill="#E2957A" xlink:href="#path_2" fill-rule="evenodd" filter="url(#filter_1)" />
+      </g>
+      <g id="Vector-2">
+        <use stroke="none" fill="#E6B29F" xlink:href="#path_3" fill-rule="evenodd" filter="url(#filter_1)" />
+      </g>
+      <g id="Vector-3">
+        <use stroke="none" fill="#F6D4C8" xlink:href="#path_4" fill-rule="evenodd" filter="url(#filter_1)" />
+      </g>
+    </g>
+  </g>
+</svg>

@@ -16,7 +16,7 @@
 <body data-bs-theme="{{session('theme')}}">
 <header class="container">
 	<div class="row">
-		<nav class="navbar navbar-expand-lg rounded-bottom bg-body-tertiary">
+		<nav class="navbar navbar-expand-lg rounded-bottom bg-body-secondary">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="{{route('home.index')}}"> {{getenv('APP_NAME')}}</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
 									Company
 								</a>
 								<ul class="dropdown-menu">
+									<li><a class="dropdown-item" href="{{route('company.list')}}">List</a></li>
 									<li><a class="dropdown-item" href="{{route('company.create')}}">Create</a></li>
 								</ul>
 							</li>
@@ -89,7 +90,7 @@
 							</li>
 						@else
 							<li class="nav-item">
-								<a class="nav-link" aria-current="page" href="{{route('auth.logout')}}">Logout</a>
+								<a class="nav-link" aria-current="page" href="{{route('auth.logout')}}"><i class="bi bi-box-arrow-right"></i></a>
 							</li>
 						@endif
 
