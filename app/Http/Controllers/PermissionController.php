@@ -43,14 +43,12 @@ class PermissionController extends Controller
 	public function modify(Company $company, Permission $permission) {
 		$req = request() -> validate([
 			'name' => 'required|min:3|max:20',
-			'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/',
 			'data' => 'nullable|string'
 		]);
 
 		if (Company::where('id', $company -> id)->exists()) {
 
 			$permission -> name = $req['name'];
-			$permission -> value = $req['value'];
 			$permission -> data = $req['data'];
 			$permission -> save();
 

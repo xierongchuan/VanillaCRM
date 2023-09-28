@@ -3,6 +3,7 @@
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,6 +65,8 @@ Route::group(['middleware' => 'admin'], function () {
 
 	Route::post('/company/{company}/department/{department}/modify', [DepartmentController::class, 'modify']) -> name('company.department.modify');
 
+	Route::post('/company/{company}/department/{department}/posts', [DepartmentController::class, 'posts']) -> name('company.department.posts');
+
 	Route::get('/company/{company}/department/{department}/delete', [DepartmentController::class, 'delete']) -> name('company.department.delete');
 
 
@@ -87,9 +90,22 @@ Route::group(['middleware' => 'admin'], function () {
 
 	Route::get('/company/{company}/department/{department}/post/{post}/update', [PostController::class, 'update']) -> name('company.department.post.update');
 
-//	Route::post('/company/{company}/department/{department}/modify', [PostController::class, 'modify']) -> name('company.department.modify');
-//
+	Route::post('/company/{company}/department/{department}/post/{post}/modify', [PostController::class, 'modify']) -> name('company.department.post.modify');
+
 	Route::get('/company/{company}/department/{department}/post/{post}/delete', [PostController::class, 'delete']) -> name('company.department.post.delete');
+
+	/// WorkerController
+//	Route::get('/company/{company}/worker/{worker}/index', [WorkerController::class, 'index']) -> name('company.worker.index');
+
+	Route::get('/company/{company}/worker/create', [WorkerController::class, 'create']) -> name('company.worker.create');
+
+	Route::post('/company/{company}/worker/store', [WorkerController::class, 'store']) -> name('company.worker.store');
+
+	Route::get('/company/{company}/worker/{worker}/update', [WorkerController::class, 'update']) -> name('company.worker.update');
+
+	Route::post('/company/{company}/worker/{worker}/modify', [WorkerController::class, 'modify']) -> name('company.worker.modify');
+
+	Route::get('/company/{company}/worker/{worker}/delete', [WorkerController::class, 'delete']) -> name('company.worker.delete');
 
 	/// UserController
 	Route::get('/admin/create', [UserController::class, 'create']) -> name('admin.create');

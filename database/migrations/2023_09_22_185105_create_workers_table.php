@@ -15,7 +15,7 @@ return new class extends Migration
 						$table->id();
 						$table->unsignedBigInteger('com_id');
 						$table->unsignedBigInteger('dep_id');
-						$table->unsignedBigInteger('post_id');
+						$table->unsignedBigInteger('post_id')->nullable();
 						$table->string('full_name');
 						$table->string('phone_number');
 						$table->string('stage')->nullable();

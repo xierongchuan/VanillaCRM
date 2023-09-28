@@ -14,10 +14,6 @@
 					<label for="name">Name:</label>
 					<input type="text" class="form-control" id="name" name="name" value="{{$permission -> name}}" required>
 				</div>
-				<div class="form-group mb-2">
-					<label for="value">Value:</label>
-					<input type="text" class="form-control" id="value" name="value" value="{{$permission -> value}}" required>
-				</div>
 
 				<div class="form-group mb-2">
 					<label for="data">Data:</label>

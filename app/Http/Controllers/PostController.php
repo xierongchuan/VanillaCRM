@@ -22,13 +22,13 @@ class PostController extends Controller
 	}
 
 	public function create(Company $company, Department $department) {
-		$permissions = Permission::all();
+		$permissions = Permission::where('com_id', $company -> id) -> get();
 		return view('company.department.post.create', compact('company', 'department', 'permissions'));
 	}
 
 	public function store(Company $company, Department $department) {
 		$req = request() -> validate([
-			'name' => 'required|min:3|max:20',
+			'name' => 'required|min:3|max:30',
 			'permission' => 'nullable'
 		]);
 
@@ -40,5 +40,39 @@ class PostController extends Controller
 		$post -> save();
 
 		return redirect() -> route('company.department.index', compact('company', 'department')) -> with('success', 'Successfully created');
+	}
+
+	public function update(Company $company, Department $department, Post $post) {
+		$permissions = Permission::where('com_id', $company -> id) -> get();
+		return view('company.department.post.update', compact('company', 'department', 'post', 'permissions'));
+	}
+
+	public function modify(Company $company, Department $department, Post $post) {
+		$req = request() -> validate([
+			'name' => 'required|min:3|max:30',
+			'permission' => 'nullable'
+		]);
+
+		$post -> name = $req['name'];
+		$post -> permission = json_encode((object)$req['permission']);
+		$post -> save();
+
+		return redirect() -> route('company.department.index', compact('company', 'department')) -> with('success', 'Successfully updated');
+	}
+
+	public function delete(Company $company, Department $department, Post $post)
+	{
+
+		if (!@$post -> id) {
+			return redirect()->back()->withErrors('Должность не найдена');
+		}
+
+		if(Worker::where('post_id', $post -> id)->exists()) {
+			return redirect()->back()->withErrors('Эта должность ещё используется.');
+		}
+
+		$post->delete();
+		return redirect()->back()->with('success', 'Должность успешно удалена');
+
 	}
 }

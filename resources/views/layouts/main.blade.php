@@ -13,7 +13,7 @@
 	@yield('includes')
 
 </head>
-<body data-bs-theme="{{session('theme')}}">
+<body data-bs-theme="{{session('theme') ?? 'dark'}}">
 <header class="container">
 	<div class="row">
 		<nav class="navbar navbar-expand-lg rounded-bottom bg-body-secondary">

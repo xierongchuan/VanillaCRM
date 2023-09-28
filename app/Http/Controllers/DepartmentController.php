@@ -63,6 +63,11 @@ class DepartmentController extends Controller
 		return redirect() -> route('company.list') -> withErrors("Company not found");
 	}
 
+	public function posts(Company $company, Department $department) {
+		$posts = Post::where('dep_id', $department -> id) -> get();
+		return response() -> json($posts);
+	}
+
 	public function delete(Company $company,Department $department)
 	{
 
