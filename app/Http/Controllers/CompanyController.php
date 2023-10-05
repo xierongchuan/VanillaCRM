@@ -61,7 +61,7 @@ class CompanyController extends Controller
 			return redirect()->back()->withErrors('Компания не найдена');
 		}
 
-		if(Department::where('com_id', $company -> id)->exists()) {
+		if(Department::where('com_id', $company -> id)->exists() || Permission::where('com_id', $company -> id)->exists()) {
 			return redirect()->back()->withErrors('Эта компания ещё используется.');
 		}
 
