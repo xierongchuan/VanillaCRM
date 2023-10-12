@@ -5,7 +5,7 @@
 @section('content')
 
 	<div class="row justify-content-center">
-		<div class="col-md-6">
+		<div class="col-lg-6">
 			<h2 class="text-center mt-4">Update Department <b>{{$permission -> name}}</b> in <b>{{$company -> name}}</b></h2>
 			<form action="{{route('company.permission.modify', compact('company', 'permission'))}}" method="post" class="bg-body-tertiary rounded p-3">
 				@csrf

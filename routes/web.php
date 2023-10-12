@@ -93,23 +93,24 @@ Route::group(['middleware' => 'admin'], function () {
 
 	Route::get('/company/{company}/department/{department}/post/{post}/delete', [PostController::class, 'delete']) -> name('company.department.post.delete');
 
-	/// UserController
-//	Route::get('/company/{company}/worker/{worker}/index', [UserController::class, 'index']) -> name('company.worker.index');
+	/// Worker/User Controller
+//	Route::get('/company/{company}/user/{user}/index', [UserController::class, 'index']) -> name('company.user.index');
 
-	Route::get('/company/{company}/worker/create', [UserController::class, 'create']) -> name('company.worker.create');
+	Route::get('/company/{company}/user/create', [UserController::class, 'create']) -> name('company.user.create');
 
-	Route::post('/company/{company}/worker/store', [UserController::class, 'store']) -> name('company.worker.store');
+	Route::post('/company/{company}/user/store', [UserController::class, 'store']) -> name('company.user.store');
 
-	Route::get('/company/{company}/worker/{worker}/update', [UserController::class, 'update']) -> name('company.worker.update');
+	Route::get('/company/{company}/user/{user}/update', [UserController::class, 'update']) -> name('company.user.update');
 
-	Route::post('/company/{company}/worker/{worker}/modify', [UserController::class, 'modify']) -> name('company.worker.modify');
+	Route::post('/company/{company}/user/{user}/modify', [UserController::class, 'modify']) -> name('company.user.modify');
 
-	Route::get('/company/{company}/worker/{worker}/delete', [UserController::class, 'delete']) -> name('company.worker.delete');
-
-
-	Route::get('/logout', [UserController::class, 'logout']) -> name('auth.logout');
+	Route::get('/company/{company}/user/{user}/delete', [UserController::class, 'delete']) -> name('company.user.delete');
 });
 
-Route::group(['middleware' => 'worker'], function () {
+Route::group(['middleware' => 'user'], function () {
 	// Здесь находятся маршруты, доступные только работникам
+
+	Route::get('/company/{company}/user/create', [UserController::class, 'create']) -> name('company.user.create');
 });
+
+Route::get('/logout', [UserController::class, 'logout']) -> name('auth.logout');

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class WorkerMiddleware
+class UserMiddleware
 {
 		/**
 		 * Get the path the admin should be redirected to when they are not authenticated.
@@ -23,7 +23,7 @@ class WorkerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-				if (auth()->check() && auth()->user()->role === 'worker') {
+				if (auth()->check() && auth()->user()->role === 'user') {
 						return $next($request);
 				}
 

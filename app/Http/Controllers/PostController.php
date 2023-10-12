@@ -13,7 +13,7 @@ class PostController extends Controller
 {
 	public function index(Company $company, Department $department, Post $post) {
 
-		$post -> workers = User::where([
+		$post -> users = User::where([
 			'com_id' => $company -> id,
 			'dep_id' => $department -> id
 		]) -> get();

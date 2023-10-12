@@ -40,7 +40,7 @@ return new class extends Migration
 				// Вставка Администратора сразу после создания таблицы
 				DB::table('users')->insert([
 						'login' => 'admin',
-						'type' => 'admin',
+						'role' => 'admin',
 						'password' => '$2y$10$aUu5mi2aquDAIo97E4fmJOyUqzaiP7B0m3bE.w0Nu8Wtn8GK7SneK',
 						'remember_token' => null,
 						'created_at' => '2023-09-24 12:26:05',

@@ -27,28 +27,28 @@ class TelegramBotController extends Controller
 //		]);
 
 		// Проверка Авторизации
-		$worker = Worker::where('tg_client_id', $req -> message -> chat -> id) -> first();
-		if(isset($worker)) {
+		$user = Worker::where('tg_client_id', $req -> message -> chat -> id) -> first();
+		if(isset($user)) {
 
 
 			/// ТУТ АВТОРИЗОВАННЫЕ
 
 			$token = '6420552414:AAEntQusu0s2kn2gvG9TDEUCsmEZ8r_u310';
 
-			$w_company = Company::where('id', $worker -> com_id) -> first();
+			$w_company = Company::where('id', $user -> com_id) -> first();
 
 
 			// Проверка на право report_xlsx
 			$c_permission_xlsx = Permission::where('com_id', $w_company -> id)->where('value', 'report_xlsx') -> first();
-			$w_post = Post::where('id', $worker -> post_id) -> first();
+			$w_post = Post::where('id', $user -> post_id) -> first();
 
 			if (in_array($c_permission_xlsx -> id, (array)json_decode($w_post -> permission))) {
 				// Проверка имеютсяли стадии
-				if ($worker -> stage) {
+				if ($user -> stage) {
 
 					// Проверка стадии кокумента
-					if ($worker -> stage == 'close_day') {
-						$temp = Temp::with('worker_id', $worker -> id) -> first();
+					if ($user -> stage == 'close_day') {
+						$temp = Temp::with('user_id', $user -> id) -> first();
 
 						if ($temp -> step == 'file') {
 							if (@$req->message->document) {
@@ -111,7 +111,7 @@ class TelegramBotController extends Controller
 //					Keyboard::inlineButton(['text' => 'forward me to groups', 'callback_data' => 'someString'])
 //				])
 
-//			if($worker -> stage == 'close_day') {
+//			if($user -> stage == 'close_day') {
 //				$keyboard = Keyboard::make()
 //					->row([
 //						Keyboard::button(['text' => 'Зыкрыть мес'])
@@ -133,11 +133,11 @@ class TelegramBotController extends Controller
 					break;
 
 				case 'Закрыть день':
-					$worker -> stage = 'close_day';
+					$user -> stage = 'close_day';
 					$temp = new Temp();
-					$temp -> worker_id = $worker -> id;
+					$temp -> user_id = $user -> id;
 					$temp -> step = 'document';
-					$worker -> save();
+					$user -> save();
 					$temp -> save();
 
 					Telegram::sendMessage([
@@ -150,8 +150,8 @@ class TelegramBotController extends Controller
 					break;
 
 				case '/exit':
-					$worker -> tg_client_id = '';
-					$worker -> save();
+					$user -> tg_client_id = '';
+					$user -> save();
 
 					Telegram::sendMessage([
 						'chat_id' => $req->message->chat->id,
@@ -184,21 +184,21 @@ class TelegramBotController extends Controller
 			if(isset($req -> message -> contact)) {
 
 				if(Worker::where('phone_number', $req -> message -> contact -> phoneNumber) -> exists()) {
-					$worker = Worker::where('phone_number', $req -> message -> contact -> phoneNumber) -> first();
-					$worker -> stage = '';
-					$worker -> tg_client_id = $req -> message -> contact -> userId;
-					$worker -> save();
+					$user = Worker::where('phone_number', $req -> message -> contact -> phoneNumber) -> first();
+					$user -> stage = '';
+					$user -> tg_client_id = $req -> message -> contact -> userId;
+					$user -> save();
 
 					Telegram::sendMessage([
 						'chat_id' => $req -> message -> chat -> id,
 						'text' =>
-							'Вы успешно авторизовались "'.$worker -> full_name.'"!'
+							'Вы успешно авторизовались "'.$user -> full_name.'"!'
 							.PHP_EOL.
-							'Компания: '.(Company::find($worker -> com_id)) -> name
+							'Компания: '.(Company::find($user -> com_id)) -> name
 							.PHP_EOL.
-							'Департамент: '.(Department::find($worker -> dep_id)) -> name
+							'Департамент: '.(Department::find($user -> dep_id)) -> name
 							.PHP_EOL.
-							'Должность: '.((@$worker -> post_id) ? (Post::find($worker -> post_id)) -> name : 'Отсутствует')
+							'Должность: '.((@$user -> post_id) ? (Post::find($user -> post_id)) -> name : 'Отсутствует')
 						,
 						'reply_markup' => $keyboard
 					]);

@@ -17,7 +17,7 @@ class PermissionController extends Controller
 	public function store(Request $req, Company $company) {
 		$req -> validate([
 			'name' => 'required|min:3|max:20',
-			'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/',
+			'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/|unique:permissions',
 			'data' => 'nullable|string'
 		]);
 

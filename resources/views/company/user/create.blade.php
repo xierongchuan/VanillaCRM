@@ -1,13 +1,13 @@
 @extends('layouts.main')
 
-@section('title', 'Worker Create')
+@section('title', 'User Create')
 
 @section('content')
 
 	<div class="row justify-content-center">
-		<div class="col-md-6">
-			<h2 class="text-center mt-4">Create Worker in <b>{{$company -> name}}</b></h2>
-			<form action="{{route('company.worker.store', $company -> id)}}" method="post" class="bg-body-tertiary rounded p-3">
+		<div class="col-lg-6">
+			<h2 class="text-center mt-4">Create User in <b>{{$company -> name}}</b></h2>
+			<form action="{{route('company.user.store', $company -> id)}}" method="post" class="bg-body-tertiary rounded p-3">
 				@csrf
 
 				<div class="form-group mb-2">
@@ -16,7 +16,7 @@
 				</div>
 				<div class="form-group mb-2">
 					<label for="password">Password:</label>
-					<input type="password" class="form-control" id="password" name="password" required>
+					<input type="password" autocomplete="off" class="form-control" id="password" name="password" required>
 				</div>
 				<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="department" required>
 					<option value="" selected>Select Department</option>

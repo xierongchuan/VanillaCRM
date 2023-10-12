@@ -18,7 +18,7 @@ class DepartmentController extends Controller
 			'dep_id' => $department -> id
 		]) -> get();
 
-		$department -> workers = User::where([
+		$department -> users = User::where([
 			'com_id' => $company -> id,
 			'dep_id' => $department -> id
 		]) -> get();

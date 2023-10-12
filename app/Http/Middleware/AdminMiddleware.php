@@ -19,11 +19,11 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)
      */
     public function handle(Request $request, Closure $next): Response
     {
-				if (auth()->check() && auth()->user()->role === 'admin') {
+				if (Auth::check() && Auth::user()->role === 'admin') {
 						return $next($request);
 				}
 

@@ -5,7 +5,7 @@
 @section('content')
 
 	<div class="row justify-content-center">
-		<div class="col-md-6">
+		<div class="col-lg-6">
 			<h2 class="text-center mt-4">Update Company {{$company -> name}}</h2>
 			<form action="{{route('company.modify', $company -> id)}}" method="post" class="bg-body-tertiary rounded p-3">
 				@csrf
