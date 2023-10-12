@@ -1,9 +1,5 @@
 <?php
 
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,6 +8,9 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\TelegramBotController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +25,7 @@ Route::get('/', [HomeController::class, 'index']) -> name('home.index');
 Route::get('/theme/{name}', [ThemeController::class, 'switch']) -> name('theme.switch');
 
 /// Telegram Bot Controller
-Route::post('/webhook', [TelegramBotController::class, 'index']);
-
+// Route::post('/webhook', [TelegramBotController::class, 'index']);
 
 /// UserController
 
@@ -36,6 +34,7 @@ Route::get('/sign_in', [UserController::class, 'sign_in']) -> name('auth.sign_in
 
 // Маршрут для обработки входа
 Route::post('/login', [UserController::class, 'login']) -> name('auth.login');
+
 
 Route::group(['middleware' => 'admin'], function () {
 	// Здесь находятся маршруты, к которым доступ разрешен только аутентифицированным пользователям
@@ -94,24 +93,23 @@ Route::group(['middleware' => 'admin'], function () {
 
 	Route::get('/company/{company}/department/{department}/post/{post}/delete', [PostController::class, 'delete']) -> name('company.department.post.delete');
 
-	/// WorkerController
-//	Route::get('/company/{company}/worker/{worker}/index', [WorkerController::class, 'index']) -> name('company.worker.index');
-
-	Route::get('/company/{company}/worker/create', [WorkerController::class, 'create']) -> name('company.worker.create');
-
-	Route::post('/company/{company}/worker/store', [WorkerController::class, 'store']) -> name('company.worker.store');
-
-	Route::get('/company/{company}/worker/{worker}/update', [WorkerController::class, 'update']) -> name('company.worker.update');
-
-	Route::post('/company/{company}/worker/{worker}/modify', [WorkerController::class, 'modify']) -> name('company.worker.modify');
-
-	Route::get('/company/{company}/worker/{worker}/delete', [WorkerController::class, 'delete']) -> name('company.worker.delete');
-
 	/// UserController
-	Route::get('/admin/create', [UserController::class, 'create']) -> name('admin.create');
+//	Route::get('/company/{company}/worker/{worker}/index', [UserController::class, 'index']) -> name('company.worker.index');
 
-	Route::post('/admin/', [UserController::class, 'store']) -> name('admin.store');
+	Route::get('/company/{company}/worker/create', [UserController::class, 'create']) -> name('company.worker.create');
+
+	Route::post('/company/{company}/worker/store', [UserController::class, 'store']) -> name('company.worker.store');
+
+	Route::get('/company/{company}/worker/{worker}/update', [UserController::class, 'update']) -> name('company.worker.update');
+
+	Route::post('/company/{company}/worker/{worker}/modify', [UserController::class, 'modify']) -> name('company.worker.modify');
+
+	Route::get('/company/{company}/worker/{worker}/delete', [UserController::class, 'delete']) -> name('company.worker.delete');
 
 
 	Route::get('/logout', [UserController::class, 'logout']) -> name('auth.logout');
+});
+
+Route::group(['middleware' => 'worker'], function () {
+	// Здесь находятся маршруты, доступные только работникам
 });

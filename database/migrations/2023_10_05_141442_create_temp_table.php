@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('temp', function (Blueprint $table) {
 					$table->id();
-					$table->unsignedBigInteger('worker_id');
+					$table->unsignedBigInteger('user_id');
 					$table->string('step');
 					$table->string('data');
 					$table->timestamps();
 
 					// Добавляем внешний ключ к таблице workers
-					$table->foreign('worker_id')->references('id')->on('workers');
+					$table->foreign('user_id')->references('id')->on('users');
 
         });
     }

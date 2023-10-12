@@ -7,7 +7,7 @@ use App\Models\Department;
 use App\Models\Permission;
 use App\Models\Post;
 use App\Models\Temp;
-use App\Models\Worker;
+use App\Models\User;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\Keyboard\Keyboard;
 use Illuminate\Support\Facades\Storage;
@@ -79,37 +79,46 @@ class TelegramBotController extends Controller
 										,
 										'reply_markup' => $keyboard
 									]);
+									return;
 								}
 							}
 						}
+						Telegram::sendMessage([
+							'chat_id' => $req->message->chat->id,
+							'text' =>
+								'Вам нужно отправить Документ в формате xlsx!'
+//							,
+//							'reply_markup' => $keyboard
+						]);
+
+						return;
 					}
-
-					Telegram::sendMessage([
-						'chat_id' => $req->message->chat->id,
-						'text' =>
-							'Вам нужно отправить Документ в формате xlsx!'
-						,
-						'reply_markup' => $keyboard
-					]);
-
-					return;
 				}
 
 			}
 
 
 			$keyboard = Keyboard::make()
-//				->row([
-//					Keyboard::button(['text' => 'Закрыть день']),
-//					Keyboard::button(['text' => 'Зыкрыть'])
-//				])
-//				->row([
-//					Keyboard::button(['text' => '/exit'])
-//				])
-				->inline()
 				->row([
-					Keyboard::inlineButton(['text' => 'forward me to groups', 'callback_data' => 'someString'])
-				]) ;
+					Keyboard::button(['text' => 'Закрыть день']),
+					Keyboard::button(['text' => 'Зыкрыть мес'])
+				])
+				->row([
+					Keyboard::button(['text' => '/exit'])
+				]);
+//				->inline()
+//				->row([
+//					Keyboard::inlineButton(['text' => 'forward me to groups', 'callback_data' => 'someString'])
+//				])
+
+//			if($worker -> stage == 'close_day') {
+//				$keyboard = Keyboard::make()
+//					->row([
+//						Keyboard::button(['text' => 'Зыкрыть мес'])
+//					]);
+//			}
+
+
 			// Тут обработка команд
 			switch ($req->message->text) {
 
@@ -118,6 +127,23 @@ class TelegramBotController extends Controller
 						'chat_id' => $req->message->chat->id,
 						'text' =>
 							'Вы уже авторизованы!'
+						,
+						'reply_markup' => $keyboard
+					]);
+					break;
+
+				case 'Закрыть день':
+					$worker -> stage = 'close_day';
+					$temp = new Temp();
+					$temp -> worker_id = $worker -> id;
+					$temp -> step = 'document';
+					$worker -> save();
+					$temp -> save();
+
+					Telegram::sendMessage([
+						'chat_id' => $req->message->chat->id,
+						'text' =>
+							'Загрузите Exel (xlsx) документ для отчёта'
 						,
 						'reply_markup' => $keyboard
 					]);

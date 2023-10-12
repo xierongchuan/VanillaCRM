@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Post;
-use App\Models\Worker;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +18,7 @@ class DepartmentController extends Controller
 			'dep_id' => $department -> id
 		]) -> get();
 
-		$department -> workers = Worker::where([
+		$department -> workers = User::where([
 			'com_id' => $company -> id,
 			'dep_id' => $department -> id
 		]) -> get();

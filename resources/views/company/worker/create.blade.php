@@ -10,6 +10,14 @@
 			<form action="{{route('company.worker.store', $company -> id)}}" method="post" class="bg-body-tertiary rounded p-3">
 				@csrf
 
+				<div class="form-group mb-2">
+					<label for="login">Login:</label>
+					<input type="text" class="form-control" id="login" name="login" required>
+				</div>
+				<div class="form-group mb-2">
+					<label for="password">Password:</label>
+					<input type="password" class="form-control" id="password" name="password" required>
+				</div>
 				<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="department" required>
 					<option value="" selected>Select Department</option>
 					@foreach($departments as $department)

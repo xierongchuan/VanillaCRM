@@ -6,14 +6,14 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\Permission;
 use App\Models\Post;
-use App\Models\Worker;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
 	public function index(Company $company, Department $department, Post $post) {
 
-		$post -> workers = Worker::where([
+		$post -> workers = User::where([
 			'com_id' => $company -> id,
 			'dep_id' => $department -> id
 		]) -> get();
@@ -67,7 +67,7 @@ class PostController extends Controller
 			return redirect()->back()->withErrors('Должность не найдена');
 		}
 
-		if(Worker::where('post_id', $post -> id)->exists()) {
+		if(User::where('post_id', $post -> id)->exists()) {
 			return redirect()->back()->withErrors('Эта должность ещё используется.');
 		}
 
