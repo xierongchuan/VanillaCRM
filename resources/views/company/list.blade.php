@@ -15,21 +15,21 @@
 				</div>
 
 				<div class="p-2 border rounded">
-				<span class="lead">Departments: </span><br>
-				@foreach($company -> departments as $department)
-					<span>
-						<div class="my-1 p-2 rounded bg-body shadow row justify-content-between gx-1">
-							<div class="col-lg-9 lead"><a href="{{route('company.department.index', compact('company', 'department'))}}" class="nav-link">{{$department -> name}}</a></div>
+					<span class="lead">Departments: </span><br>
+					@foreach($company -> departments as $department)
+						<span>
+							<div class="my-1 p-2 rounded bg-body shadow row justify-content-between gx-1">
+								<div class="col-lg-9 lead"><a href="{{route('company.department.index', compact('company', 'department'))}}" class="nav-link">{{$department -> name}}</a></div>
 
-							<div class="btn-group col-lg-3 p-0" role="group" aria-label="Basic mixed styles example">
-								<a href="{{route('company.department.update', ['company' => $company, 'department' => $department])}}" type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
-								<a href="{{route('company.department.delete', ['company' =>  $company, 'department' => $department])}}" type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+								<div class="btn-group col-lg-3 p-0" role="group" aria-label="Basic mixed styles example">
+									<a href="{{route('company.department.update', ['company' => $company, 'department' => $department])}}" type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+									<a href="{{route('company.department.delete', ['company' =>  $company, 'department' => $department])}}" type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+								</div>
 							</div>
-						</div>
-					</span>
-				@endforeach
+						</span>
+					@endforeach
 
-				<a href="{{route('company.department.create', $company -> id)}}" class="btn btn-success w-100 mt-1">Create <i class="bi bi-people"></i></a>
+					<a href="{{route('company.department.create', $company -> id)}}" class="btn btn-success w-100 mt-1">Create <i class="bi bi-people"></i></a>
 
 				</div>
 

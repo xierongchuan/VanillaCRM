@@ -48,6 +48,19 @@
 
 					@endif
 
+					@if(@Auth::user()->role === 'user')
+						<li class="nav-item">
+							<a class="
+								nav-link
+
+								@if(Route::currentRouteName() == 'user.permission')
+								active
+								@endif
+
+								" aria-current="page" href="{{route('user.permission')}}">Permissions</a>
+						</li>
+					@endif
+
 				</ul>
 
 
@@ -129,6 +142,10 @@
 </footer>
 
 {{-- Import JavaScript --}}
-@vite(['resources/js/app.js'])
+@if(@Auth::user() -> role === 'admin')
+	@vite(['resources/js/admin.js'])
+@elseif(@Auth::user() -> role === 'user')
+	@vite(['resources/js/user.js'])
+@endif
 </body>
 </html>

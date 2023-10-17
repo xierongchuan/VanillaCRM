@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ModController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -110,7 +111,14 @@ Route::group(['middleware' => 'admin'], function () {
 Route::group(['middleware' => 'user'], function () {
 	// Здесь находятся маршруты, доступные только работникам
 
-	Route::get('/company/{company}/user/create', [UserController::class, 'create']) -> name('company.user.create');
+	Route::get('/permission', [UserController::class, 'permission']) -> name('user.permission');
+
+
+	/// MODs
+
+	Route::post('/company/{company}/user/create_worker', [ModController::class, 'create_worker']) -> name('mod.create_worker');
+
+	Route::post('/company/{company}/report_xlsx', [ModController::class, 'report_xlsx']) -> name('mod.report_xlsx');
 });
 
 Route::get('/logout', [UserController::class, 'logout']) -> name('auth.logout');

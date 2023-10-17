@@ -36,10 +36,10 @@
 
 				<div class="form-group mb-2">
 					<label for="password">Password:</label>
-					<input type="password" class="form-control" id="password" autocomplete="off" name="password" placeholder="Write the password here if you want to change it" required>
+					<input type="password" class="form-control" id="password" autocomplete="off" name="password" placeholder="Write the password here if you want to change it">
 				</div>
 				<div class="d-flex justify-content-center">
-					<button type="submit" class="btn btn-primary">Create</button>
+					<button type="submit" class="btn btn-primary">Update</button>
 				</div>
 			</form>
 		</div>

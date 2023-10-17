@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\Permission;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,6 +44,7 @@ class UserController extends Controller
 	}
 
 	public function store(Company $company) {
+
 		$req = request() -> validate([
 			'login' => 'required|unique:users',
 //			'role' => Rule::in(['admin', 'user']),
@@ -76,13 +78,23 @@ class UserController extends Controller
 	}
 
 	public function modify(Company $company, User $user) {
-		$req = request() -> validate([
-			'department' => 'required|numeric|min:1',
-			'post' => 'nullable|numeric|min:1',
-			'full_name' => 'required|min:3|max:30',
-			'phone_number' => 'required|string|min:1|max:22',
-			'password' => 'sometimes|min:6|max:256'
-		]);
+
+		if(isset(\request() -> password)) {
+			$req = request() -> validate([
+				'department' => 'required|numeric|min:1',
+				'post' => 'nullable|numeric|min:1',
+				'full_name' => 'required|min:3|max:30',
+				'phone_number' => 'required|string|min:1|max:22',
+				'password' => 'required|min:6|max:256'
+			]);
+		} else {
+			$req = request() -> validate([
+				'department' => 'required|numeric|min:1',
+				'post' => 'nullable|numeric|min:1',
+				'full_name' => 'required|min:3|max:30',
+				'phone_number' => 'required|string|min:1|max:22'
+			]);
+		}
 
 		if(!Department::where('id', $req['department'])->exists()) {
 			return redirect()->back()->withErrors('Департамент не найден');
@@ -123,5 +135,28 @@ class UserController extends Controller
 		Auth::logout();
 
 		return redirect() -> route('auth.sign_in');
+	}
+
+
+	/// Permissions Sector
+
+	public function permission() {
+
+		$company = Company::find(Auth::user() -> com_id);
+
+		$department = Department::find(Auth::user() -> dep_id);
+
+		$post = Post::find(@Auth::user() -> post_id);
+		$permission_ids = (array)json_decode(@$post -> permission);
+		$permissions = Permission::whereIn('id', @$permission_ids) -> get();
+		$permission_vals = @$permissions -> pluck('value') -> toArray();
+
+		$data = (object)[
+			'company' => $company,
+			'department' => $department,
+			'post' => $post,
+			'perm' => $permission_vals,
+		];
+		return view('user.permission', compact('data'));
 	}
 }

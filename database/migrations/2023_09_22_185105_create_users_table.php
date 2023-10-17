@@ -36,16 +36,6 @@ return new class extends Migration
 						// Добавляем внешний ключ к таблице posts
 						$table->foreign('post_id')->references('id')->on('posts');
         });
-
-				// Вставка Администратора сразу после создания таблицы
-				DB::table('users')->insert([
-						'login' => 'admin',
-						'role' => 'admin',
-						'password' => '$2y$10$aUu5mi2aquDAIo97E4fmJOyUqzaiP7B0m3bE.w0Nu8Wtn8GK7SneK',
-						'remember_token' => null,
-						'created_at' => '2023-09-24 12:26:05',
-						'updated_at' => '2023-09-24 12:26:05',
-				]);
     }
 
     /**
