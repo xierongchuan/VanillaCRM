@@ -179,11 +179,11 @@ class ModController extends Controller
 		$wsheet->mergeCells("A".($sales_s).":B".($sales_s));
 		$wsheet->setCellValue("A".($sales_s), 'Имя');
 		$wsheet->setCellValue("C".($sales_s), 'Штук');
-		$wsheet -> getStyle("A".$sales_s.":C".$sales_s)->getFont()->setBold(true);
+		$wsheet->getStyle("A".$sales_s.":C".$sales_s)->getFont()->setBold(true);
 		$wsheet->getStyle('A'.($sales_s).':C'.($sales_s))->applyFromArray($styleArray);
 
 		foreach ($sheet_data['Продажи'] as $key => $sold) {
-			$wsheet -> getStyle("A".($key+$sales_s).":C".($key+$sales_s))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+			$wsheet->getStyle("A".($key+$sales_s).":C".($key+$sales_s))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 			$wsheet->mergeCells("A".($key+$sales_s).":B".($key+$sales_s));
 			$wsheet->setCellValue("A".($key+$sales_s), $sold['name']);
 			$wsheet->setCellValue("C".($key+$sales_s), $sold['sold']);
@@ -200,6 +200,10 @@ class ModController extends Controller
 		if ($request->file('file')->isValid()) {
 			$file_name = 'KIA_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
 			$writer->save(storage_path('app/public/archive/'.$file_name), 1);
+
+			$company = Company::find(Auth::user() -> com_id);
+			$company -> data = json_encode($sheet_data);
+			$company -> save();
 
 			return redirect()->route('home.index')->with('success', 'Файл успешно загружен.');
 		} else {

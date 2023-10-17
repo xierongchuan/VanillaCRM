@@ -15,7 +15,7 @@
 			@csrf
 
 			<div class="form-group mb-2">
-				<label for="file">File: {{date('d.m.Y')}}</label>
+				<label for="file">File: </label>
 				<input type="file" class="form-control" name="file" required>
 			</div>
 			<div class="form-group mb-2">

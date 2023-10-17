@@ -29,4 +29,11 @@ $(document).ready(function(){
 			}
 		});
 	});
+
+	$('.perm_panel_switch').click(function() {
+		let panelId = $(this).attr('panel'); // Получаем значение атрибута panel
+
+		// Используем slideUp для скрытия соответствующей панели
+		$('#' + panelId).slideToggle(400);
+	});
 });
