@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ModController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -106,6 +107,11 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::post('/company/{company}/user/{user}/modify', [UserController::class, 'modify']) -> name('company.user.modify');
 
 	Route::get('/company/{company}/user/{user}/delete', [UserController::class, 'delete']) -> name('company.user.delete');
+
+
+	/// ArchiveController
+
+	Route::get('/company/{company}/archive', [ArchiveController::class, 'archive']) -> name('company.archive');
 });
 
 Route::group(['middleware' => 'user'], function () {

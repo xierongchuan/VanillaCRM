@@ -14,13 +14,20 @@
 		<form id="perm_panel_report_xlsx" action="{{route('mod.report_xlsx', $data -> company -> id)}}" method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
 			@csrf
 
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="close_month">
+				<label class="form-check-label" for="flexCheckDefault">
+					Закрыть месяц
+				</label>
+			</div>
+
 			<div class="form-group mb-2">
 				<label for="file">File: </label>
 				<input type="file" class="form-control" name="file" required>
 			</div>
 			<div class="form-group mb-2">
 				<label for="note">Note:</label>
-				<textarea name="note" class="form-control w-100" placeholder="Write a note" style="height: 100px"></textarea>
+				<textarea name="note" class="form-control w-100" placeholder="Write a note" style="height: 100px">{{old('note')}}</textarea>
 			</div>
 			@foreach($workers as $worker)
 				<input type="hidden" name="worker_name_{{$loop->iteration}}" value="{{$worker -> full_name}}">

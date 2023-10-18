@@ -1,21 +1,34 @@
-//				// Получаем все файлы в директории storage/app/public
-//				$files = File::allFiles(storage_path('app/public/archive'));
-//
-//				// Инициализируем пустой массив для хранения URL файлов
-//				$fileUrls = [];
-//
-//				// Перебираем каждый файл и получаем его URL
-//				foreach ($files as $file) {
-//					// Получаем путь к файлу относительно public директории
-//					$filePath = 'storage/app/public' . str_replace(storage_path('app/public'), '', $file);
-//
-//					// Генерируем URL файла
-//					$fileUrl = asset($filePath);
-//
-//					// Добавляем URL в массив
-//					$fileUrls[] = $fileUrl;
-//				}
-//				Telegram::sendMessage([
-//					'chat_id' => $req -> message -> chat -> id,
-//					'text' => (string)json_encode($fileUrls)
-//				]);
+@extends('layouts.main')
+
+@section('title', 'User Create')
+
+@section('content')
+	<h1 class="text-center my-2">
+		Archive {{$company -> name}}
+	</h1>
+
+	<div class="flex-column align-items-center">
+		<div class="bg-body-tertiary rounded p-3 mb-2">
+			@foreach($files_data as $file)
+
+				<div class="my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+
+					<span>
+						<a href="{{$file -> url}}">{{$file -> date}}</a>
+					</span>
+
+					<span>
+						{{$file -> sum}} сум
+					</span>
+
+					<span>
+						{{$file -> count}} шт
+					</span>
+				</div>
+
+			@endforeach
+
+		</div>
+	</div>
+
+@endsection

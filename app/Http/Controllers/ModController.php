@@ -50,20 +50,42 @@ class ModController extends Controller
 
 		$inputData = request()->all(); // Получаем все данные из запроса
 
-		$workers = [];
+		$company = Company::find(Auth::user() -> com_id);
+
+		if(!empty($company -> data)) {
+			$workers = (array)((array)json_decode($company -> data))['Продажи'];
+		} else {
+			$workers = [];
+		}
+
+//		var_dump($workers);
 
 		foreach ($inputData as $key => $value) {
 			if (preg_match('/^worker_sold_(\d+)$/', $key, $matches) && is_numeric($value)) {
 				$workerNumber = $matches[1]; // Извлекаем номер рабочего
 				$workerName = $inputData['worker_name_' . $workerNumber]; // Извлекаем соответствующее имя рабочего
+
+				$month = (int)$value;
+
+				if(!empty($workers) && !$request -> close_month) {
+					$month = (int) $workers[$workerNumber]->month;
+					$month += (int)$value;
+				}
+
 				$workers[$workerNumber] = [
-					'name' => $workerName,
-					'sold' => $value
+					'name' => (string)$workerName,
+					'sold' => (int)$value,
+					'month' => (int)$month
 				];
 			}
 		}
 
+//		var_dump($workers);
+//		return false;
+
 		$sheet_data = [
+			'Дата' => '',
+
 			'Договора' => '',
 			'Оплата Кол-во' => '',
 			'Оплата Сумм' => '',
@@ -92,9 +114,13 @@ class ModController extends Controller
 			'5 Итог шт' => '',
 			'5 Cумма' => '',
 
+			'Заметка' => $request -> note,
+
 			'Начало списка продаж' => '',
 			'Продажи' => $workers
 		];
+
+		$sheet_data['Дата'] = date('Y-m-d H:i:s');
 
 		$permission_data = (Permission::where('value', 'report_xlsx') -> first()) -> data;
 
@@ -161,7 +187,7 @@ class ModController extends Controller
 		$sheet_data['5 Итог шт'] = $wsheet -> getCell($rule['5 Итог шт']) -> getCalculatedValue();
 		$sheet_data['5 Cумма'] = $wsheet -> getCell($rule['5 Cумма']) -> getCalculatedValue();
 
-		$sheet_data['Начало списка продаж'] = $rule['Начало списка продаж'];
+		$sheet_data['Начало списка продаж'] = (int)$rule['Начало списка продаж'];
 
 
 		// Создания списка продаж в самом xlsx файле
@@ -179,15 +205,18 @@ class ModController extends Controller
 		$wsheet->mergeCells("A".($sales_s).":B".($sales_s));
 		$wsheet->setCellValue("A".($sales_s), 'Имя');
 		$wsheet->setCellValue("C".($sales_s), 'Штук');
-		$wsheet->getStyle("A".$sales_s.":C".$sales_s)->getFont()->setBold(true);
-		$wsheet->getStyle('A'.($sales_s).':C'.($sales_s))->applyFromArray($styleArray);
+		$wsheet->setCellValue("D".($sales_s), 'Мес');
+		$wsheet->getStyle("A".$sales_s.":D".$sales_s)->getFont()->setBold(true);
+		$wsheet->getStyle('A'.($sales_s).':D'.($sales_s))->applyFromArray($styleArray);
 
 		foreach ($sheet_data['Продажи'] as $key => $sold) {
-			$wsheet->getStyle("A".($key+$sales_s).":C".($key+$sales_s))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-			$wsheet->mergeCells("A".($key+$sales_s).":B".($key+$sales_s));
-			$wsheet->setCellValue("A".($key+$sales_s), $sold['name']);
-			$wsheet->setCellValue("C".($key+$sales_s), $sold['sold']);
-			$wsheet->getStyle('A'.($key+$sales_s).':C'.($key+$sales_s))->applyFromArray($styleArray);
+			$num_address = $key+$sales_s;
+			$wsheet->getStyle("A".$num_address.":D".$num_address)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+			$wsheet->mergeCells("A".$num_address.":B".$num_address);
+			$wsheet->setCellValue("A".$num_address, $sold['name']);
+			$wsheet->setCellValue("C".$num_address, $sold['sold']);
+			$wsheet->setCellValue("D".$num_address, $sold['month']);
+			$wsheet->getStyle('A'.$num_address.':D'.$num_address)->applyFromArray($styleArray);
 		}
 
 
@@ -198,14 +227,20 @@ class ModController extends Controller
 		$writer = IOFactory::createWriter($sheet, 'Xlsx');
 
 		if ($request->file('file')->isValid()) {
-			$file_name = 'KIA_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
-			$writer->save(storage_path('app/public/archive/'.$file_name), 1);
+			if($request -> close_month) {
+				$file_name = $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
+				$writer->save(storage_path('app/public/archive/'.$file_name), 1);
 
-			$company = Company::find(Auth::user() -> com_id);
-			$company -> data = json_encode($sheet_data);
-			$company -> save();
+				$company -> data = json_encode($sheet_data);
+				$company -> save();
 
-			return redirect()->route('home.index')->with('success', 'Файл успешно загружен.');
+				return redirect()->route('home.index')->with('success', 'Отчёт с закрытием месяца успешно загружен.');
+			} else {
+				$company -> data = json_encode($sheet_data);
+				$company -> save();
+
+				return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
+			}
 		} else {
 			return redirect()->back()->withErrors('Ошибка при загрузке файла.');
 		}
