@@ -23,12 +23,21 @@ class HomeController extends Controller
 
 					// Инициализируем пустой массив для хранения URL файлов
 					$files_data = [];
+					$last_repor_urls = [];
 
 					// Перебираем каждый файл и получаем его URL
 					foreach ($files as $file) {
 						// Получаем путь к файлу относительно public директории
 						$filePath = 'storage/app/public' . str_replace(storage_path('app/public'), '', $file);
 						$file_name_data = explode('_', basename($file));
+
+						$company = Company::where('name', $file_name_data[0]) -> first();
+						$l_r_f_n = (string)@((array)json_decode($company -> data))['Last File'];
+						$l_r_path = storage_path('app/public/tmp/'.$l_r_f_n);
+						$l_r_path_proj = 'storage/app/public' . str_replace(storage_path('app/public'), '', $l_r_path);
+						$last_repor_urls[] = asset($l_r_path_proj);
+
+
 
 						// Генерируем данные файла
 						$file_data = [
@@ -46,12 +55,16 @@ class HomeController extends Controller
 
 					$files_data = array_reverse($files_data);
 
-					return view('home', compact('companies', 'files_data'));
+					return view('home', compact('companies', 'files_data', 'last_repor_urls'));
 					break;
 
 				case ('user'):
 					$company = Company::find(Auth::user() -> com_id);
 					return view('home', compact('company'));
+					break;
+
+				default:
+					return view('home');
 					break;
 			}
 		} else {

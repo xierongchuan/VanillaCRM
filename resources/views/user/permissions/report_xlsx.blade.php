@@ -33,7 +33,7 @@
 				<input type="hidden" name="worker_name_{{$loop->iteration}}" value="{{$worker -> full_name}}">
 				<div class="input-group mb-2">
 					<span class="input-group-text">{{$worker -> full_name}}</span>
-					<input type="number" class="form-control" name="worker_sold_{{$loop->iteration}}" placeholder="Sold" value="0" aria-label="Sold" required>
+					<input type="number" class="form-control" name="worker_sold_{{$loop->iteration}}" placeholder="Sold" value="{{old('worker_sold_'.$loop->iteration, '0')}}" aria-label="Sold" required>
 				</div>
 			@endforeach
 

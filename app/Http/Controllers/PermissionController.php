@@ -17,9 +17,15 @@ class PermissionController extends Controller
 	public function store(Request $req, Company $company) {
 		$req -> validate([
 			'name' => 'required|min:3|max:20',
-			'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/|unique:permissions',
+			'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/',
 			'data' => 'nullable|string'
 		]);
+
+
+		if(@Permission::where('com_id', $company -> id)->where('value', $req -> value)->first()) {
+			return redirect() -> route('company.list') -> withErrors("Такое право уже существует у этой компаний");
+		}
+
 
 		if (Company::where('id', $company -> id)->first()) {
 			$per = new Permission();

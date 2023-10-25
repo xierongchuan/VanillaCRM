@@ -36,7 +36,7 @@ class PostController extends Controller
 		$post -> com_id = $company -> id;
 		$post -> dep_id = $department -> id;
 		$post -> name = $req['name'];
-		$post -> permission = json_encode((object)$req['permission']);
+		$post -> permission = (@$req['permission']) ? json_encode((object)$req['permission']) : '';
 		$post -> save();
 
 		return redirect() -> route('company.department.index', compact('company', 'department')) -> with('success', 'Successfully created');

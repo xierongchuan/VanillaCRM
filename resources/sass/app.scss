@@ -39,3 +39,9 @@
 .perm-panel {
 	display: none; /* Изначально скрываем все панели */
 }
+
+.table th,
+.table td {
+	border: 1px solid #dee2e6;
+	vertical-align: middle;
+}

@@ -7,6 +7,7 @@ use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -117,7 +118,8 @@ class ModController extends Controller
 			'Заметка' => $request -> note,
 
 			'Начало списка продаж' => '',
-			'Продажи' => $workers
+			'Продажи' => $workers,
+			'Last File' => ''
 		];
 
 		$sheet_data['Дата'] = date('Y-m-d H:i:s');
@@ -227,8 +229,20 @@ class ModController extends Controller
 		$writer = IOFactory::createWriter($sheet, 'Xlsx');
 
 		if ($request->file('file')->isValid()) {
+			// Путь к старому файлу
+			$old_file = (string)@((array)json_decode($company -> data))['Last File'];
+			$old_file_path = storage_path('app/public/tmp/'.$old_file);
+
+			// Проверяем, существует ли файл
+			if(File::exists($old_file_path)) {
+				// Удаляем файл
+				File::delete($old_file_path);
+			}
+
+			// Путь к новому файлу
+			$file_name = $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
+
 			if($request -> close_month) {
-				$file_name = $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
 				$writer->save(storage_path('app/public/archive/'.$file_name), 1);
 
 				$company -> data = json_encode($sheet_data);
@@ -236,6 +250,9 @@ class ModController extends Controller
 
 				return redirect()->route('home.index')->with('success', 'Отчёт с закрытием месяца успешно загружен.');
 			} else {
+				$writer->save(storage_path('app/public/tmp/'.$file_name), 1);
+
+				$sheet_data['Last File'] = $file_name;
 				$company -> data = json_encode($sheet_data);
 				$company -> save();
 

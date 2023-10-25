@@ -9,21 +9,36 @@
 
 	<div class="flex-column align-items-center">
 		<div class="bg-body-tertiary rounded p-3 mb-2">
+			<div class="my-1 m-auto border rounded py-2 row h4">
+
+				<div class="col-3">
+					Мес
+				</div>
+
+				<div class="col-7 text-end">
+					Сум
+				</div>
+
+				<div class="col-2 text-end">
+					Шт
+				</div>
+			</div>
+
 			@foreach($files_data as $file)
 
-				<div class="my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+				<div class="my-1 m-auto border rounded py-2 row h4">
 
-					<span>
+					<div class="col-3 h5">
 						<a href="{{$file -> url}}">{{$file -> date}}</a>
-					</span>
+					</div>
 
-					<span>
-						{{$file -> sum}} сум
-					</span>
+					<div class="col-7 text-end">
+						{{$file -> sum}}
+					</div>
 
-					<span>
-						{{$file -> count}} шт
-					</span>
+					<div class="col-2 text-end">
+						{{$file -> count}}
+					</div>
 				</div>
 
 			@endforeach

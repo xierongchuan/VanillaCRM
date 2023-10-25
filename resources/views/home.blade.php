@@ -27,13 +27,43 @@
 				<div class="row flex-column align-items-center">
 					<div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
 					<span class="d-flex justify-content-between">
-						 <h2 class="perm_panel_switch" panel="perm_panel_{{$company->id}}"><b>{{$company -> name}}</b></h2>
+						 <h1 class="m-0 perm_panel_switch" panel="perm_panel_{{$company->id}}"><b>{{$company -> name}}</b></h1>
 						<button class="lead perm_panel_switch" panel="perm_panel_{{$company->id}}">Switch</button>
 					</span>
 						<div id="perm_panel_{{$company->id}}" class="perm-panel w-100">
 							<div class="bg-body-tertiary rounded p-3 mb-2">
-								<h3>Дата загрузки отчёта</h3>
-								<h3>{{$data['Дата']}}</h3> {{--Сделать дату в формате d-m-Y--}}
+								<div class="d-flex flex-wrap justify-content-center">
+									<h4>Дата загрузки <a href="{{$last_repor_urls[$loop->index]}}">отчёта</a>:</h4>
+									<div class="mx-sm-1"></div>
+									<h4>{{date("d-m-Y H:i:s", strtotime($data['Дата']))}}</h4>
+								</div>
+
+								<div class="col-md-5 my-1 m-auto border rounded p-2">
+									<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
+
+											<span>
+												План
+											</span>
+
+										<span>
+												<b>{{$data['План Кол-во']}}</b> шт
+											</span>
+
+									</div>
+
+									<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
+											<span class="mx-auto">
+												<b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> сум
+											</span>
+									</div>
+								</div>
+
+							</div>
+
+							<div class="bg-body-tertiary rounded p-3 mb-2">
+								<div class="d-flex flex-wrap justify-content-center">
+									<h2>Сегодня</h2>
+								</div>
 								<div class="row">
 									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
 									<span>
@@ -75,25 +105,25 @@
 							<div class="bg-body-tertiary rounded p-3 mb-2">
 								<div class="row">
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2">
-										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
+{{--									<div class="col-md-5 my-1 m-auto border rounded p-2">--}}
+{{--										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">--}}
 
-											<span>
-												План
-											</span>
+{{--											<span>--}}
+{{--												План--}}
+{{--											</span>--}}
 
-											<span>
-												<b>{{$data['План Кол-во']}}</b> шт
-											</span>
+{{--											<span>--}}
+{{--												<b>{{$data['План Кол-во']}}</b> шт--}}
+{{--											</span>--}}
 
-										</div>
+{{--										</div>--}}
 
-										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
-											<span class="mx-auto">
-												<b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> сум
-											</span>
-										</div>
-									</div>
+{{--										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">--}}
+{{--											<span class="mx-auto">--}}
+{{--												<b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> сум--}}
+{{--											</span>--}}
+{{--										</div>--}}
+{{--									</div>--}}
 
 									<div class="col-md-5 my-1 m-auto border rounded p-2">
 										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
@@ -287,22 +317,22 @@
 									<tr>
 										<td>Через банк шт</td>
 										<td>{{$data['5 Через банк шт']}} шт</td>
-										<td>{{$count_per[0]}} %</td>
+										<td class="text-nowrap overflow-hidden">{{$count_per[0]}} %</td>
 									</tr>
 									<tr>
 										<td>Через банк сумма</td>
-										<td>{{number_format((int)$data['5 Через банк сумма'], 0, '', ' ')}} сум</td>
-										<td>{{$sums_per[0]}} %</td>
+										<td class="text-nowrap overflow-hidden">{{number_format((int)$data['5 Через банк сумма'], 0, '', ' ')}} сум</td>
+										<td class="text-nowrap overflow-hidden">{{$sums_per[0]}} %</td>
 									</tr>
 									<tr>
 										<td>Через лизинг шт</td>
 										<td>{{$data['5 Через лизинг шт']}} шт</td>
-										<td>{{$count_per[1]}} %</td>
+										<td class="text-nowrap overflow-hidden">{{$count_per[1]}} %</td>
 									</tr>
 									<tr>
 										<td>Через лизинг сумма</td>
-										<td>{{number_format((int)$data['5 Через лизинг сумма'], 0, '', ' ')}} сум</td>
-										<td>{{$sums_per[1]}} %</td>
+										<td class="text-nowrap overflow-hidden">{{number_format((int)$data['5 Через лизинг сумма'], 0, '', ' ')}} сум</td>
+										<td class="text-nowrap overflow-hidden">{{$sums_per[1]}} %</td>
 									</tr>
 									<tr>
 										<td>Итог шт</td>
@@ -311,7 +341,7 @@
 									</tr>
 									<tr>
 										<td>Итог сумма</td>
-										<td>{{number_format((int)$data['5 Cумма'], 0, '', ' ')}} сум</td>
+										<td class="text-nowrap overflow-hidden">{{number_format((int)$data['5 Cумма'], 0, '', ' ')}} сум</td>
 										<td></td>
 									</tr>
 									</tbody>
@@ -326,24 +356,43 @@
 
 									<a href="{{route('company.archive', compact('company'))}}" class="lead">Архив</a>
 								</div>
+
+								<div class="my-1 m-auto border rounded py-2 row h4">
+
+									<div class="col-3">
+										Мес
+									</div>
+
+									<div class="col-7 text-end">
+										Сум
+									</div>
+
+									<div class="col-2 text-end">
+										Шт
+									</div>
+								</div>
+
 								@foreach($files_data as $file)
 									@if($file -> company != $company -> name)
 										@continue
 									@endif
+									@if($loop -> count > 4)
+										@break
+									@endif
 
-									<div class="my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+									<div class="my-1 m-auto border rounded py-2 row h4">
 
-										<span>
+										<div class="col-3 h5">
 											<a href="{{$file -> url}}">{{$file -> date}}</a>
-										</span>
+										</div>
 
-										<span>
-											{{$file -> sum}} сум
-										</span>
+										<div class="col-7 text-end">
+											{{$file -> sum}}
+										</div>
 
-										<span>
-											{{$file -> count}} шт
-										</span>
+										<div class="col-2 text-end">
+											{{$file -> count}}
+										</div>
 									</div>
 
 								@endforeach
