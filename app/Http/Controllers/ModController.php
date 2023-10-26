@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -42,9 +43,28 @@ class ModController extends Controller
 	}
 
 	public function report_xlsx(Request $request) {
+
+		if($request -> close_month && !$request->hasFile('file')) {
+			$company = Company::find(Auth::user() -> com_id);
+			$file_name = (string)@((array)json_decode($company -> data))['Last File'];
+//			if(empty($file_name)) return redirect()->back()->withErrors('Месяц и так закрыт!');
+			$sourcePath = storage_path('app/public/tmp/'.$file_name); // Путь к оригинальному файлу
+			$destinationPath = storage_path('app/public/archive/'.$file_name); // Путь к копии файла
+			// Проверяем, существует ли файл в исходной папке
+			if (File::exists($sourcePath)) {
+				// Копируем файл
+				File::copy($sourcePath, $destinationPath);
+
+				return redirect()->back()->with('success', 'Месяц успешно закрыт');
+			}
+
+			return redirect()->back()->withErrors('Ошибка 404, отсутствует последний отчёт, oбратитесь к одминистратору.');
+//			Storage::move('public/tmp/' . $file_name, 'public/archive/' . $file_name);
+		}
+
 		$request->validate([
 			'file' => 'required|max:51200',
-			'note' => 'string|max:5500'
+			'note' => 'max:5500'
 		]);
 
 		if($request -> file('file') ->getMimeType() !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") return redirect()->back()->withErrors('Файл должен быть типа xlsx (Exel).');
@@ -58,8 +78,6 @@ class ModController extends Controller
 		} else {
 			$workers = [];
 		}
-
-//		var_dump($workers);
 
 		foreach ($inputData as $key => $value) {
 			if (preg_match('/^worker_sold_(\d+)$/', $key, $matches) && is_numeric($value)) {
@@ -85,7 +103,7 @@ class ModController extends Controller
 //		return false;
 
 		$sheet_data = [
-			'Дата' => '',
+			'Дата' => date('Y-m-d H:i:s'),
 
 			'Договора' => '',
 			'Оплата Кол-во' => '',
@@ -115,14 +133,12 @@ class ModController extends Controller
 			'5 Итог шт' => '',
 			'5 Cумма' => '',
 
-			'Заметка' => $request -> note,
+			'Заметка' => @$request -> note,
 
 			'Начало списка продаж' => '',
 			'Продажи' => $workers,
 			'Last File' => ''
 		];
-
-		$sheet_data['Дата'] = date('Y-m-d H:i:s');
 
 		$permission_data = (Permission::where('value', 'report_xlsx') -> first()) -> data;
 
@@ -204,21 +220,35 @@ class ModController extends Controller
 			],
 		];
 
+		$managers = $sheet_data['Продажи'];
+		$totalSum = 0;
+		foreach ($managers as $manager) {
+			$totalSum += (int)$manager['month'];
+		}
+
+		$percentages = [];
+		foreach ($managers as $key => $manager) {
+			$percentage = ($manager['month'] / $totalSum) * 100;
+			$percentages[$key] = round($percentage, 1);
+		}
+
 		$wsheet->mergeCells("A".($sales_s).":B".($sales_s));
 		$wsheet->setCellValue("A".($sales_s), 'Имя');
 		$wsheet->setCellValue("C".($sales_s), 'Штук');
 		$wsheet->setCellValue("D".($sales_s), 'Мес');
-		$wsheet->getStyle("A".$sales_s.":D".$sales_s)->getFont()->setBold(true);
-		$wsheet->getStyle('A'.($sales_s).':D'.($sales_s))->applyFromArray($styleArray);
+		$wsheet->setCellValue("E".($sales_s), '%');
+		$wsheet->getStyle("A".$sales_s.":E".$sales_s)->getFont()->setBold(true);
+		$wsheet->getStyle('A'.($sales_s).':E'.($sales_s))->applyFromArray($styleArray);
 
 		foreach ($sheet_data['Продажи'] as $key => $sold) {
 			$num_address = $key+$sales_s;
-			$wsheet->getStyle("A".$num_address.":D".$num_address)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+			$wsheet->getStyle("A".$num_address.":E".$num_address)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 			$wsheet->mergeCells("A".$num_address.":B".$num_address);
 			$wsheet->setCellValue("A".$num_address, $sold['name']);
 			$wsheet->setCellValue("C".$num_address, $sold['sold']);
 			$wsheet->setCellValue("D".$num_address, $sold['month']);
-			$wsheet->getStyle('A'.$num_address.':D'.$num_address)->applyFromArray($styleArray);
+			$wsheet->setCellValue("E".$num_address, $percentages[$key]);
+			$wsheet->getStyle('A'.$num_address.':E'.$num_address)->applyFromArray($styleArray);
 		}
 
 
@@ -242,17 +272,17 @@ class ModController extends Controller
 			// Путь к новому файлу
 			$file_name = $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
 
+			$sheet_data['Last File'] = $file_name;
+
 			if($request -> close_month) {
 				$writer->save(storage_path('app/public/archive/'.$file_name), 1);
-
 				$company -> data = json_encode($sheet_data);
 				$company -> save();
+
 
 				return redirect()->route('home.index')->with('success', 'Отчёт с закрытием месяца успешно загружен.');
 			} else {
 				$writer->save(storage_path('app/public/tmp/'.$file_name), 1);
-
-				$sheet_data['Last File'] = $file_name;
 				$company -> data = json_encode($sheet_data);
 				$company -> save();
 
@@ -261,6 +291,34 @@ class ModController extends Controller
 		} else {
 			return redirect()->back()->withErrors('Ошибка при загрузке файла.');
 		}
+	}
+
+	public function report_xlsx_sales(Company $company) {
+		$inputData = request()->all();
+
+		$data = (array)json_decode($company -> data);
+
+		$workers = (array)$data['Продажи'];
+
+		foreach ($inputData as $key => $value) {
+			if (preg_match('/^worker_sold_(\d+)$/', $key, $matches) && is_numeric($value)) {
+				$workerNumber = $matches[1]; // Извлекаем номер рабочего
+				$workerMonth = $inputData['worker_month_' . $workerNumber];
+				$workerName = $inputData['worker_name_' . $workerNumber]; // Извлекаем соответствующее имя рабочего
+
+				$workers[$workerNumber] = [
+					'name' => (string)$workerName,
+					'sold' => (int)$value,
+					'month' => (int)$workerMonth
+				];
+			}
+		}
+
+		$data['Продажи'] = $workers;
+		$company -> data = json_encode($data);
+		$company -> save();
+
+		return redirect()->route('home.index')->with('success', 'Продажи успешно изменены.');
 	}
 
 	private function numberToColumn($number) {

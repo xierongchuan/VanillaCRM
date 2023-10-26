@@ -38,23 +38,25 @@
 									<h4>{{date("d-m-Y H:i:s", strtotime($data['Дата']))}}</h4>
 								</div>
 
-								<div class="col-md-5 my-1 m-auto border rounded p-2">
-									<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
+								<div class="row">
+									<div class=" col-md-8 my-1 m-auto border border-danger rounded p-2">
+										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
 
-											<span>
-												План
-											</span>
-
-										<span>
-												<b>{{$data['План Кол-во']}}</b> шт
-											</span>
-
-									</div>
-
-									<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
 											<span class="mx-auto">
+												<h1>План</h1>
+											</span>
+
+										</div>
+
+										<div class="my-1 m-auto p-2 d-flex justify-content-around h3">
+											<span>
 												<b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> сум
 											</span>
+
+											<span>
+												<b>{{$data['План Кол-во']}}</b> шт
+											</span>
+										</div>
 									</div>
 								</div>
 
@@ -125,20 +127,33 @@
 {{--										</div>--}}
 {{--									</div>--}}
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2">
+									<div class="col-md-8 my-1 m-auto border rounded p-2">
 										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
-										<span>
-											Факт
-										</span>
+											<span class="mx-auto">
+												<h2>Факт</h2>
+											</span>
+										</div>
+
+										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
+											<span>
+												<b>{{$data['% от кол-во']}}</b> %
+											</span>
 
 											<span>
-											<b>{{$data['Факт Кол-во']}}</b> шт
-										</span>
+												<b>{{$data['Факт Кол-во']}}</b> шт
+											</span>
 										</div>
+
 										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
-										<span class="mx-auto">
-											<b>{{number_format((int)$data['Факт Сумм'], 0, '', ' ')}}</b> сум
-										</span>
+
+											<span>
+												<b>{{$data['% от сумм']}}</b> %
+											</span>
+
+
+											<span>
+												<b>{{number_format((int)$data['Факт Сумм'], 0, '', ' ')}}</b> сум
+											</span>
 										</div>
 									</div>
 
@@ -162,25 +177,25 @@
 									</span>
 									</div>
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
-									<span>
-										% от кол-во
-									</span>
+{{--									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">--}}
+{{--									<span>--}}
+{{--										% от кол-во--}}
+{{--									</span>--}}
 
-										<span>
-										<b>{{$data['% от кол-во']}}</b> %
-									</span>
-									</div>
+{{--										<span>--}}
+{{--										<b>{{$data['% от кол-во']}}</b> %--}}
+{{--									</span>--}}
+{{--									</div>--}}
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
-									<span>
-										% от суммы
-									</span>
+{{--									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">--}}
+{{--									<span>--}}
+{{--										% от суммы--}}
+{{--									</span>--}}
 
-										<span>
-										<b>{{$data['% от сумм']}}</b> %
-									</span>
-									</div>
+{{--										<span>--}}
+{{--										<b>{{$data['% от сумм']}}</b> %--}}
+{{--									</span>--}}
+{{--									</div>--}}
 
 
 								</div>
@@ -269,9 +284,9 @@
 										<tr>
 											<th scope="row">{{$loop -> iteration}}</th>
 											<td>{{$manager -> name}}</td>
-											<td>{{$manager -> sold}} шт</td>
-											<td>{{$manager -> month}} шт</td>
-											<td>{{$percentages[$key]}} %</td>
+											<td class="text-nowrap overflow-hidden">{{$manager -> sold}} шт</td>
+											<td class="text-nowrap overflow-hidden">{{$manager -> month}} шт</td>
+											<td class="text-nowrap overflow-hidden">{{$percentages[$key]}} %</td>
 										</tr>
 
 									@endforeach
@@ -376,7 +391,7 @@
 									@if($file -> company != $company -> name)
 										@continue
 									@endif
-									@if($loop -> count > 4)
+									@if($loop -> iteration > 4)
 										@break
 									@endif
 
@@ -406,6 +421,41 @@
 
 
 		@endforeach
+
+	@endif
+
+
+	@if(@Auth::user()->role === 'user' && !empty($company -> data))
+
+		@php
+			$data = (array)json_decode(@$company -> data);
+			$workers = $data['Продажи']??[];
+		@endphp
+
+		<div class="row flex-column align-items-center">
+			<div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
+		<span class="d-flex justify-content-between">
+			<h2 class="perm_panel_switch" panel="perm_panel_report_xlsx_sales">Change <b>{{$company -> name}}</b> worker sales</h2>
+			<button class="lead perm_panel_switch" panel="perm_panel_report_xlsx_sales">Switch</button>
+		</span>
+				<form id="perm_panel_report_xlsx_sales" action="{{route('mod.report_xlsx_sales', $company)}}" method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
+					@csrf
+					@foreach($workers as $worker)
+						<input type="hidden" name="worker_name_{{$loop->iteration}}" value="{{$worker -> name}}">
+						<div class="input-group mb-2">
+							<span class="input-group-text">{{$worker -> name}}</span>
+							<input type="number" class="form-control repost_xlsx_required_inputs" name="worker_sold_{{$loop->iteration}}" placeholder="Sold" value="{{$worker -> sold}}" aria-label="Sold" required>
+							<input type="number" class="form-control repost_xlsx_required_inputs" name="worker_month_{{$loop->iteration}}" placeholder="Sold" value="{{$worker -> month}}" aria-label="Sold" required>
+						</div>
+					@endforeach
+
+					<div class="d-flex justify-content-center">
+						<button type="submit" class="btn btn-primary">Send</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
 
 	@endif
 

@@ -14,16 +14,9 @@
 		<form id="perm_panel_report_xlsx" action="{{route('mod.report_xlsx', $data -> company -> id)}}" method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
 			@csrf
 
-			<div class="form-check">
-				<input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="close_month">
-				<label class="form-check-label" for="flexCheckDefault">
-					Закрыть месяц
-				</label>
-			</div>
-
 			<div class="form-group mb-2">
 				<label for="file">File: </label>
-				<input type="file" class="form-control" name="file" required>
+				<input type="file" class="form-control repost_xlsx_required_inputs" name="file" required>
 			</div>
 			<div class="form-group mb-2">
 				<label for="note">Note:</label>
@@ -33,9 +26,16 @@
 				<input type="hidden" name="worker_name_{{$loop->iteration}}" value="{{$worker -> full_name}}">
 				<div class="input-group mb-2">
 					<span class="input-group-text">{{$worker -> full_name}}</span>
-					<input type="number" class="form-control" name="worker_sold_{{$loop->iteration}}" placeholder="Sold" value="{{old('worker_sold_'.$loop->iteration, '0')}}" aria-label="Sold" required>
+					<input type="number" class="form-control repost_xlsx_required_inputs" name="worker_sold_{{$loop->iteration}}" placeholder="Sold" value="{{old('worker_sold_'.$loop->iteration, '0')}}" aria-label="Sold" required>
 				</div>
 			@endforeach
+
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="1" id="repost_xlsx_checkbox" name="close_month">
+				<label class="form-check-label" for="repost_xlsx_checkbox">
+					Закрыть месяц
+				</label>
+			</div>
 
 			<div class="d-flex justify-content-center">
 				<button type="submit" class="btn btn-primary">Send</button>

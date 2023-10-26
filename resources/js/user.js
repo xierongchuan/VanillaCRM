@@ -13,4 +13,14 @@ $(document).ready(function() {
 		// Используем slideUp для скрытия соответствующей панели
 		$('#' + panelId).slideToggle();
 	});
+
+	$('#repost_xlsx_checkbox').change(function(){
+		if($(this).is(':checked')) {
+			$('.repost_xlsx_required_inputs').prop('required', false); // Устанавливаем атрибут required
+			// $('.repost_xlsx_required_inputs').prop('disabled', false); // Включаем текстовый инпут
+		} else {
+			$('.repost_xlsx_required_inputs').prop('required', true); // Убираем атрибут required
+			// $('.repost_xlsx_required_inputs').prop('disabled', true); // Выключаем текстовый инпут
+		}
+	});
 });
