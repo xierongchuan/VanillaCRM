@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
 {
-	public function index(): \Illuminate\Contracts\View\View
+	public function index()
 	{
 		if(Auth::check()){
 			switch (Auth::user() -> role) {
@@ -20,6 +20,8 @@ class HomeController extends Controller
 					$companies = Company::all();
 
 					$files = File::allFiles(storage_path('app/public/archive'));
+
+					$tmp_files = File::allFiles(storage_path('app/public/tmp'));
 
 					// Инициализируем пустой массив для хранения URL файлов
 					$files_data = [];
@@ -30,14 +32,6 @@ class HomeController extends Controller
 						// Получаем путь к файлу относительно public директории
 						$filePath = 'storage/app/public' . str_replace(storage_path('app/public'), '', $file);
 						$file_name_data = explode('_', basename($file));
-
-						$company = Company::where('name', $file_name_data[0]) -> first();
-						$l_r_f_n = (string)@((array)json_decode($company -> data))['Last File'];
-						$l_r_path = storage_path('app/public/tmp/'.$l_r_f_n);
-						$l_r_path_proj = 'storage/app/public' . str_replace(storage_path('app/public'), '', $l_r_path);
-						$last_repor_urls[] = asset($l_r_path_proj);
-
-
 
 						// Генерируем данные файла
 						$file_data = [
@@ -53,6 +47,13 @@ class HomeController extends Controller
 						$files_data[] = (object)$file_data;
 					}
 
+					foreach ($companies as $company) {
+						$l_r_f_n = (string)@((array)json_decode($company -> data))['Last File'];
+						$l_r_path = storage_path('app/public/tmp/'.$l_r_f_n);
+						$l_r_path_proj = 'storage/app/public' . str_replace(storage_path('app/public'), '', $l_r_path);
+						$last_repor_urls[] = asset($l_r_path_proj);
+					}
+
 					$files_data = array_reverse($files_data);
 
 					return view('home', compact('companies', 'files_data', 'last_repor_urls'));
@@ -64,7 +65,8 @@ class HomeController extends Controller
 					break;
 
 				default:
-					return view('home');
+					echo "Кто ты?";
+					return false;
 					break;
 			}
 		} else {

@@ -19,8 +19,7 @@
 
 			@php
 
-				$data = (array)json_decode($company -> data);
-
+								$data = (array)json_decode($company -> data);
 			@endphp
 
 			@if(!empty($data))
@@ -177,27 +176,6 @@
 									</span>
 									</div>
 
-{{--									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">--}}
-{{--									<span>--}}
-{{--										% от кол-во--}}
-{{--									</span>--}}
-
-{{--										<span>--}}
-{{--										<b>{{$data['% от кол-во']}}</b> %--}}
-{{--									</span>--}}
-{{--									</div>--}}
-
-{{--									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">--}}
-{{--									<span>--}}
-{{--										% от суммы--}}
-{{--									</span>--}}
-
-{{--										<span>--}}
-{{--										<b>{{$data['% от сумм']}}</b> %--}}
-{{--									</span>--}}
-{{--									</div>--}}
-
-
 								</div>
 							</div>
 
@@ -259,6 +237,11 @@
 
 									$percentages = [];
 									foreach ($managers as $key => $manager) {
+										if((int)$manager -> month == 0) {
+											$percentages[$key] = 0;
+											continue;
+										}
+
 										$percentage = ($manager -> month / $totalSum) * 100;
 										$percentages[$key] = round($percentage, 1);
 									}
