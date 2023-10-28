@@ -31,20 +31,24 @@
 								active
 								@endif
 
-								" aria-current="page" href="{{route('home.index')}}">Home</a>
+								" aria-current="page" href="{{route('home.index')}}">Главная</a>
 					</li>
 
 
 					@if(@Auth::user()->role === 'admin')
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Company
-							</a>
-							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="{{route('company.list')}}">List</a></li>
-								<li><a class="dropdown-item" href="{{route('company.create')}}">Create</a></li>
-							</ul>
+
+						<li class="nav-item">
+							<a class="
+								nav-link
+
+								@if(Route::currentRouteName() == 'company.list')
+								active
+								@endif
+
+								" aria-current="page" href="{{route('company.list')}}">Настройки</a>
 						</li>
+
+
 
 					@endif
 
@@ -57,7 +61,7 @@
 								active
 								@endif
 
-								" aria-current="page" href="{{route('user.permission')}}">Permissions</a>
+								" aria-current="page" href="{{route('user.permission')}}">Задачи</a>
 						</li>
 					@endif
 
@@ -73,11 +77,11 @@
 
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							Theme
+							Тема
 						</a>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="{{route('theme.switch', 'light')}}">Light</a></li>
-							<li><a class="dropdown-item" href="{{route('theme.switch', 'dark')}}">Dark</a></li>
+							<li><a class="dropdown-item" href="{{route('theme.switch', 'light')}}">Яркая</a></li>
+							<li><a class="dropdown-item" href="{{route('theme.switch', 'dark')}}">Тёмная</a></li>
 						</ul>
 					</li>
 
@@ -90,11 +94,11 @@
 									active
 									@endif
 
-									" aria-current="page" href="{{route('auth.sign_in')}}">Sign In</a>
-						</li>
+									" aria-current="page" href="{{route('auth.sign_in')}}">Войти</a>
+						</li>Отправить отчёт в Kia (29.10.2023)
 					@else
 						<li class="nav-item">
-							<a class="nav-link" aria-current="page" href="{{route('auth.logout')}}"><i class="bi bi-box-arrow-right"></i></a>
+							<a class="nav-link" aria-current="page" href="{{route('auth.logout')}}">Выйти</a>
 						</li>
 					@endif
 

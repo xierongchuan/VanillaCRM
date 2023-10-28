@@ -15,7 +15,8 @@ class PostController extends Controller
 
 		$post -> users = User::where([
 			'com_id' => $company -> id,
-			'dep_id' => $department -> id
+			'dep_id' => $department -> id,
+			'post_id' => $post -> id
 		]) -> get();
 
 		return view('company.department.post.index', compact('company', 'department', 'post'));

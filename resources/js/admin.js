@@ -36,4 +36,21 @@ $(document).ready(function(){
 		// Используем slideUp для скрытия соответствующей панели
 		$('#' + panelId).slideToggle(400);
 	});
+
+	$(document).ready(function() {
+		$('.delete-user').on('click', function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+
+			var userId = $(this).data('id');
+			var userName = $(this).data('name');
+			var link = $(this).attr('href');
+
+			var confirmed = confirm("Вы точно хотите удалить " + userName + "?");
+
+			if (confirmed) {
+				window.location.href = link;
+			}
+		});
+	});
 });

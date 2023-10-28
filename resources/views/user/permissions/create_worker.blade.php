@@ -1,10 +1,10 @@
 <div class="row flex-column align-items-center">
 	<div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
 		<span class="d-flex justify-content-between">
-			<h2 class="perm_panel_switch" panel="perm_panel_create_worker">Create worker in <b>{{$data -> company -> name}}</b></h2>
-			<button class="lead perm_panel_switch" panel="perm_panel_create_worker">Switch</button>
+			<h2 class="perm_panel_switch mx-1" panel="perm_panel_create_worker">Добавить сотрудника в <b>{{$data -> company -> name}}</b></h2>
+			<button class="lead perm_panel_switch m-1" panel="perm_panel_create_worker"><i class="bi bi-nintendo-switch"></i></button>
 		</span>
-		<form id="perm_panel_create_worker" action="{{route('mod.create_worker', $data -> company -> id)}}" method="post" class="perm-panel bg-body-tertiary rounded p-3">
+		<form id="perm_panel_create_worker" action="{{route('mod.create_worker', $data -> company -> id)}}" method="post" class="perm-panel-list bg-body-tertiary rounded p-3">
 			@csrf
 
 			<div class="form-group mb-2">

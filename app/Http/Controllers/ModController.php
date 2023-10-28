@@ -58,7 +58,7 @@ class ModController extends Controller
 				return redirect()->back()->with('success', 'Месяц успешно закрыт');
 			}
 
-			return redirect()->back()->withErrors('Ошибка 404, отсутствует последний отчёт, oбратитесь к одминистратору.');
+			return redirect()->back()->withErrors('Месяц уже был закрыт');
 //			Storage::move('public/tmp/' . $file_name, 'public/archive/' . $file_name);
 		}
 
@@ -305,14 +305,14 @@ class ModController extends Controller
 		$workers = (array)$data['Продажи'];
 
 		foreach ($inputData as $key => $value) {
-			if (preg_match('/^worker_sold_(\d+)$/', $key, $matches) && is_numeric($value)) {
+			if (preg_match('/^worker_month_(\d+)$/', $key, $matches) && is_numeric($value)) {
 				$workerNumber = $matches[1]; // Извлекаем номер рабочего
 				$workerMonth = $inputData['worker_month_' . $workerNumber];
 				$workerName = $inputData['worker_name_' . $workerNumber]; // Извлекаем соответствующее имя рабочего
 
 				$workers[$workerNumber] = [
 					'name' => (string)$workerName,
-					'sold' => (int)$value,
+					'sold' => (int)$workers[$workerNumber] -> sold,
 					'month' => (int)$workerMonth
 				];
 			}

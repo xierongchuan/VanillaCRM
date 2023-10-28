@@ -61,7 +61,21 @@ class HomeController extends Controller
 
 				case ('user'):
 					$company = Company::find(Auth::user() -> com_id);
-					return view('home', compact('company'));
+
+					$department = Department::find(Auth::user() -> dep_id);
+
+					$post = Post::find(@Auth::user() -> post_id);
+					$permission_ids = (array)json_decode(@$post -> permission);
+					$permissions = Permission::whereIn('id', @$permission_ids) -> get();
+					$permission_vals = @$permissions -> pluck('value') -> toArray();
+
+					$data = (object)[
+						'company' => $company,
+						'department' => $department,
+						'post' => $post,
+						'perm' => $permission_vals,
+					];
+					return view('home', compact('company', 'data'));
 					break;
 
 				default:

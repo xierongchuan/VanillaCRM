@@ -1,10 +1,10 @@
 @extends('layouts.main')
 
-@section('title', 'User Create')
+@section('title', 'Создать Сотрудника')
 
 @section('content')
 	<h1 class="text-center my-2">
-		Archive {{$company -> name}}
+		Архив {{$company -> name}}
 	</h1>
 
 	<div class="flex-column align-items-center">

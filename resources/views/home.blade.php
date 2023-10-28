@@ -1,17 +1,19 @@
 @extends('layouts.main')
 
-@section('title', 'Home')
+@section('title', 'Отчёты')
 
 @section('content')
 
-	<h1 class="text-center mt-5">
-		Welcome
-		@if(@Auth::user()->role === 'admin')
-			Admin
-		@elseif(@Auth::user()->role === 'user')
-			<b>{{$company -> name}}</b> Worker
-		@endif
-	</h1>
+{{--	<h1 class="text-center mt-2 mt-md-4">--}}
+{{--		Добро пожаловать--}}
+{{--		@if(@Auth::user()->role === 'admin')--}}
+{{--			Администратор--}}
+{{--		@elseif(@Auth::user()->role === 'user')--}}
+{{--			Сотрудник <b>{{$company -> name}}</b>--}}
+{{--		@endif--}}
+{{--	</h1>--}}
+
+<div class="m-2"></div>
 
 	@if(isset($companies))
 
@@ -26,37 +28,15 @@
 				<div class="row flex-column align-items-center">
 					<div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
 					<span class="d-flex justify-content-between">
-						 <h1 class="m-0 perm_panel_switch" panel="perm_panel_{{$company->id}}"><b>{{$company -> name}}</b></h1>
-						<button class="lead perm_panel_switch" panel="perm_panel_{{$company->id}}">Switch</button>
+						 <h1 class="m-0 mx-1 perm_panel_switch" panel="perm_panel_{{$company->id}}"><b>{{$company -> name}}</b></h1>
+						<button class="lead perm_panel_switch" panel="perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button>
 					</span>
 						<div id="perm_panel_{{$company->id}}" class="perm-panel w-100">
-							<div class="bg-body-tertiary rounded p-3 mb-2">
+							<div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
 								<div class="d-flex flex-wrap justify-content-center">
 									<h4>Дата загрузки <a href="{{$last_repor_urls[$loop->index]}}">отчёта</a>:</h4>
 									<div class="mx-sm-1"></div>
-									<h4>{{date("d-m-Y H:i:s", strtotime($data['Дата']))}}</h4>
-								</div>
-
-								<div class="row">
-									<div class=" col-md-8 my-1 m-auto border border-danger rounded p-2">
-										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
-
-											<span class="mx-auto">
-												<h1>План</h1>
-											</span>
-
-										</div>
-
-										<div class="my-1 m-auto p-2 d-flex justify-content-around h3">
-											<span>
-												<b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> сум
-											</span>
-
-											<span>
-												<b>{{$data['План Кол-во']}}</b> шт
-											</span>
-										</div>
-									</div>
+									<h4>{{date("d.m.Y H:i", strtotime($data['Дата']))}}</h4>
 								</div>
 
 							</div>
@@ -65,95 +45,121 @@
 								<div class="d-flex flex-wrap justify-content-center">
 									<h2>Сегодня</h2>
 								</div>
-								<div class="row">
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+								<div class="col">
+									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
 									<span>
-										Договора
+										<b>Договора</b>:
 									</span>
 
 										<span>
-										{{$data['Договора']}} шт
+										<b>{{$data['Договора']}}</b>
 									</span>
 									</div>
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
-									<span>
-										Оплата
-									</span>
+									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+										<span>
+											<b>Оплата</b>:
+										</span>
 
-									<span>
-										{{$data['Оплата Кол-во']}} шт
-									</span>
+										<span>
+											<b>{{$data['Оплата Кол-во']}}</b>
+										</span>
 
-									<span>
-										<b>{{number_format((int)$data['Оплата Сумм'], 0, '', ' ')}}</b> сум
-									</span>
 									</div>
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
-									<span>
-										Доплата
-									</span>
+									<div class="m-3"></div>
 
-									<span>
-										<b>{{number_format((int)$data['Доплата'], 0, '', ' ')}}</b> сум
-									</span>
+									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+										<span>
+											<b>Оплата</b>:
+										</span>
+
+										<span>
+											<b>{{number_format((int)$data['Оплата Сумм'], 0, '', ' ')}}</b>
+										</span>
+									</div>
+
+									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+										<span>
+											<b>Доплата</b>:
+										</span>
+
+											<span>
+											<b>{{number_format((int)$data['Доплата'], 0, '', ' ')}}</b>
+										</span>
 									</div>
 
 								</div>
 							</div>
 
 							<div class="bg-body-tertiary rounded p-3 mb-2">
+								<div class="d-flex flex-wrap justify-content-center">
+									<h2 class="mb-0">Этот месяц</h2>
+								</div>
+{{--								<div class="d-flex flex-wrap justify-content-center">--}}
+{{--									<hr class="mt-1 mb-2 w-100">--}}
+{{--								</div>--}}
 								<div class="row">
 
-{{--									<div class="col-md-5 my-1 m-auto border rounded p-2">--}}
-{{--										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">--}}
+									<div class="mb-2">
 
-{{--											<span>--}}
-{{--												План--}}
-{{--											</span>--}}
+										<div class="col-md-9 mt-1 row m-auto justify-content-between h4">
 
-{{--											<span>--}}
-{{--												<b>{{$data['План Кол-во']}}</b> шт--}}
-{{--											</span>--}}
-
-{{--										</div>--}}
-
-{{--										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">--}}
-{{--											<span class="mx-auto">--}}
-{{--												<b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> сум--}}
-{{--											</span>--}}
-{{--										</div>--}}
-{{--									</div>--}}
-
-									<div class="col-md-8 my-1 m-auto border rounded p-2">
-										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
-											<span class="mx-auto">
-												<h2>Факт</h2>
+											<span class="col-md-4 p-2 m-auto h4 d-none d-md-block">
+												Факт
 											</span>
+
+											<span class="col-md-4">
+
+											</span>
+
+
+											<span class="col-md-4 p-2 text-md-end d-none d-md-block">
+												План
+											</span>
+
 										</div>
 
-										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
-											<span>
-												<b>{{$data['% от кол-во']}}</b> %
+
+										<div class="col-md-9 my-1 row m-auto justify-content-between h4">
+											<span class="col-md-5 p-2 border border-success rounded d-flex justify-content-between">
+												<b class="d-block d-md-none">Факт:</b>
+												<span><b>{{$data['Факт Кол-во']}}</b> </span>
 											</span>
 
-											<span>
-												<b>{{$data['Факт Кол-во']}}</b> шт
+											<span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+													<b>{{$data['% от кол-во']}}</b> %
 											</span>
+
+
+											<span class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
+												<b class="d-block d-md-none">План:</b>
+												<span><b>{{$data['План Кол-во']}}</b> </span>
+											</span>
+
 										</div>
 
-										<div class="my-1 m-auto p-2 d-flex justify-content-between h3">
+										<div class="m-3 d-block d-md-none"></div>
 
-											<span>
-												<b>{{$data['% от сумм']}}</b> %
+										<div class="col-md-9 my-1 row m-auto justify-content-between h4">
+											<span class="col-md-5 p-2 border border-success rounded d-flex justify-content-between">
+												<b class="d-block d-md-none">Факт:</b>
+												<span><b>{{number_format((int)$data['Факт Сумм'], 0, '', ' ')}}</b> </span>
+											</span>
+
+											<span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+													<b>{{$data['% от сумм']}}</b> %
 											</span>
 
 
-											<span>
-												<b>{{number_format((int)$data['Факт Сумм'], 0, '', ' ')}}</b> сум
+											<span class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
+												<b class="d-block d-md-none">План:</b>
+												<span><b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> </span>
 											</span>
+
 										</div>
+
+
 									</div>
 
 									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
@@ -166,7 +172,7 @@
 									</span>
 									</div>
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
+									<div class="col-md-5 my-1 m-auto border border-warning rounded p-2 d-flex justify-content-between lead">
 									<span>
 										Конверсия (CV)
 									</span>
@@ -182,7 +188,7 @@
 							<div class="bg-body-tertiary rounded p-3 mb-2">
 								<div class="row">
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
+									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead ">
 									<span>
 										Банк
 									</span>
@@ -304,43 +310,43 @@
 								<h2>Реализация</h2>
 
 								<table class="table mb-1 rounded overflow-hidden">
-									{{--								<thead>--}}
-									{{--								<tr>--}}
-									{{--									<th scope="col"></th>--}}
-									{{--									<th scope="col">Продал сегодня</th>--}}
-									{{--									<th scope="col">Продал в мес</th>--}}
-									{{--								</tr>--}}
-									{{--								</thead>--}}
+{{--																	<thead>--}}
+{{--																	<tr>--}}
+{{--																		<th scope="col"></th>--}}
+{{--																		<th scope="col">Сум</th>--}}
+{{--																		<th scope="col">%</th>--}}
+{{--																	</tr>--}}
+{{--																	</thead>--}}
 									<tbody>
 									<tr>
-										<td>Через банк шт</td>
-										<td>{{$data['5 Через банк шт']}} шт</td>
-										<td class="text-nowrap overflow-hidden">{{$count_per[0]}} %</td>
+										<td>Через банк (шт)</td>
+										<td class="text-nowrap overflow-hidden text-end">{{$data['5 Через банк шт']}} </td>
+										<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$count_per[0]}} %</td>
 									</tr>
 									<tr>
-										<td>Через банк сумма</td>
-										<td class="text-nowrap overflow-hidden">{{number_format((int)$data['5 Через банк сумма'], 0, '', ' ')}} сум</td>
-										<td class="text-nowrap overflow-hidden">{{$sums_per[0]}} %</td>
+										<td>Через банк (сумма)</td>
+										<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Через банк сумма'], 0, '', ' ')}} </td>
+										<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$sums_per[0]}} %</td>
 									</tr>
 									<tr>
-										<td>Через лизинг шт</td>
-										<td>{{$data['5 Через лизинг шт']}} шт</td>
-										<td class="text-nowrap overflow-hidden">{{$count_per[1]}} %</td>
+										<td>Через лизинг (шт)</td>
+										<td class="text-nowrap overflow-hidden text-end">{{$data['5 Через лизинг шт']}} </td>
+										<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$count_per[1]}} %</td>
 									</tr>
 									<tr>
-										<td>Через лизинг сумма</td>
-										<td class="text-nowrap overflow-hidden">{{number_format((int)$data['5 Через лизинг сумма'], 0, '', ' ')}} сум</td>
-										<td class="text-nowrap overflow-hidden">{{$sums_per[1]}} %</td>
+										<td>Через лизинг (сумма)</td>
+										<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Через лизинг сумма'], 0, '', ' ')}} </td>
+										<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$sums_per[1]}} %</td>
 									</tr>
 									<tr>
-										<td>Итог шт</td>
-										<td>{{$data['5 Итог шт']}} шт</td>
-										<td></td>
+										<td>Итог (шт)</td>
+										<td class="text-nowrap overflow-hidden text-end">{{$data['5 Итог шт']}} </td>
+{{--										<td></td>--}}
 									</tr>
 									<tr>
-										<td>Итог сумма</td>
-										<td class="text-nowrap overflow-hidden">{{number_format((int)$data['5 Cумма'], 0, '', ' ')}} сум</td>
-										<td></td>
+										<td>Итог (сумма)</td>
+										<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Cумма'], 0, '', ' ')}} </td>
+{{--										<td></td>--}}
 									</tr>
 									</tbody>
 								</table>
@@ -358,7 +364,7 @@
 								<div class="my-1 m-auto border rounded py-2 row h4">
 
 									<div class="col-3">
-										Мес
+										Месяц
 									</div>
 
 									<div class="col-7 text-end">
@@ -409,35 +415,37 @@
 
 
 	@if(@Auth::user()->role === 'user' && !empty($company -> data))
+		@if(in_array('report_xlsx', $data -> perm))
+			@php
+				$data = (array)json_decode(@$company -> data);
+				$workers = $data['Продажи']??[];
+			@endphp
 
-		@php
-			$data = (array)json_decode(@$company -> data);
-			$workers = $data['Продажи']??[];
-		@endphp
+			<div class="row flex-column align-items-center">
+				<div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
+			<span class="d-flex justify-content-between">
+				<h2 class="perm_panel_switch mb-1" panel="perm_panel_report_xlsx_sales" style="font-size: calc(1.105rem + .66vw);margin-top: 0.1rem;">Продажи менеджеров <b>{{$company -> name}}</b></h2>
+				<button class="lead perm_panel_switch m-1" panel="perm_panel_report_xlsx_sales"><i class="bi bi-nintendo-switch"></i></button>
+			</span>
+					<form id="perm_panel_report_xlsx_sales" action="{{route('mod.report_xlsx_sales', $company)}}" method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
+						@csrf
+						@foreach($workers as $worker)
+							<input type="hidden" name="worker_name_{{$loop->iteration}}" value="{{$worker -> name}}">
+							<div class="input-group mb-2">
+								<span class="input-group-text col-7 col-md-9">{{$worker -> name}}</span>
+								<input type="number" class="col-4 col-md-2 form-control repost_xlsx_required_inputs" name="worker_month_{{$loop->iteration}}" id="worker_month_{{$loop->iteration}}" placeholder="Sold" value="{{$worker -> month}}" aria-label="Sold" required>
+								<span class="input-group-text px-1 px-md-2 col-2 col-md-1" id="report_worker_percent_{{$loop->iteration}}">99.9 %</span>
+							</div>
+						@endforeach
 
-		<div class="row flex-column align-items-center">
-			<div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
-		<span class="d-flex justify-content-between">
-			<h2 class="perm_panel_switch" panel="perm_panel_report_xlsx_sales">Change <b>{{$company -> name}}</b> worker sales</h2>
-			<button class="lead perm_panel_switch" panel="perm_panel_report_xlsx_sales">Switch</button>
-		</span>
-				<form id="perm_panel_report_xlsx_sales" action="{{route('mod.report_xlsx_sales', $company)}}" method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
-					@csrf
-					@foreach($workers as $worker)
-						<input type="hidden" name="worker_name_{{$loop->iteration}}" value="{{$worker -> name}}">
-						<div class="input-group mb-2">
-							<span class="input-group-text">{{$worker -> name}}</span>
-							<input type="number" class="form-control repost_xlsx_required_inputs" name="worker_sold_{{$loop->iteration}}" placeholder="Sold" value="{{$worker -> sold}}" aria-label="Sold" required>
-							<input type="number" class="form-control repost_xlsx_required_inputs" name="worker_month_{{$loop->iteration}}" placeholder="Sold" value="{{$worker -> month}}" aria-label="Sold" required>
+						<div class="d-flex justify-content-center">
+							<button type="submit" class="btn btn-primary">Изменить</button>
 						</div>
-					@endforeach
-
-					<div class="d-flex justify-content-center">
-						<button type="submit" class="btn btn-primary">Send</button>
-					</div>
-				</form>
+					</form>
+				</div>
 			</div>
-		</div>
+
+		@endif
 
 
 	@endif

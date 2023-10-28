@@ -23,4 +23,28 @@ $(document).ready(function() {
 			// $('.repost_xlsx_required_inputs').prop('disabled', true); // Выключаем текстовый инпут
 		}
 	});
+
+	function recalculatePercentages() {
+		let total = 0;
+
+		// Считаем общую сумму
+		$('.repost_xlsx_required_inputs').each(function() {
+			total += parseFloat($(this).val());
+		});
+
+		// Рассчитываем и выводим проценты
+		$('.repost_xlsx_required_inputs').each(function(index) {
+			let workerMonth = parseFloat($(this).val());
+			let percent = (workerMonth / total * 100).toFixed(1) + ' %';
+			$('#report_worker_percent_' + (index + 1)).text(percent);
+		});
+	}
+
+	// При изменении инпута, пересчитываем проценты
+	$('.repost_xlsx_required_inputs').on('input', function() {
+		recalculatePercentages();
+	});
+
+	// Вызываем функцию один раз при загрузке страницы
+	recalculatePercentages();
 });

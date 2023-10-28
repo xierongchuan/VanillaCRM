@@ -39,7 +39,7 @@ class UserController extends Controller
 	}
 
 	public function create(Company $company) {
-		$departments = Department::all();
+		$departments = Department::where("com_id", $company -> id) -> get();
 		return view('company.user.create', compact('company', 'departments'));
 	}
 

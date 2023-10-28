@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Post Update')
+@section('title', 'Изменить Должность')
 
 @section('content')
 

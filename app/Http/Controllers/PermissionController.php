@@ -16,7 +16,7 @@ class PermissionController extends Controller
 
 	public function store(Request $req, Company $company) {
 		$req -> validate([
-			'name' => 'required|min:3|max:20',
+			'name' => 'required|min:3|max:30',
 			'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/',
 			'data' => 'nullable|string'
 		]);
@@ -38,7 +38,7 @@ class PermissionController extends Controller
 			return redirect() -> route('company.list');
 		}
 
-		return redirect() -> route('company.list') -> withErrors("Company not found");
+		return redirect() -> route('company.list') -> withErrors("Компании не существует");
 	}
 
 
@@ -48,7 +48,7 @@ class PermissionController extends Controller
 
 	public function modify(Company $company, Permission $permission) {
 		$req = request() -> validate([
-			'name' => 'required|min:3|max:20',
+			'name' => 'required|min:3|max:30',
 			'data' => 'nullable|string'
 		]);
 
@@ -61,7 +61,7 @@ class PermissionController extends Controller
 			return redirect() -> route('company.list');
 		}
 
-		return redirect() -> route('company.list') -> withErrors("Company not found");
+		return redirect() -> route('company.list') -> withErrors("Комании не существует");
 	}
 
 	public function delete(Company $company, Permission $permission)
