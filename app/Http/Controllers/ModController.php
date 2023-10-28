@@ -87,7 +87,7 @@ class ModController extends Controller
 				$month = (int)$value;
 
 				if(!empty($workers) && !$request -> close_month) {
-					$month = (int) $workers[$workerNumber]->month;
+					$month = (int)@$workers[$workerNumber]->month;
 					$month += (int)$value;
 				}
 
@@ -156,7 +156,6 @@ class ModController extends Controller
 		foreach($wsheet -> getRowIterator() as $row) {
 			$cellIterate = $row->getCellIterator();
 			$cellIterate -> setIterateOnlyExistingCells(true);
-			echo "<tr>";
 			foreach($cellIterate as $cell){
 				$cell_address = $cell->getCoordinate(); // Получаем адрес ячейки
 				$cell_letter = preg_replace('/[0-9]/', '', $cell_address); // Убираем цифры из адреса
@@ -228,6 +227,11 @@ class ModController extends Controller
 
 		$percentages = [];
 		foreach ($managers as $key => $manager) {
+			if((int)$manager['month'] == 0) {
+				$percentages[$key] = 0;
+				continue;
+			}
+
 			$percentage = ($manager['month'] / $totalSum) * 100;
 			$percentages[$key] = round($percentage, 1);
 		}

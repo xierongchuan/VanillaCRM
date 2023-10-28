@@ -6,6 +6,7 @@ export default defineConfig({
         laravel({
             input: [
 							'resources/sass/app.scss',
+							'resources/js/default.js',
 							'resources/js/admin.js',
 							'resources/js/user.js',
 							'resources/js/genmanager.js'

@@ -48,9 +48,7 @@
 					</span>
 				@endforeach
 
-				@if(config('app.debug'))
-					<a href="{{route('company.permission.create', $company -> id)}}" class="btn btn-success w-100 mt-1">Create <i class="bi bi-person-vcard"></i></a>
-				@endif
+				<a href="{{route('company.permission.create', $company -> id)}}" class="btn btn-success w-100 mt-1">Create <i class="bi bi-person-vcard"></i></a>
 
 				</div>
 

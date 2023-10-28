@@ -14,7 +14,7 @@
 
 </head>
 <body data-bs-theme="{{session('theme') ?? 'dark'}}">
-<header class="">
+<header>
 	<nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
 		<div class="container">
 			<a class="navbar-brand" href="{{route('home.index')}}"> {{config('app.name')}}</a>
@@ -146,6 +146,8 @@
 	@vite(['resources/js/admin.js'])
 @elseif(@Auth::user() -> role === 'user')
 	@vite(['resources/js/user.js'])
+@else
+	@vite(['resources/js/default.js'])
 @endif
 </body>
 </html>

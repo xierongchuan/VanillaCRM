@@ -8,7 +8,7 @@
 <div class="row flex-column align-items-center">
 	<div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
 		<span class="d-flex justify-content-between">
-			<h2 class="perm_panel_switch" panel="perm_panel_report_xlsx">Send <b>{{$data -> company -> name}}</b> report</h2>
+			<h2 class="perm_panel_switch" panel="perm_panel_report_xlsx">Send <b>{{$data -> company -> name}}</b> report {{date("Y-m-d")}}</h2>
 			<button class="lead perm_panel_switch" panel="perm_panel_report_xlsx">Switch</button>
 		</span>
 		<form id="perm_panel_report_xlsx" action="{{route('mod.report_xlsx', $data -> company -> id)}}" method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
