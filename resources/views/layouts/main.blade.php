@@ -95,7 +95,7 @@
 									@endif
 
 									" aria-current="page" href="{{route('auth.sign_in')}}">Войти</a>
-						</li>Отправить отчёт в Kia (29.10.2023)
+						</li>
 					@else
 						<li class="nav-item">
 							<a class="nav-link" aria-current="page" href="{{route('auth.logout')}}">Выйти</a>
