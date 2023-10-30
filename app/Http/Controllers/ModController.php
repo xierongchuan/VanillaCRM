@@ -74,33 +74,38 @@ class ModController extends Controller
 		$company = Company::find(Auth::user() -> com_id);
 
 		if(!empty($company -> data)) {
-			$workers = (array)((array)json_decode($company -> data))['Продажи'];
+			$com_dat = (array)json_decode($company -> data);
+			if($com_dat['Clear Sales']) {
+				$workers = [];dd("LOH");
+			} else {
+				$workers = (array)((array)json_decode($company -> data))['Продажи'];
+			}
 		} else {
 			$workers = [];
 		}
 
+
 		foreach ($inputData as $key => $value) {
-			if (preg_match('/^worker_sold_(\d+)$/', $key, $matches) && is_numeric($value)) {
+			if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
 				$workerNumber = $matches[1]; // Извлекаем номер рабочего
+				$workerValue = $inputData['worker_sold_' . $workerNumber];
 				$workerName = $inputData['worker_name_' . $workerNumber]; // Извлекаем соответствующее имя рабочего
 
-				$month = (int)$value;
+				$month = (int)$workerValue;
 
 				if(!empty($workers) && !$request -> close_month) {
 					$month = (int)@$workers[$workerNumber]->month;
-					$month += (int)$value;
+					$month += (int)$workerValue;
 				}
 
 				$workers[$workerNumber] = [
 					'name' => (string)$workerName,
-					'sold' => (int)$value,
+					'sold' => (int)$workerValue,
 					'month' => (int)$month
 				];
 			}
 		}
 
-//		var_dump($workers);
-//		return false;
 
 		$sheet_data = [
 			'Дата' => date('Y-m-d H:i:s'),
@@ -137,7 +142,9 @@ class ModController extends Controller
 
 			'Начало списка продаж' => '',
 			'Продажи' => $workers,
-			'Last File' => ''
+			'Last File' => '',
+
+			'Clear Sales' => false
 		];
 
 		$permission_data = (Permission::where('value', 'report_xlsx') -> first()) -> data;
@@ -219,7 +226,7 @@ class ModController extends Controller
 			],
 		];
 
-		$managers = $sheet_data['Продажи'];
+		$managers = (array)$sheet_data['Продажи'];
 		$totalSum = 0;
 		foreach ($managers as $manager) {
 			$totalSum += (int)$manager['month'];
@@ -245,6 +252,7 @@ class ModController extends Controller
 		$wsheet->getStyle('A'.($sales_s).':E'.($sales_s))->applyFromArray($styleArray);
 
 		foreach ($sheet_data['Продажи'] as $key => $sold) {
+			$sold = (array)$sold;
 			$num_address = $key+$sales_s;
 			$wsheet->getStyle("A".$num_address.":E".$num_address)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 			$wsheet->mergeCells("A".$num_address.":B".$num_address);
@@ -280,6 +288,8 @@ class ModController extends Controller
 
 			if($request -> close_month) {
 				$writer->save(storage_path('app/public/archive/'.$file_name), 1);
+
+				$sheet_data['Clear Sales'] = true;
 				$company -> data = json_encode($sheet_data);
 				$company -> save();
 
@@ -334,4 +344,5 @@ class ModController extends Controller
 		}
 		return $column;
 	}
+
 }

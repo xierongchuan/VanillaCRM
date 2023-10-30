@@ -41,6 +41,33 @@ class ArchiveController extends Controller
 		return view('company.archive', compact('company', 'files_data'));
 	}
 
+	public function remove_last_report(Company $company) {
+		if(empty($company -> data)) {
+			return redirect() -> route('home.index') -> withErrors('Последний отчтёт и так был удалён!');
+		}
+
+		$file = (string)@((array)json_decode($company -> data))['Last File'];
+		$file_tmp_path = storage_path('app/public/tmp/'.$file);
+		$file_path = storage_path('app/public/archive/'.$file);
+
+		// Проверяем, существует ли файл
+		if(File::exists($file_tmp_path)) {
+			// Удаляем файл
+			File::delete($file_tmp_path);
+		}
+
+		// Проверяем, существует ли файл
+		if(File::exists($file_path)) {
+			// Удаляем файл
+			File::delete($file_path);
+		}
+
+		$company -> data = '';
+		$company -> save();
+
+		return redirect() -> route('home.index') -> with('success', 'Последний отчёт успешно удалён!');
+	}
+
 	private function getRussianMonthName($date) {
 		$monthNumber = date('n', strtotime($date));
 		$months = [

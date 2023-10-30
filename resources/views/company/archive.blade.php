@@ -2,6 +2,12 @@
 
 @section('title', 'Создать Сотрудника')
 
+@section('nav_right')
+	<li class="nav-item">
+		<a class="btn btn-danger" aria-current="page" href="{{route('company.remove_last_report', compact('company'))}}">Удалить последний отчёт</a>
+	</li>
+@endsection
+
 @section('content')
 	<h1 class="text-center my-2">
 		Архив {{$company -> name}}

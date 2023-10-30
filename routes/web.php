@@ -112,6 +112,8 @@ Route::group(['middleware' => 'admin'], function () {
 	/// ArchiveController
 
 	Route::get('/company/{company}/archive', [ArchiveController::class, 'archive']) -> name('company.archive');
+
+	Route::get('/company/{company}/archive/remove_last_report', [ArchiveController::class, 'remove_last_report']) -> name('company.remove_last_report');
 });
 
 Route::group(['middleware' => 'user'], function () {
