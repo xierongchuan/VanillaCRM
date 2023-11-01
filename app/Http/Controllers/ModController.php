@@ -147,7 +147,7 @@ class ModController extends Controller
 			'Clear Sales' => false
 		];
 
-		$permission_data = (Permission::where('value', 'report_xlsx') -> first()) -> data;
+		$permission_data = (Permission::where('com_id', $company -> id) -> where('value', 'report_xlsx') -> first()) -> data;
 
 		$lines = explode(PHP_EOL, $permission_data);
 		$rule = [];
