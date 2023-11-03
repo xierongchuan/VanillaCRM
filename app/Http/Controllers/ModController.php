@@ -190,7 +190,7 @@ class ModController extends Controller
 		$sheet_data['Факт Кол-во'] = $wsheet -> getCell($rule['Факт Кол-во']) -> getCalculatedValue();
 		$sheet_data['Факт Сумм'] = $wsheet -> getCell($rule['Факт Сумм']) -> getCalculatedValue();
 		$sheet_data['2 Договора'] = $wsheet -> getCell($rule['2 Договора']) -> getCalculatedValue();
-		$sheet_data['% от кол-во'] = round(($wsheet -> getCell($rule['2 Конверсия']) -> getCalculatedValue() * 100), 2);
+		$sheet_data['% от кол-во'] = round(($wsheet -> getCell($rule['% от кол-во']) -> getCalculatedValue() * 100), 2);
 
 		$num1 = (int)$wsheet -> getCell($rule['Факт Кол-во']) -> getCalculatedValue();
 		$num2 = (int)$wsheet -> getCell($rule['2 Договора']) -> getCalculatedValue();
