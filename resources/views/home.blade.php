@@ -38,7 +38,6 @@
 									<div class="mx-sm-1"></div>
 									<h4>{{date("d.m.Y H:i", strtotime($data['Дата']))}}</h4>
 								</div>
-
 							</div>
 
 							<div class="bg-body-tertiary rounded p-3 mb-2">

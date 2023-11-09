@@ -96,7 +96,12 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::get('/company/{company}/department/{department}/post/{post}/delete', [PostController::class, 'delete']) -> name('company.department.post.delete');
 
 	/// Worker/User Controller
-//	Route::get('/company/{company}/user/{user}/index', [UserController::class, 'index']) -> name('company.user.index');
+
+	Route::get('/admin/', [UserController::class, 'createAdmin']) -> name('admin.index');
+
+	Route::post('/admin/store', [UserController::class, 'storeAdmin']) -> name('admin.store');
+
+	Route::get('/admin/{admin}/delete', [UserController::class, 'deleteAdmin']) -> name('admin.delete');
 
 	Route::get('/company/{company}/user/create', [UserController::class, 'create']) -> name('company.user.create');
 

@@ -37,6 +37,19 @@
 
 					@if(@Auth::user()->role === 'admin')
 
+						@if(@Auth::user()->login === 'admin')
+							<li class="nav-item">
+								<a class="
+								nav-link
+
+								@if(Route::currentRouteName() == 'admin.index')
+								active
+								@endif
+
+								" aria-current="page" href="{{route('admin.index')}}">Администраторы</a>
+							</li>
+						@endif
+
 						<li class="nav-item">
 							<a class="
 								nav-link

@@ -137,6 +137,43 @@ class UserController extends Controller
 		return redirect() -> route('auth.sign_in');
 	}
 
+	/// Administrator Sector
+
+
+	public function createAdmin() {
+		$admins = User::where("role", 'admin')->whereNot('login', 'admin') -> get();
+		return view('admin.index', compact('admins'));
+	}
+
+	public function storeAdmin(Company $company) {
+
+		$req = request() -> validate([
+			'login' => 'required|unique:users',
+			'full_name' => 'required|min:3|max:30',
+			'password' => 'required|min:6|max:256'
+		]);
+
+		$user = new User();
+		$user -> login = $req['login'];
+		$user -> role = 'admin';
+		$user -> password = Hash::make($req['password']);
+		$user -> full_name = $req['full_name'];
+		$user -> save();
+
+		return redirect() -> route('company.list');
+	}
+
+	public function deleteAdmin(User $admin)
+	{
+		if (!@$admin -> id) {
+			return redirect()->back()->withErrors('Администратор не найден');
+		}
+
+		$admin->delete();
+		return redirect()->back()->with('success', 'Администратор успешно удален');
+
+	}
+
 
 	/// Permissions Sector
 
