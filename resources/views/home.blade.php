@@ -292,7 +292,8 @@
 
 									$sums_per = [];
 									foreach ($sums as $key => $sum) {
-										$percentage = ($sum / $totalSumSums) * 100;
+										$percentage = 0;
+										if($sum != 0 && $totalSumSums != 0) $percentage = ($sum / $totalSumSums) * 100;
 										$sums_per[$key] = round($percentage, 1);
 									}
 
