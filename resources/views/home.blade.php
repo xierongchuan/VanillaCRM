@@ -294,7 +294,7 @@
 									foreach ($sums as $key => $sum) {
 										$percentage = 0;
 										if($sum != 0 && $totalSumSums != 0) $percentage = ($sum / $totalSumSums) * 100;
-										$sums_per[$key] = round($percentage, 1);
+										$sums_per[$key] = round($percentage, 2);
 									}
 
 									$counts = [$data['5 Через банк шт'], $data['5 Через лизинг шт']];
@@ -302,7 +302,8 @@
 
 									$count_per = [];
 									foreach ($counts as $key => $sum) {
-										$percentage = ($sum / $totalSumCounts) * 100;
+										$percentage = 0;
+										if($sum != 0 && $totalSumCounts != 0) $percentage = ($sum / $totalSumCounts) * 100;
 										$count_per[$key] = round($percentage, 1);
 									}
 								@endphp
