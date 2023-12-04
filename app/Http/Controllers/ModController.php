@@ -44,46 +44,7 @@ class ModController extends Controller
 
 	public function report_xlsx(Request $request) {
 
-		if($request -> close_month && !$request->hasFile('file')) {
-			$company = Company::find(Auth::user() -> com_id);
-			$file_name = (string)@((array)json_decode($company -> data))['Last File'];
-//			if(empty($file_name)) return redirect()->back()->withErrors('Месяц и так закрыт!');
-			$sourcePath = storage_path('app/public/tmp/'.$file_name); // Путь к оригинальному файлу
-			$destinationPath = storage_path('app/public/archive/'.$file_name); // Путь к копии файла
-			// Проверяем, существует ли файл в исходной папке
-			if (File::exists($sourcePath)) {
-				// Копируем файл
-				File::copy($sourcePath, $destinationPath);
-
-				return redirect()->back()->with('success', 'Месяц успешно закрыт');
-			}
-
-			return redirect()->back()->withErrors('Месяц уже был закрыт');
-//			Storage::move('public/tmp/' . $file_name, 'public/archive/' . $file_name);
-		}
-
-		$request->validate([
-			'file' => 'required|max:51200',
-			'note' => 'max:5500'
-		]);
-
-		if($request -> file('file') ->getMimeType() !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") return redirect()->back()->withErrors('Файл должен быть типа xlsx (Exel).');
-
 		$inputData = request()->all(); // Получаем все данные из запроса
-
-		$company = Company::find(Auth::user() -> com_id);
-
-		if(!empty($company -> data)) {
-			$com_dat = (array)json_decode($company -> data);
-			if($com_dat['Clear Sales']) {
-				$workers = [];dd("LOH");
-			} else {
-				$workers = (array)((array)json_decode($company -> data))['Продажи'];
-			}
-		} else {
-			$workers = [];
-		}
-
 
 		foreach ($inputData as $key => $value) {
 			if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
@@ -146,6 +107,50 @@ class ModController extends Controller
 
 			'Clear Sales' => false
 		];
+
+		if($request -> close_month && !$request->hasFile('file')) {
+			$company = Company::find(Auth::user() -> com_id);
+			$file_name = (string)@((array)json_decode($company -> data))['Last File'];
+//			if(empty($file_name)) return redirect()->back()->withErrors('Месяц и так закрыт!');
+			$sourcePath = storage_path('app/public/tmp/'.$file_name); // Путь к оригинальному файлу
+			$destinationPath = storage_path('app/public/archive/'.$file_name); // Путь к копии файла
+			// Проверяем, существует ли файл в исходной папке
+			if (File::exists($sourcePath)) {
+				// Копируем файл
+				File::copy($sourcePath, $destinationPath);
+
+				$sheet_data['Clear Sales'] = true;
+				$company -> data = json_encode($sheet_data);
+				$company -> save();
+
+				return redirect()->back()->with('success', 'Месяц успешно закрыт');
+			}
+
+			return redirect()->back()->withErrors('Месяц уже был закрыт');
+//			Storage::move('public/tmp/' . $file_name, 'public/archive/' . $file_name);
+		}
+
+		$request->validate([
+			'file' => 'required|max:51200',
+			'note' => 'max:5500'
+		]);
+
+		if($request -> file('file') ->getMimeType() !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") return redirect()->back()->withErrors('Файл должен быть типа xlsx (Exel).');
+
+
+		$company = Company::find(Auth::user() -> com_id);
+
+		if(!empty($company -> data)) {
+			$com_dat = (array)json_decode($company -> data);
+			if($com_dat['Clear Sales']) {
+				$workers = [];dd("LOH");
+			} else {
+				$workers = (array)((array)json_decode($company -> data))['Продажи'];
+			}
+		} else {
+			$workers = [];
+		}
+
 
 		$permission_data = (Permission::where('com_id', $company -> id) -> where('value', 'report_xlsx') -> first()) -> data;
 
