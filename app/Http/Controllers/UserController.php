@@ -101,7 +101,7 @@ class UserController extends Controller
 		}
 
 		if(@$req['post'] && !Post::where('id', @$req['post'])->exists()) {
-			return redirect()->back()->withErrors('Должность не найдена');
+			return redirect()->back()->withErrors('Должность не найден');
 		}
 
 		if(!empty($req['password'])) $user -> password = Hash::make($req['password']);
@@ -122,7 +122,7 @@ class UserController extends Controller
 		}
 
 		if (!@$user -> id) {
-			return redirect()->back()->withErrors('Сотрудник не найдена');
+			return redirect()->back()->withErrors('Сотрудник не найден');
 		}
 
 		$user->delete();

@@ -46,6 +46,19 @@ class ModController extends Controller
 
 		$inputData = request()->all(); // Получаем все данные из запроса
 
+		$company = Company::find(Auth::user() -> com_id);
+
+		if(!empty($company -> data)) {
+			$com_dat = (array)json_decode($company -> data);
+			if($com_dat['Clear Sales']) {
+				$workers = [];
+			} else {
+				$workers = (array)((array)json_decode($company -> data))['Продажи'];
+			}
+		} else {
+			$workers = [];
+		}
+
 		foreach ($inputData as $key => $value) {
 			if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
 				$workerNumber = $matches[1]; // Извлекаем номер рабочего
@@ -66,7 +79,6 @@ class ModController extends Controller
 				];
 			}
 		}
-
 
 		$sheet_data = [
 			'Дата' => date('Y-m-d H:i:s'),
@@ -136,20 +148,6 @@ class ModController extends Controller
 		]);
 
 		if($request -> file('file') ->getMimeType() !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") return redirect()->back()->withErrors('Файл должен быть типа xlsx (Exel).');
-
-
-		$company = Company::find(Auth::user() -> com_id);
-
-		if(!empty($company -> data)) {
-			$com_dat = (array)json_decode($company -> data);
-			if($com_dat['Clear Sales']) {
-				$workers = [];dd("LOH");
-			} else {
-				$workers = (array)((array)json_decode($company -> data))['Продажи'];
-			}
-		} else {
-			$workers = [];
-		}
 
 
 		$permission_data = (Permission::where('com_id', $company -> id) -> where('value', 'report_xlsx') -> first()) -> data;
