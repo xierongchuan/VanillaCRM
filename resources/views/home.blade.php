@@ -21,7 +21,7 @@
 
 			@php
 
-								$data = (array)json_decode($company -> data);
+				$data = (array)json_decode($company -> data);
 			@endphp
 
 			@if(!empty($data))

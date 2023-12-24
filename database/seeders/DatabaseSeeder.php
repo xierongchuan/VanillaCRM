@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,23 +17,16 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-//         User::factory()->create([
-//					 'login' => 'admin',
-//					 'role' => 'admin',
-//					 'password' => '$2y$10$aUu5mi2aquDAIo97E4fmJOyUqzaiP7B0m3bE.w0Nu8Wtn8GK7SneK',
-//					 'remember_token' => null,
-//					 'created_at' => '2023-09-24 12:26:05',
-//					 'updated_at' => '2023-09-24 12:26:05',
-//         ]);
-
-				// Вставка Администратора сразу после создания таблицы
-				DB::table('users')->insert([
-					'login' => 'admin',
-					'role' => 'admin',
-					'password' => '$2y$10$aUu5mi2aquDAIo97E4fmJOyUqzaiP7B0m3bE.w0Nu8Wtn8GK7SneK',
-					'remember_token' => null,
-					'created_at' => '2023-09-24 12:26:05',
-					'updated_at' => '2023-09-24 12:26:05',
-				]);
+        User::factory()->create([
+					 'login' => 'admin',
+					 'role' => 'admin',
+					 'password' => function() {
+						print 'Введите пароль Администратора';
+						return Hash::make(fgets(STDIN));
+					 },
+					 'remember_token' => null,
+					 'created_at' => '2023-09-24 12:26:05',
+					 'updated_at' => '2023-09-24 12:26:05',
+        ]);
     }
 }
