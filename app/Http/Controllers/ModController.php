@@ -172,18 +172,33 @@ class ModController extends Controller
 				$cell_num = preg_replace('/[A-z]/', '', $cell_address); // Убираем Буквы из адреса
 
 				if(($cell_letter == 'A') && $cell -> getRow() >= 4 && $cell -> getRow() < 35) {
-					$date = date('d.m.Y', Date::excelToTimestamp((int)$cell->getValue()));
-					if($date == date('d.m.Y')) {
-						$sheet_data['Договора'] = $wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue();
-						$sheet_data['Оплата Кол-во'] = $wsheet -> getCell($rule['Оплата Кол-во'].$cell_num) -> getCalculatedValue();
-						$sheet_data['Оплата Сумм'] = $wsheet -> getCell($rule['Оплата Сумм'].$cell_num) -> getCalculatedValue();
-						$sheet_data['Доплата'] = $wsheet -> getCell($rule['Доплата'].$cell_num) -> getCalculatedValue();
-						$sheet_data['Лизинг'] = $wsheet -> getCell($rule['Лизинг'].$cell_num) -> getCalculatedValue();
-						$sheet_data['Всего'] = $wsheet -> getCell($rule['Всего'].$cell_num) -> getCalculatedValue();
+					if(!$request -> close_month) {
+						$date = date('d.m.Y', Date::excelToTimestamp((int)$cell->getValue()));
+						if($date == date('d.m.Y')) {
+							$sheet_data['Договора'] = $wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue();
+							$sheet_data['Оплата Кол-во'] = $wsheet -> getCell($rule['Оплата Кол-во'].$cell_num) -> getCalculatedValue();
+							$sheet_data['Оплата Сумм'] = $wsheet -> getCell($rule['Оплата Сумм'].$cell_num) -> getCalculatedValue();
+							$sheet_data['Доплата'] = $wsheet -> getCell($rule['Доплата'].$cell_num) -> getCalculatedValue();
+							$sheet_data['Лизинг'] = $wsheet -> getCell($rule['Лизинг'].$cell_num) -> getCalculatedValue();
+							$sheet_data['Всего'] = $wsheet -> getCell($rule['Всего'].$cell_num) -> getCalculatedValue();
+						}
+					} else {//if($cell_num > 25) dd((string)$wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue());
+						if((string)$wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue() == '' || $cell_num >= 34) {
+							if($sheet_data['Договора'] == '') {
+								$sheet_data['Договора'] = $wsheet -> getCell($rule['Договора'].($cell_num - 1)) -> getCalculatedValue();
+								$sheet_data['Оплата Кол-во'] = $wsheet -> getCell($rule['Оплата Кол-во'].($cell_num - 1)) -> getCalculatedValue();
+								$sheet_data['Оплата Сумм'] = $wsheet -> getCell($rule['Оплата Сумм'].($cell_num - 1)) -> getCalculatedValue();
+								$sheet_data['Доплата'] = $wsheet -> getCell($rule['Доплата'].($cell_num - 1)) -> getCalculatedValue();
+								$sheet_data['Лизинг'] = $wsheet -> getCell($rule['Лизинг'].($cell_num - 1)) -> getCalculatedValue();
+								$sheet_data['Всего'] = $wsheet -> getCell($rule['Всего'].($cell_num - 1)) -> getCalculatedValue();
+							}
+						}
 					}
 				}
 			}
 		}
+
+		// dd($sheet_data);
 
 		if($sheet_data['Договора'] == '') return redirect()->back()->withErrors('Не найден сегодняшний отчёт');
 
