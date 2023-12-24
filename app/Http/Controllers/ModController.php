@@ -163,6 +163,7 @@ class ModController extends Controller
 
 		$sheet = IOFactory::load($request -> file('file'));
 		$wsheet = $sheet -> getActiveSheet();
+		$date_m = '';
 		foreach($wsheet -> getRowIterator() as $row) {
 			$cellIterate = $row->getCellIterator();
 			$cellIterate -> setIterateOnlyExistingCells(true);
@@ -185,6 +186,7 @@ class ModController extends Controller
 					} else {//if($cell_num > 25) dd((string)$wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue());
 						if((string)$wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue() == '' || $cell_num >= 34) {
 							if($sheet_data['Договора'] == '') {
+								$date_m = date('Y-m-d', Date::excelToTimestamp((int)$wsheet -> getCell('A'.($cell_num - 1)) -> getValue()));
 								$sheet_data['Договора'] = $wsheet -> getCell($rule['Договора'].($cell_num - 1)) -> getCalculatedValue();
 								$sheet_data['Оплата Кол-во'] = $wsheet -> getCell($rule['Оплата Кол-во'].($cell_num - 1)) -> getCalculatedValue();
 								$sheet_data['Оплата Сумм'] = $wsheet -> getCell($rule['Оплата Сумм'].($cell_num - 1)) -> getCalculatedValue();
@@ -301,7 +303,7 @@ class ModController extends Controller
 			}
 
 			// Путь к новому файлу
-			$file_name = $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
+			$file_name = ($date_m != '') ? $company -> name.'_' . $date_m . date('H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx' : $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
 
 			$sheet_data['Last File'] = $file_name;
 
