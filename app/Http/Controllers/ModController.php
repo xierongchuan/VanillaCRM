@@ -303,7 +303,7 @@ class ModController extends Controller
 			}
 
 			// Путь к новому файлу
-			$file_name = ($date_m != '') ? $company -> name.'_' . $date_m . date('H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx' : $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['3 Оплата'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
+			$file_name = ($date_m != '') ? $company -> name.'_' . $date_m . date('H:i:s') . '_' . $sheet_data['5 Cумма'] . '_' . $sheet_data['5 Итог шт'] . '.xlsx' : $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['5 Cумма'] . '_' . $sheet_data['5 Итог шт'] . '.xlsx';
 
 			$sheet_data['Last File'] = $file_name;
 
