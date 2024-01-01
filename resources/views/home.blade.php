@@ -368,21 +368,22 @@
 										Месяц
 									</div>
 
-									<div class="col-7 text-end">
+									<div class="col-4 text-end">
 										Сум
 									</div>
 
 									<div class="col-2 text-end">
 										Шт
 									</div>
+
+									<div class="col-3 text-end">
+										Факт
+									</div>
 								</div>
 
 								@foreach($files_data as $file)
 									@if($file -> company != $company -> name)
 										@continue
-									@endif
-									@if($loop -> iteration > 4)
-										@break
 									@endif
 
 									<div class="my-1 m-auto border rounded py-2 row h4">
@@ -391,14 +392,22 @@
 											<a href="{{$file -> url}}">{{$file -> date}}</a>
 										</div>
 
-										<div class="col-7 text-end">
+										<div class="col-4 text-end">
 											{{$file -> sum}}
 										</div>
 
 										<div class="col-2 text-end">
 											{{$file -> count}}
 										</div>
+
+										<div class="col-3 text-end">
+											{{$file -> fakt}}
+										</div>
 									</div>
+
+									@if($file -> company == $company -> name)
+										@break
+									@endif
 
 								@endforeach
 

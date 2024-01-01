@@ -40,7 +40,8 @@ class HomeController extends Controller
 							'url' => (string)asset($filePath),
 							'date' => $this->getRussianMonthName($file_name_data[1]),
 							'sum' => number_format((int)$file_name_data[3], 0, '', ' '),
-							'count' => number_format((int)$file_name_data[4], 0, '', ' ')
+							'count' => number_format((int)$file_name_data[4], 0, '', ' '),
+							'fakt' => number_format(@(int)$file_name_data[5], 0, '', ' ')
 						];
 
 						// Добавляем URL в массив
@@ -54,7 +55,7 @@ class HomeController extends Controller
 						$last_repor_urls[] = asset($l_r_path_proj);
 					}
 
-					$files_data = array_reverse($files_data);
+					$files_data = array_reverse($files_data);//dd($files_data);
 
 					return view('home', compact('companies', 'files_data', 'last_repor_urls'));
 					break;
