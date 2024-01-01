@@ -18,15 +18,19 @@
 			<div class="my-1 m-auto border rounded py-2 row h4">
 
 				<div class="col-3">
-					Мес
+					Месяц
 				</div>
 
-				<div class="col-7 text-end">
+				<div class="col-4 text-end">
 					Сум
 				</div>
 
 				<div class="col-2 text-end">
 					Шт
+				</div>
+
+				<div class="col-3 text-end">
+					Факт
 				</div>
 			</div>
 
@@ -38,12 +42,17 @@
 						<a href="{{$file -> url}}">{{$file -> date}}</a>
 					</div>
 
-					<div class="col-7 text-end">
+
+					<div class="col-4 text-end">
 						{{$file -> sum}}
 					</div>
 
 					<div class="col-2 text-end">
 						{{$file -> count}}
+					</div>
+
+					<div class="col-3 text-end">
+						{{$file -> fakt}}
 					</div>
 				</div>
 

@@ -26,10 +26,12 @@ class ArchiveController extends Controller
 			// Генерируем данные файла
 			$file_data = [
 				'name' => basename($file),
+				'company' => $file_name_data[0],
 				'url' => (string)asset($filePath),
-				'date' => $file_name_data[1].' '.$file_name_data[2].' '.$this->getRussianMonthName($file_name_data[1]),
+				'date' => $this->getRussianMonthName($file_name_data[1]),
 				'sum' => number_format((int)$file_name_data[3], 0, '', ' '),
-				'count' => number_format((int)$file_name_data[4], 0, '', ' ')
+				'count' => number_format((int)$file_name_data[4], 0, '', ' '),
+				'fakt' => number_format(@(int)$file_name_data[5], 0, '', ' ')
 			];
 
 			// Добавляем URL в массив

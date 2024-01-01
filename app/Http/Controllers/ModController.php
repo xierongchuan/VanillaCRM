@@ -111,6 +111,8 @@ class ModController extends Controller
 			'5 Итог шт' => '',
 			'5 Cумма' => '',
 
+			'Начало отчётов' => '',
+
 			'Заметка' => @$request -> note,
 
 			'Начало списка продаж' => '',
@@ -172,7 +174,7 @@ class ModController extends Controller
 				$cell_letter = preg_replace('/[0-9]/', '', $cell_address); // Убираем цифры из адреса
 				$cell_num = preg_replace('/[A-z]/', '', $cell_address); // Убираем Буквы из адреса
 
-				if(($cell_letter == 'A') && $cell -> getRow() >= 4 && $cell -> getRow() < 35) {
+				if(($cell_letter == 'A') && $cell -> getRow() >= $rule['Начало отчётов'] && $cell -> getRow() < 35) {
 					if(!$request -> close_month) {
 						$date = date('d.m.Y', Date::excelToTimestamp((int)$cell->getValue()));
 						if($date == date('d.m.Y')) {
