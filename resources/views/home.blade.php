@@ -70,7 +70,7 @@
 
 									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
 										<span>
-											<b>Оплата</b>:
+											<b>Оплата всего</b>:
 										</span>
 
 										<span>

@@ -112,6 +112,7 @@ class ModController extends Controller
 			'5 Cумма' => '',
 
 			'Начало отчётов' => '',
+			'Конец отчётов' => '',
 
 			'Заметка' => @$request -> note,
 
@@ -174,7 +175,7 @@ class ModController extends Controller
 				$cell_letter = preg_replace('/[0-9]/', '', $cell_address); // Убираем цифры из адреса
 				$cell_num = preg_replace('/[A-z]/', '', $cell_address); // Убираем Буквы из адреса
 
-				if(($cell_letter == 'A') && $cell -> getRow() >= $rule['Начало отчётов'] && $cell -> getRow() < 35) {
+				if(($cell_letter == 'A') && (int)$cell -> getRow() >= (int)$rule['Начало отчётов'] && (int)$cell -> getRow() <= (int)$rule['Конец отчётов']) {
 					if(!$request -> close_month) {
 						$date = date('d.m.Y', Date::excelToTimestamp((int)$cell->getValue()));
 						if($date == date('d.m.Y')) {
@@ -186,7 +187,7 @@ class ModController extends Controller
 							$sheet_data['Всего'] = $wsheet -> getCell($rule['Всего'].$cell_num) -> getCalculatedValue();
 						}
 					} else {//if($cell_num > 25) dd((string)$wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue());
-						if((string)$wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue() == '' || $cell_num >= 34) {
+						if((string)$wsheet -> getCell($rule['Договора'].$cell_num) -> getCalculatedValue() == '' || $cell_num >= (int)$rule['Конец отчётов']) {
 							if($sheet_data['Договора'] == '') {
 								$date_m = date('Y-m-d', Date::excelToTimestamp((int)$wsheet -> getCell('A'.($cell_num - 1)) -> getValue()));
 								$sheet_data['Договора'] = $wsheet -> getCell($rule['Договора'].($cell_num - 1)) -> getCalculatedValue();
@@ -305,12 +306,15 @@ class ModController extends Controller
 			}
 
 			// Путь к новому файлу
-			$file_name = ($date_m != '') ? $company -> name.'_' . $date_m . date('H:i:s') . '_' . $sheet_data['5 Cумма'] . '_' . $sheet_data['5 Итог шт'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx' : $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['5 Cумма'] . '_' . $sheet_data['5 Итог шт'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
+			$file_name = ($date_m != '')
+			? $company -> name.'_' . $date_m . date('_H:i:s') . '_' . $sheet_data['5 Cумма'] . '_' . $sheet_data['5 Итог шт'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx'
+			: $company -> name.'_' . date('Y-m-d_H:i:s') . '_' . $sheet_data['5 Cумма'] . '_' . $sheet_data['5 Итог шт'] . '_' . $sheet_data['Факт Кол-во'] . '.xlsx';
 
 			$sheet_data['Last File'] = $file_name;
 
 			if($request -> close_month) {
 				$writer->save(storage_path('app/public/archive/'.$file_name), 1);
+				$writer->save(storage_path('app/public/tmp/'.$file_name), 1);
 
 				$sheet_data['Clear Sales'] = true;
 				$company -> data = json_encode($sheet_data);
