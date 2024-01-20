@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Permission;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Field;
 use Illuminate\Http\Request;
 use App\Models\Company;
 
@@ -18,6 +19,7 @@ class CompanyController extends Controller
 		foreach ($companies as $company) {
 			$company->departments = Department::where('com_id', $company->id)->get(); // Получаем департаменты для компании
 			$company->users = User::where('com_id', $company->id)->get(); // Получаем сотрудников для компании
+			$company->fields = Field::where('com_id', $company->id)->get(); // Получаем сотрудников для компании
 			$company->permissions = Permission::where('com_id', $company->id)->get(); // Получаем права для компании
 
 		}

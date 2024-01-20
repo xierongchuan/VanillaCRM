@@ -65,22 +65,40 @@
 					</div>
 
 					<div class="p-2 border border-2 rounded mt-2">
-					<span class="lead">Пользователи: </span><br>
-					@foreach($company -> users as $user)
-						<span>
-							<div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
-								<div class="col-lg-9 lead"><a href="{{route('company.user.update', compact('company', 'user'))}}" class="nav-link">{{$user -> full_name}} ({{$user -> login}})</a></div>
+						<span class="lead">Пользователи: </span><br>
+						@foreach($company -> users as $user)
+							<span>
+								<div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
+									<div class="col-lg-9 lead"><a href="{{route('company.user.update', compact('company', 'user'))}}" class="nav-link">{{$user -> full_name}} ({{$user -> login}})</a></div>
 
-								<div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
-									<a href="{{route('company.user.update', compact('company', 'user'))}}" type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
-								<a href="{{route('company.user.delete', compact('company', 'user'))}}" type="button" data-id="{{$user->id}}" data-name="{{$user->name}}"class="btn btn-danger delete-user"><i class="bi bi-trash"></i></a>
+									<div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
+										<a href="{{route('company.user.update', compact('company', 'user'))}}" type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+									<a href="{{route('company.user.delete', compact('company', 'user'))}}" type="button" data-id="{{$user->id}}" data-name="{{$user->name}}"class="btn btn-danger delete-user"><i class="bi bi-trash"></i></a>
+									</div>
 								</div>
-							</div>
-					</span>
-					@endforeach
+						</span>
+						@endforeach
 
-					<a href="{{route('company.user.create', compact('company'))}}" class="btn btn-success w-100 mt-1">Создать <i class="bi bi-person"></i></a>
-				</div>
+						<a href="{{route('company.user.create', compact('company'))}}" class="btn btn-success w-100 mt-1">Создать <i class="bi bi-person"></i></a>
+					</div>
+
+					<div class="p-2 border border-2 rounded mt-2">
+						<span class="lead">Динамические ссылки: </span><br>
+						@foreach($company -> fields as $field)
+							<span>
+								<div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
+									<div class="col-lg-9 lead"><a href="{{route('company.field.update', compact('company', 'field'))}}" class="nav-link">{{$field -> title}}</a></div>
+
+									<div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
+										<a href="{{route('company.field.update', compact('company', 'field'))}}" type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+										<a href="{{route('company.field.delete', compact('company', 'field'))}}" type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+									</div>
+								</div>
+							</span>
+						@endforeach
+
+						<a href="{{route('company.field.create', compact('company'))}}" class="btn btn-success w-100 mt-1">Создать <i class="bi bi-link"></i></a>
+					</div>
 
 {{--					<script>--}}
 {{--						document.querySelectorAll('.delete-user').forEach(item => {--}}

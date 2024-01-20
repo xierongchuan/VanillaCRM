@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\Permission;
 use App\Models\Post;
+use App\Models\Field;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -18,6 +19,8 @@ class HomeController extends Controller
 			switch (Auth::user() -> role) {
 				case ('admin'):
 					$companies = Company::all();
+
+
 
 					$files = File::allFiles(storage_path('app/public/archive'));
 
@@ -53,6 +56,9 @@ class HomeController extends Controller
 						$l_r_path = storage_path('app/public/tmp/'.$l_r_f_n);
 						$l_r_path_proj = 'storage/app/public' . str_replace(storage_path('app/public'), '', $l_r_path);
 						$last_repor_urls[] = asset($l_r_path_proj);
+
+						$company->fields = Field::where('com_id', $company->id)->get(); // Получаем сотрудников для компании
+
 					}
 
 					$files_data = array_reverse($files_data);//dd($files_data);

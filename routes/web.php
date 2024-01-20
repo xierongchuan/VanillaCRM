@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\FieldController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,6 +113,20 @@ Route::group(['middleware' => 'admin'], function () {
 	Route::post('/company/{company}/user/{user}/modify', [UserController::class, 'modify']) -> name('company.user.modify');
 
 	Route::get('/company/{company}/user/{user}/delete', [UserController::class, 'delete']) -> name('company.user.delete');
+
+
+	/// FieldController
+
+	Route::get('/company/{company}/field/create', [FieldController::class, 'create']) -> name('company.field.create');
+
+	Route::post('/company/{company}/field/store', [FieldController::class, 'store']) -> name('company.field.store');
+
+	Route::get('/company/{company}/field/{field}/update', [FieldController::class, 'update']) -> name('company.field.update');
+
+	Route::post('/company/{company}/field/{field}/modify', [FieldController::class, 'modify']) -> name('company.field.modify');
+
+	Route::get('/company/{company}/field/{field}/delete', [FieldController::class, 'delete']) -> name('company.field.delete');
+
 
 
 	/// ArchiveController

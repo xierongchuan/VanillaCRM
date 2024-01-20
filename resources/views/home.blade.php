@@ -4,15 +4,6 @@
 
 @section('content')
 
-{{--	<h1 class="text-center mt-2 mt-md-4">--}}
-{{--		Добро пожаловать--}}
-{{--		@if(@Auth::user()->role === 'admin')--}}
-{{--			Администратор--}}
-{{--		@elseif(@Auth::user()->role === 'user')--}}
-{{--			Сотрудник <b>{{$company -> name}}</b>--}}
-{{--		@endif--}}
-{{--	</h1>--}}
-
 <div class="m-2"></div>
 
 	@if(isset($companies))
@@ -388,7 +379,7 @@
 
 									<div class="my-1 m-auto border rounded py-2 row h4">
 
-										<div class="col-3 h5">
+										<div class="col-3 h4 m-0">
 											<a href="{{$file -> url}}">{{$file -> date}}</a>
 										</div>
 
@@ -412,6 +403,41 @@
 								@endforeach
 
 							</div>
+
+							<div class="bg-body-tertiary rounded p-3 mb-2">
+
+								<div class="my-1 m-auto p-0 d-flex justify-content-between">
+									<h2>Динамические ссылки</h2>
+								</div>
+
+								<div class="my-1 m-auto border rounded py-2 row h4">
+
+									<div class="col-6">
+										Название
+									</div>
+
+									<div class="col-6 text-end">
+										Ссылка
+									</div>
+								</div>
+
+								@foreach($company -> fields as $field)
+
+									<div class="my-1 m-auto border rounded py-2 row h4">
+
+										<div class="col-6 h4 m-0">
+											{{$field -> title}}
+										</div>
+
+										<div class="col-6 text-end">
+											<a href="{{$field -> link}}">Открыть</a>
+										</div>
+									</div>
+
+								@endforeach
+
+							</div>
+
 
 						</div>
 					</div>
