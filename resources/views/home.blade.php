@@ -407,7 +407,7 @@
 							<div class="bg-body-tertiary rounded p-3 mb-2">
 
 								<div class="my-1 m-auto p-0 d-flex justify-content-between">
-									<h2>Динамические ссылки</h2>
+									<h2>Ссылки</h2>
 								</div>
 
 								<div class="my-1 m-auto border rounded py-2 row h4">

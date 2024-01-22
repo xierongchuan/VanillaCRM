@@ -83,7 +83,7 @@
 					</div>
 
 					<div class="p-2 border border-2 rounded mt-2">
-						<span class="lead">Динамические ссылки: </span><br>
+						<span class="lead">Ссылки: </span><br>
 						@foreach($company -> fields as $field)
 							<span>
 								<div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">

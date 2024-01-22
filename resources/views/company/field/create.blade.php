@@ -6,7 +6,7 @@
 
 	<div class="row justify-content-center">
 		<div class="col-lg-6">
-			<h2 class="text-center mt-4">Создать Динамическую Ссылку в <b>{{$company -> name}}</b></h2>
+			<h2 class="text-center mt-4">Создать Ссылку в <b>{{$company -> name}}</b></h2>
 			<form action="{{route('company.field.store', $company -> id)}}" method="post" class="bg-body-tertiary rounded p-3">
 				@csrf
 

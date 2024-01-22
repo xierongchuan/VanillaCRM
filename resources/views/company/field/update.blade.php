@@ -6,7 +6,7 @@
 
 	<div class="row justify-content-center">
 		<div class="col-lg-6">
-			<h2 class="text-center mt-4">Обновить Динамическую Ссылку в <b>{{$company -> name}}</b></h2>
+			<h2 class="text-center mt-4">Обновить Ссылку в <b>{{$company -> name}}</b></h2>
 			<form action="{{route('company.field.modify', compact('company', 'field'))}}" method="post" class="bg-body-tertiary rounded p-3">
 				@csrf
 
