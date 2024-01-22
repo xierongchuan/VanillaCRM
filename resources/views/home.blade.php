@@ -409,7 +409,7 @@
 								<div class="my-1 m-auto p-0 d-flex justify-content-between">
 									<h2>Ссылки</h2>
 								</div>
-
+{{--
 								<div class="my-1 m-auto border rounded py-2 row h4">
 
 									<div class="col-6">
@@ -419,7 +419,7 @@
 									<div class="col-6 text-end">
 										Ссылка
 									</div>
-								</div>
+								</div> --}}
 
 								@foreach($company -> fields as $field)
 
