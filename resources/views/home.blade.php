@@ -33,7 +33,11 @@
 
 							<div class="bg-body-tertiary rounded p-3 mb-2">
 								<div class="d-flex flex-wrap justify-content-center">
-									<h2>Сегодня</h2>
+									@if ($data['Clear Sales'])
+										<h2>Месяц Закрыт</h2>
+									@else
+										<h2>Сегодня</h2>
+									@endif
 								</div>
 								<div class="col">
 									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
@@ -57,11 +61,22 @@
 
 									</div>
 
+									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+										<span>
+											<b>Лизинг</b>:
+										</span>
+
+										<span>
+											<b>{{$data['Лизинг']}}</b>
+										</span>
+
+									</div>
+
 									<div class="m-3"></div>
 
 									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
 										<span>
-											<b>Оплата всего</b>:
+											<b>Всего</b>:
 										</span>
 
 										<span>
@@ -76,6 +91,16 @@
 
 											<span>
 											<b>{{number_format((int)$data['Доплата'], 0, '', ' ')}}</b>
+										</span>
+									</div>
+
+									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+										<span>
+											<b>Банк</b>:
+										</span>
+
+											<span>
+											<b>{{number_format((int)$data['Всего'], 0, '', ' ')}}</b>
 										</span>
 									</div>
 
