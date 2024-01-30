@@ -18,453 +18,513 @@
 			@if(!empty($data))
 				<div class="row flex-column align-items-center">
 					<div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
-					<span class="d-flex justify-content-between">
-						 <h1 class="m-0 mx-1 perm_panel_switch" panel="perm_panel_{{$company->id}}"><b>{{$company -> name}}</b></h1>
-						<button class="lead perm_panel_switch" panel="perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button>
-					</span>
-						<div id="perm_panel_{{$company->id}}" class="perm-panel w-100">
-							<div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
-								<div class="d-flex flex-wrap justify-content-center">
-									<h4>Дата загрузки <a href="{{$last_repor_urls[$loop->index]}}">отчёта</a>:</h4>
-									<div class="mx-sm-1"></div>
-									<h4>{{date("d.m.Y H:i", strtotime($data['Дата']))}}</h4>
+						<span class="d-flex justify-content-between">
+								<h1 class="m-0 mx-1 perm_panel_switch" panel="perm_panel_{{$company->id}}"><b>{{$company -> name}}</b></h1>
+								{{-- <div class="order-last">
+										<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#perm_panel_{{$company->id}}_stat"><i class="bi bi-database"></i></button>
+										<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#perm_panel_{{$company->id}}_serv"><i class="bi bi-tools"></i></button>
+								</div> --}}
+								<button class="lead perm_panel_switch order-last" panel="perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button>
+						</span>
+
+						<span id="perm_panel_{{$company->id}}">
+							<div id="perm_panel_{{$company->id}}_stat" class="collapse show perm-panel w-100">
+								<div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+									<div class="d-flex flex-wrap justify-content-center">
+										<h4>Дата загрузки <a href="{{$last_repor_urls[$loop->index]}}">отчёта</a>:</h4>
+										<div class="mx-sm-1"></div>
+										<h4>{{date("d.m.Y H:i", strtotime($data['Дата']))}}</h4>
+									</div>
 								</div>
-							</div>
 
-							<div class="bg-body-tertiary rounded p-3 mb-2">
-								<div class="d-flex flex-wrap justify-content-center">
-									@if ($data['Clear Sales'])
-										<h2>Месяц Закрыт</h2>
-									@else
-										<h2>Сегодня</h2>
-									@endif
-								</div>
-								<div class="col">
-									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
-									<span>
-										<b>Договора</b>:
-									</span>
-
-										<span>
-										<b>{{$data['Договора']}}</b>
-									</span>
+								<div class="bg-body-tertiary rounded p-3 mb-2">
+									<div class="d-flex flex-wrap justify-content-center">
+										@if ($data['Clear Sales'])
+											<h2>Месяц Закрыт</h2>
+										@else
+											<h2>Сегодня</h2>
+										@endif
 									</div>
-
-									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+									<div class="col">
+										<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
 										<span>
-											<b>Оплата</b>:
-										</span>
-
-										<span>
-											<b>{{$data['Оплата Кол-во']}}</b>
-										</span>
-
-									</div>
-
-									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
-										<span>
-											<b>Лизинг</b>:
-										</span>
-
-										<span>
-											<b>{{$data['Лизинг']}}</b>
-										</span>
-
-									</div>
-
-									<div class="m-3"></div>
-
-									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
-										<span>
-											<b>Всего</b>:
-										</span>
-
-										<span>
-											<b>{{number_format((int)$data['Оплата Сумм'], 0, '', ' ')}}</b>
-										</span>
-									</div>
-
-									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
-										<span>
-											<b>Доплата</b>:
+											<b>Договора</b>:
 										</span>
 
 											<span>
-											<b>{{number_format((int)$data['Доплата'], 0, '', ' ')}}</b>
+											<b>{{$data['Договора']}}</b>
 										</span>
+										</div>
+
+										<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+											<span>
+												<b>Оплата</b>:
+											</span>
+
+											<span>
+												<b>{{$data['Оплата Кол-во']}}</b>
+											</span>
+
+										</div>
+
+										<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+											<span>
+												<b>Лизинг</b>:
+											</span>
+
+											<span>
+												<b>{{$data['Лизинг']}}</b>
+											</span>
+
+										</div>
+
+										<div class="m-3"></div>
+
+										<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+											<span>
+												<b>Банк</b>:
+											</span>
+
+												<span>
+												<b>{{number_format((int)$data['Всего'], 0, '', ' ')}}</b>
+											</span>
+										</div>
+
+										<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+											<span>
+												<b>Доплата</b>:
+											</span>
+
+												<span>
+												<b>{{number_format((int)$data['Доплата'], 0, '', ' ')}}</b>
+											</span>
+										</div>
+
+										<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+											<span>
+												<b>Всего</b>:
+											</span>
+
+											<span>
+												<b>{{number_format((int)$data['Оплата Сумм'], 0, '', ' ')}}</b>
+											</span>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="bg-body-tertiary rounded p-3 mb-2">
+									<div class="d-flex flex-wrap justify-content-center">
+										<h2 class="mb-0">Этот месяц</h2>
 									</div>
 
-									<div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+									<div class="row">
+
+										<div class="mb-2">
+
+											<div class="col-md-9 mt-1 row m-auto justify-content-between h4">
+
+												<span class="col-md-4 p-2 m-auto h4 d-none d-md-block">
+													Факт
+												</span>
+
+												<span class="col-md-4">
+
+												</span>
+
+
+												<span class="col-md-4 p-2 text-md-end d-none d-md-block">
+													План
+												</span>
+
+											</div>
+
+
+											<div class="col-md-9 my-1 row m-auto justify-content-between h4">
+												<span class="col-md-5 p-2 border border-success rounded d-flex justify-content-between">
+													<b class="d-block d-md-none">Факт:</b>
+													<span><b>{{$data['Факт Кол-во']}}</b> </span>
+												</span>
+
+												<span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+														<b>{{$data['% от кол-во']}}</b> %
+												</span>
+
+
+												<span class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
+													<b class="d-block d-md-none">План:</b>
+													<span><b>{{$data['План Кол-во']}}</b> </span>
+												</span>
+
+											</div>
+
+											<div class="m-3 d-block d-md-none"></div>
+
+											<div class="col-md-9 my-1 row m-auto justify-content-between h4">
+												<span class="col-md-5 p-2 border border-success rounded d-flex justify-content-between">
+													<b class="d-block d-md-none">Факт:</b>
+													<span><b>{{number_format((int)$data['Факт Сумм'], 0, '', ' ')}}</b> </span>
+												</span>
+
+												<span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+														<b>{{$data['% от сумм']}}</b> %
+												</span>
+
+
+												<span class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
+													<b class="d-block d-md-none">План:</b>
+													<span><b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> </span>
+												</span>
+
+											</div>
+
+
+										</div>
+
+										<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
 										<span>
-											<b>Банк</b>:
+											Договора
 										</span>
 
 											<span>
-											<b>{{number_format((int)$data['Всего'], 0, '', ' ')}}</b>
+											<b>{{$data['2 Договора']}}</b> шт
 										</span>
-									</div>
-
-								</div>
-							</div>
-
-							<div class="bg-body-tertiary rounded p-3 mb-2">
-								<div class="d-flex flex-wrap justify-content-center">
-									<h2 class="mb-0">Этот месяц</h2>
-								</div>
-{{--								<div class="d-flex flex-wrap justify-content-center">--}}
-{{--									<hr class="mt-1 mb-2 w-100">--}}
-{{--								</div>--}}
-								<div class="row">
-
-									<div class="mb-2">
-
-										<div class="col-md-9 mt-1 row m-auto justify-content-between h4">
-
-											<span class="col-md-4 p-2 m-auto h4 d-none d-md-block">
-												Факт
-											</span>
-
-											<span class="col-md-4">
-
-											</span>
-
-
-											<span class="col-md-4 p-2 text-md-end d-none d-md-block">
-												План
-											</span>
-
 										</div>
 
+										<div class="col-md-5 my-1 m-auto border border-warning rounded p-2 d-flex justify-content-between lead">
+										<span>
+											Конверсия (CV)
+										</span>
 
-										<div class="col-md-9 my-1 row m-auto justify-content-between h4">
-											<span class="col-md-5 p-2 border border-success rounded d-flex justify-content-between">
-												<b class="d-block d-md-none">Факт:</b>
-												<span><b>{{$data['Факт Кол-во']}}</b> </span>
-											</span>
-
-											<span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
-													<b>{{$data['% от кол-во']}}</b> %
-											</span>
-
-
-											<span class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
-												<b class="d-block d-md-none">План:</b>
-												<span><b>{{$data['План Кол-во']}}</b> </span>
-											</span>
-
+											<span>
+											<b>{{$data['2 Конверсия']}}</b> %
+										</span>
 										</div>
 
-										<div class="m-3 d-block d-md-none"></div>
+									</div>
+								</div>
 
-										<div class="col-md-9 my-1 row m-auto justify-content-between h4">
-											<span class="col-md-5 p-2 border border-success rounded d-flex justify-content-between">
-												<b class="d-block d-md-none">Факт:</b>
-												<span><b>{{number_format((int)$data['Факт Сумм'], 0, '', ' ')}}</b> </span>
-											</span>
+								<div class="bg-body-tertiary rounded p-3 mb-2">
+									<div class="row">
 
-											<span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
-													<b>{{$data['% от сумм']}}</b> %
-											</span>
+										<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead ">
+										<span>
+											Банк
+										</span>
 
-
-											<span class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
-												<b class="d-block d-md-none">План:</b>
-												<span><b>{{number_format((int)$data['План Сумм'], 0, '', ' ')}}</b> </span>
-											</span>
-
+											<span>
+											<b>{{number_format((int)$data['3 Оплата'], 0, '', ' ')}}</b> сум
+										</span>
 										</div>
 
-
-									</div>
-
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
-									<span>
-										Договора
-									</span>
-
+										<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
 										<span>
-										<b>{{$data['2 Договора']}}</b> шт
-									</span>
-									</div>
+											Лизинг
+										</span>
 
-									<div class="col-md-5 my-1 m-auto border border-warning rounded p-2 d-flex justify-content-between lead">
-									<span>
-										Конверсия (CV)
-									</span>
+											<span>
+											<b>{{number_format((int)$data['3 Доплата'], 0, '', ' ')}}</b> сум
+										</span>
+										</div>
 
+										<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
 										<span>
-										<b>{{$data['2 Конверсия']}}</b> %
-									</span>
-									</div>
+											Доплата
+										</span>
 
+											<span>
+											<b>{{number_format((int)$data['3 Лизинг'], 0, '', ' ')}}</b> сум
+										</span>
+										</div>
+
+										<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
+										<span>
+											Остаток
+										</span>
+
+											<span>
+											<b>{{number_format((int)$data['3 Остаток'], 0, '', ' ')}}</b> сум
+										</span>
+										</div>
+
+									</div>
 								</div>
-							</div>
 
-							<div class="bg-body-tertiary rounded p-3 mb-2">
-								<div class="row">
+								<div class="bg-body-tertiary rounded p-3 mb-2">
 
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead ">
-									<span>
-										Банк
-									</span>
+									@php
 
-										<span>
-										<b>{{number_format((int)$data['3 Оплата'], 0, '', ' ')}}</b> сум
-									</span>
-									</div>
-
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
-									<span>
-										Лизинг
-									</span>
-
-										<span>
-										<b>{{number_format((int)$data['3 Доплата'], 0, '', ' ')}}</b> сум
-									</span>
-									</div>
-
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
-									<span>
-										Доплата
-									</span>
-
-										<span>
-										<b>{{number_format((int)$data['3 Лизинг'], 0, '', ' ')}}</b> сум
-									</span>
-									</div>
-
-									<div class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
-									<span>
-										Остаток
-									</span>
-
-										<span>
-										<b>{{number_format((int)$data['3 Остаток'], 0, '', ' ')}}</b> сум
-									</span>
-									</div>
-
-								</div>
-							</div>
-
-							<div class="bg-body-tertiary rounded p-3 mb-2">
-
-								@php
-
-									$managers = $data['Продажи'];
-									$totalSum = 0;
-									foreach ($managers as $manager) {
-										$totalSum += (int)$manager -> month;
-									}
-
-									$percentages = [];
-									foreach ($managers as $key => $manager) {
-										if((int)$manager -> month == 0) {
-											$percentages[$key] = 0;
-											continue;
+										$managers = $data['Продажи'];
+										$totalSum = 0;
+										foreach ($managers as $manager) {
+											$totalSum += (int)$manager -> month;
 										}
 
-										$percentage = ($manager -> month / $totalSum) * 100;
-										$percentages[$key] = round($percentage, 1);
-									}
+										$percentages = [];
+										foreach ($managers as $key => $manager) {
+											if((int)$manager -> month == 0) {
+												$percentages[$key] = 0;
+												continue;
+											}
 
-								@endphp
+											$percentage = ($manager -> month / $totalSum) * 100;
+											$percentages[$key] = round($percentage, 1);
+										}
 
-								<h2>Менеджеры</h2>
+									@endphp
 
-								<table class="table mb-1 rounded overflow-hidden">
-									<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Имя</th>
-										<th scope="col">Сегодня</th>
-										<th scope="col">Мес</th>
-										<th scope="col">%</th>
-									</tr>
-									</thead>
-									<tbody>
+									<h2>Менеджеры</h2>
 
-									@foreach($managers as $key => $manager)
-
+									<table class="table mb-1 rounded overflow-hidden">
+										<thead>
 										<tr>
-											<th scope="row">{{$loop -> iteration}}</th>
-											<td>{{$manager -> name}}</td>
-											<td class="text-nowrap overflow-hidden">{{$manager -> sold}} шт</td>
-											<td class="text-nowrap overflow-hidden">{{$manager -> month}} шт</td>
-											<td class="text-nowrap overflow-hidden">{{$percentages[$key]}} %</td>
+											<th scope="col">#</th>
+											<th scope="col">Имя</th>
+											<th scope="col">Сегодня</th>
+											<th scope="col">Мес</th>
+											<th scope="col">%</th>
 										</tr>
+										</thead>
+										<tbody>
 
-									@endforeach
+										@foreach($managers as $key => $manager)
 
-									</tbody>
-								</table>
+											<tr>
+												<th scope="row">{{$loop -> iteration}}</th>
+												<td>{{$manager -> name}}</td>
+												<td class="text-nowrap overflow-hidden">{{$manager -> sold}} шт</td>
+												<td class="text-nowrap overflow-hidden">{{$manager -> month}} шт</td>
+												<td class="text-nowrap overflow-hidden">{{$percentages[$key]}} %</td>
+											</tr>
 
-							</div>
+										@endforeach
 
-							<div class="bg-body-tertiary rounded p-3 mb-2">
+										</tbody>
+									</table>
 
-								@php
-									$sums = [$data['5 Через банк сумма'], $data['5 Через лизинг сумма']];
-									$totalSumSums = array_sum($sums);
-
-									$sums_per = [];
-									foreach ($sums as $key => $sum) {
-										$percentage = 0;
-										if($sum != 0 && $totalSumSums != 0) $percentage = ($sum / $totalSumSums) * 100;
-										$sums_per[$key] = round($percentage, 2);
-									}
-
-									$counts = [$data['5 Через банк шт'], $data['5 Через лизинг шт']];
-									$totalSumCounts = array_sum($counts);
-
-									$count_per = [];
-									foreach ($counts as $key => $sum) {
-										$percentage = 0;
-										if($sum != 0 && $totalSumCounts != 0) $percentage = ($sum / $totalSumCounts) * 100;
-										$count_per[$key] = round($percentage, 1);
-									}
-								@endphp
-
-								<h2>Реализация</h2>
-
-								<table class="table mb-1 rounded overflow-hidden">
-{{--																	<thead>--}}
-{{--																	<tr>--}}
-{{--																		<th scope="col"></th>--}}
-{{--																		<th scope="col">Сум</th>--}}
-{{--																		<th scope="col">%</th>--}}
-{{--																	</tr>--}}
-{{--																	</thead>--}}
-									<tbody>
-									<tr>
-										<td>Через банк (шт)</td>
-										<td class="text-nowrap overflow-hidden text-end">{{$data['5 Через банк шт']}} </td>
-										<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$count_per[0]}} %</td>
-									</tr>
-									<tr>
-										<td>Через банк (сумма)</td>
-										<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Через банк сумма'], 0, '', ' ')}} </td>
-										<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$sums_per[0]}} %</td>
-									</tr>
-									<tr>
-										<td>Через лизинг (шт)</td>
-										<td class="text-nowrap overflow-hidden text-end">{{$data['5 Через лизинг шт']}} </td>
-										<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$count_per[1]}} %</td>
-									</tr>
-									<tr>
-										<td>Через лизинг (сумма)</td>
-										<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Через лизинг сумма'], 0, '', ' ')}} </td>
-										<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$sums_per[1]}} %</td>
-									</tr>
-									<tr>
-										<td>Итог (шт)</td>
-										<td class="text-nowrap overflow-hidden text-end">{{$data['5 Итог шт']}} </td>
-{{--										<td></td>--}}
-									</tr>
-									<tr>
-										<td>Итог (сумма)</td>
-										<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Cумма'], 0, '', ' ')}} </td>
-{{--										<td></td>--}}
-									</tr>
-									</tbody>
-								</table>
-
-							</div>
-
-							<div class="bg-body-tertiary rounded p-3 mb-2">
-
-								<div class="my-1 m-auto p-0 d-flex justify-content-between">
-									<h2>Прошлые месяцы</h2>
-
-									<a href="{{route('company.archive', compact('company'))}}" class="lead">Архив</a>
 								</div>
 
-								<div class="my-1 m-auto border rounded py-2 row h4">
+								<div class="bg-body-tertiary rounded p-3 mb-2">
 
-									<div class="col-3">
-										Месяц
-									</div>
+									@php
+										$sums = [$data['5 Через банк сумма'], $data['5 Через лизинг сумма']];
+										$totalSumSums = array_sum($sums);
 
-									<div class="col-4 text-end">
-										Сум
-									</div>
+										$sums_per = [];
+										foreach ($sums as $key => $sum) {
+											$percentage = 0;
+											if($sum != 0 && $totalSumSums != 0) $percentage = ($sum / $totalSumSums) * 100;
+											$sums_per[$key] = round($percentage, 2);
+										}
 
-									<div class="col-2 text-end">
-										Шт
-									</div>
+										$counts = [$data['5 Через банк шт'], $data['5 Через лизинг шт']];
+										$totalSumCounts = array_sum($counts);
 
-									<div class="col-3 text-end">
-										Факт
-									</div>
+										$count_per = [];
+										foreach ($counts as $key => $sum) {
+											$percentage = 0;
+											if($sum != 0 && $totalSumCounts != 0) $percentage = ($sum / $totalSumCounts) * 100;
+											$count_per[$key] = round($percentage, 1);
+										}
+									@endphp
+
+									<h2>Реализация</h2>
+
+									<table class="table mb-1 rounded overflow-hidden">
+
+										<tbody>
+										<tr>
+											<td>Через банк (шт)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{$data['5 Через банк шт']}} </td>
+											<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$count_per[0]}} %</td>
+										</tr>
+										<tr>
+											<td>Через банк (сумма)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Через банк сумма'], 0, '', ' ')}} </td>
+											<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$sums_per[0]}} %</td>
+										</tr>
+										<tr>
+											<td>Через лизинг (шт)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{$data['5 Через лизинг шт']}} </td>
+											<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$count_per[1]}} %</td>
+										</tr>
+										<tr>
+											<td>Через лизинг (сумма)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Через лизинг сумма'], 0, '', ' ')}} </td>
+											<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$sums_per[1]}} %</td>
+										</tr>
+										<tr>
+											<td>Итог (шт)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{$data['5 Итог шт']}} </td>
+										</tr>
+										<tr>
+											<td>Итог (сумма)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Cумма'], 0, '', ' ')}} </td>
+										</tr>
+										</tbody>
+									</table>
+
 								</div>
 
-								@foreach($files_data as $file)
-									@if($file -> company != $company -> name)
-										@continue
-									@endif
+								<div class="bg-body-tertiary rounded p-3 mb-2">
+
+									<div class="my-1 m-auto p-0 d-flex justify-content-between">
+										<h2>Прошлые месяцы</h2>
+
+										<a href="{{route('company.archive', compact('company'))}}" class="lead">Архив</a>
+									</div>
 
 									<div class="my-1 m-auto border rounded py-2 row h4">
 
-										<div class="col-3 h4 m-0">
-											<a href="{{$file -> url}}">{{$file -> date}}</a>
+										<div class="col-3">
+											Месяц
 										</div>
 
 										<div class="col-4 text-end">
-											{{$file -> sum}}
+											Сум
 										</div>
 
 										<div class="col-2 text-end">
-											{{$file -> count}}
+											Шт
 										</div>
 
 										<div class="col-3 text-end">
-											{{$file -> fakt}}
+											Факт
 										</div>
 									</div>
 
-									@if($file -> company == $company -> name)
-										@break
-									@endif
+									@foreach($files_data as $file)
+										@if($file -> company != $company -> name)
+											@continue
+										@endif
 
-								@endforeach
+										<div class="my-1 m-auto border rounded py-2 row h4">
 
-							</div>
+											<div class="col-3 h4 m-0">
+												<a href="{{$file -> url}}">{{$file -> date}}</a>
+											</div>
 
-							<div class="bg-body-tertiary rounded p-3 mb-2">
+											<div class="col-4 text-end">
+												{{$file -> sum}}
+											</div>
 
-								<div class="my-1 m-auto p-0 d-flex justify-content-between">
-									<h2>Ссылки</h2>
+											<div class="col-2 text-end">
+												{{$file -> count}}
+											</div>
+
+											<div class="col-3 text-end">
+												{{$file -> fakt}}
+											</div>
+										</div>
+
+										@if($file -> company == $company -> name)
+											@break
+										@endif
+
+									@endforeach
+
 								</div>
-{{--
-								<div class="my-1 m-auto border rounded py-2 row h4">
 
-									<div class="col-6">
-										Название
+								<div class="bg-body-tertiary rounded p-3 mb-2">
+
+									<div class="my-1 m-auto p-0 d-flex justify-content-between">
+										<h2>Ссылки</h2>
 									</div>
 
-									<div class="col-6 text-end">
-										Ссылка
-									</div>
-								</div> --}}
+									@foreach($company -> fields as $field)
 
-								@foreach($company -> fields as $field)
+										<div class="my-1 m-auto border rounded py-2 row h4">
 
-									<div class="my-1 m-auto border rounded py-2 row h4">
+											<div class="col-6 h4 m-0">
+												{{$field -> title}}
+											</div>
 
-										<div class="col-6 h4 m-0">
-											{{$field -> title}}
+											<div class="col-6 text-end">
+												<a href="{{$field -> link}}">Открыть</a>
+											</div>
 										</div>
 
-										<div class="col-6 text-end">
-											<a href="{{$field -> link}}">Открыть</a>
-										</div>
-									</div>
+									@endforeach
 
-								@endforeach
+								</div>
+
 
 							</div>
 
+							{{-- <div id="perm_panel_{{$company->id}}_serv" class="collapse perm-panel w-100">
+								<div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+									<div class="d-flex flex-wrap justify-content-center">
+										<h4>Дата загрузки <a href="{{$last_repor_urls[$loop->index]}}">отчёта</a>:</h4>
+										<div class="mx-sm-1"></div>
+										<h4>{{date("d.m.Y H:i", strtotime($data['Дата']))}}</h4>
+									</div>
+								</div>
 
-						</div>
+								<div class="bg-body-tertiary rounded p-3 mb-2">
+
+									@php
+										$sums = [$data['5 Через банк сумма'], $data['5 Через лизинг сумма']];
+										$totalSumSums = array_sum($sums);
+
+										$sums_per = [];
+										foreach ($sums as $key => $sum) {
+											$percentage = 0;
+											if($sum != 0 && $totalSumSums != 0) $percentage = ($sum / $totalSumSums) * 100;
+											$sums_per[$key] = round($percentage, 2);
+										}
+
+										$counts = [$data['5 Через банк шт'], $data['5 Через лизинг шт']];
+										$totalSumCounts = array_sum($counts);
+
+										$count_per = [];
+										foreach ($counts as $key => $sum) {
+											$percentage = 0;
+											if($sum != 0 && $totalSumCounts != 0) $percentage = ($sum / $totalSumCounts) * 100;
+											$count_per[$key] = round($percentage, 1);
+										}
+									@endphp
+
+									<h2>Реализация</h2>
+
+									<table class="table mb-1 rounded overflow-hidden">
+
+										<tbody>
+										<tr>
+											<td>Через банк (шт)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{$data['5 Через банк шт']}} </td>
+											<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$count_per[0]}} %</td>
+										</tr>
+										<tr>
+											<td>Через банк (сумма)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Через банк сумма'], 0, '', ' ')}} </td>
+											<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$sums_per[0]}} %</td>
+										</tr>
+										<tr>
+											<td>Через лизинг (шт)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{$data['5 Через лизинг шт']}} </td>
+											<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$count_per[1]}} %</td>
+										</tr>
+										<tr>
+											<td>Через лизинг (сумма)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Через лизинг сумма'], 0, '', ' ')}} </td>
+											<td class="text-nowrap overflow-hidden text-end" style="width:4rem;">{{$sums_per[1]}} %</td>
+										</tr>
+										<tr>
+											<td>Итог (шт)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{$data['5 Итог шт']}} </td>
+										</tr>
+										<tr>
+											<td>Итог (сумма)</td>
+											<td class="text-nowrap overflow-hidden text-end">{{number_format((int)$data['5 Cумма'], 0, '', ' ')}} </td>
+										</tr>
+										</tbody>
+									</table>
+
+								</div>
+
+
+							</div> --}}
+						</span>
 					</div>
 				</div>
 			@endif
@@ -510,5 +570,34 @@
 
 
 	@endif
+
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+	{{-- <script>
+		document.querySelectorAll('.collapse').forEach(function (collapseEl) {
+			collapseEl.addEventListener('show.bs.collapse', function () {
+				document.querySelectorAll('.collapse.show').forEach(function (openCollapse) {
+					if (openCollapse !== collapseEl) {
+						new bootstrap.Collapse(openCollapse, { toggle: false }).hide();
+					}
+				});
+			});
+		});
+	</script> --}}
+
+	<script>
+		var collapseList = document.querySelectorAll('.collapse');
+
+		collapseList.forEach(function (collapseEl) {
+			collapseEl.addEventListener('show.bs.collapse', function () {
+				collapseList.forEach(function (otherCollapse) {
+					if (otherCollapse !== collapseEl) {
+						new bootstrap.Collapse(otherCollapse, { toggle: false }).hide();
+					}
+				});
+			});
+		});
+	</script>
+
 
 @endsection
