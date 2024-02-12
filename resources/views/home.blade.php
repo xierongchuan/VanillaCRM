@@ -20,15 +20,22 @@
 					<div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
 						<span class="d-flex justify-content-between">
 								<h1 class="m-0 mx-1 perm_panel_switch" panel="perm_panel_{{$company->id}}"><b>{{$company -> name}}</b></h1>
-								{{-- <div class="order-last">
-										<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#perm_panel_{{$company->id}}_stat"><i class="bi bi-database"></i></button>
-										<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#perm_panel_{{$company->id}}_serv"><i class="bi bi-tools"></i></button>
-								</div> --}}
-								<button class="lead perm_panel_switch order-last" panel="perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button>
+								<div class="order-last lead">
+										<button class="btn btn-primary slider_prev_button" section-id="{{$company->id}}"> < </button>
+										<button class="btn btn-primary slider_next_button" section-id="{{$company->id}}"> > </button>
+										<button class="btn btn-danger perm_panel_switch" data-bs-toggle="collapse" panel="perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button>
+								</div>
+								{{-- <button class="lead perm_panel_switch order-last" panel="perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button> --}}
 						</span>
 
 						<span id="perm_panel_{{$company->id}}">
-							<div id="perm_panel_{{$company->id}}_stat" class="collapse show perm-panel w-100">
+							<div id="stat_perm_panel_{{$company->id}}" class="collapse show perm-panel w-100">
+								<div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+									<div class="d-flex flex-wrap justify-content-center">
+										<h2>Ежедневная статистика</h2>
+									</div>
+								</div>
+
 								<div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
 									<div class="d-flex flex-wrap justify-content-center">
 										<h4>Дата загрузки <a href="{{$last_repor_urls[$loop->index]}}">отчёта</a>:</h4>
@@ -451,7 +458,13 @@
 
 							</div>
 
-							{{-- <div id="perm_panel_{{$company->id}}_serv" class="collapse perm-panel w-100">
+							<div id="serv_perm_panel_{{$company->id}}" class="collapse perm-panel w-100">
+								<div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+									<div class="d-flex flex-wrap justify-content-center">
+										<h2>Отчёт сервис</h2>
+									</div>
+								</div>
+
 								<div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
 									<div class="d-flex flex-wrap justify-content-center">
 										<h4>Дата загрузки <a href="{{$last_repor_urls[$loop->index]}}">отчёта</a>:</h4>
@@ -523,7 +536,7 @@
 								</div>
 
 
-							</div> --}}
+							</div>
 						</span>
 					</div>
 				</div>
@@ -570,34 +583,6 @@
 
 
 	@endif
-
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-	{{-- <script>
-		document.querySelectorAll('.collapse').forEach(function (collapseEl) {
-			collapseEl.addEventListener('show.bs.collapse', function () {
-				document.querySelectorAll('.collapse.show').forEach(function (openCollapse) {
-					if (openCollapse !== collapseEl) {
-						new bootstrap.Collapse(openCollapse, { toggle: false }).hide();
-					}
-				});
-			});
-		});
-	</script> --}}
-
-	<script>
-		var collapseList = document.querySelectorAll('.collapse');
-
-		collapseList.forEach(function (collapseEl) {
-			collapseEl.addEventListener('show.bs.collapse', function () {
-				collapseList.forEach(function (otherCollapse) {
-					if (otherCollapse !== collapseEl) {
-						new bootstrap.Collapse(otherCollapse, { toggle: false }).hide();
-					}
-				});
-			});
-		});
-	</script>
 
 
 @endsection

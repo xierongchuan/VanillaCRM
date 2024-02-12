@@ -14,16 +14,16 @@
 		@foreach($companies as $company)
 			<div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
 				<div class="d-flex justify-content-between mx-2">
-					<h2 class="perm_panel_switch" panel="perm_panel_{{$company->id}}" style="font-size: calc(1.605rem + .66vw);margin-top: 0.1rem;"><b>{{$company -> name}}</b></h2>
+					<h2 class="perm_panel_switch mb-0 mt-1" panel="st_perm_panel_{{$company->id}}" style="font-size: calc(1.605rem + .66vw);margin-top: 0.1rem;"><b>{{$company -> name}}</b></h2>
 
-					<div class="btn-group align-items-center col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
+					<div class="btn-group align-items-center col-lg-3 p-0 mb-0" role="group" aria-label="Basic mixed styles example">
 						<a href="{{route('company.update', $company -> id)}}" type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
 						<a href="{{route('company.delete', $company -> id)}}" type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
-						<button class="btn btn-primary perm_panel_switch" panel="perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button>
+						<button class="btn btn-primary perm_panel_switch" panel="st_perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button>
 					</div>
 				</div>
 
-				<div id="perm_panel_{{$company->id}}" class="perm-panel-list w-100">
+				<div id="st_perm_panel_{{$company->id}}" class="perm-panel-list w-100">
 					<div class="p-2 border border-2 rounded">
 						<span class="lead">Отделы: </span><br>
 						@foreach($company -> departments as $department)
