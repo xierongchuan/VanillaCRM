@@ -9,5 +9,5 @@ class Temp extends Model
 {
     use HasFactory;
 
-		protected $table = 'temp';
+    protected $table = 'temp';
 }

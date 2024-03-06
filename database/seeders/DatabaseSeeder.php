@@ -18,15 +18,15 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
         User::factory()->create([
-					 'login' => 'admin',
-					 'role' => 'admin',
-					 'password' => function() {
-						print 'Введите пароль Администратора';
-						return Hash::make(fgets(STDIN));
-					 },
-					 'remember_token' => null,
-					 'created_at' => '2023-09-24 12:26:05',
-					 'updated_at' => '2023-09-24 12:26:05',
+            'login' => 'admin',
+            'role' => 'admin',
+            'password' => function () {
+                print 'Введите пароль Администратора';
+                return Hash::make(fgets(STDIN));
+            },
+            'remember_token' => null,
+            'created_at' => '2023-09-24 12:26:05',
+            'updated_at' => '2023-09-24 12:26:05',
         ]);
     }
 }

@@ -1,156 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<title>{{config('app.name')}} - @yield('title')</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name') }} - @yield('title')</title>
 
-	{{-- Import Styles --}}
-	@vite(['resources/sass/app.scss'])
+    {{-- Import Styles --}}
+    @vite(['resources/sass/app.scss'])
 
-	@yield('includes')
+    @yield('includes')
 
 </head>
-<body data-bs-theme="{{session('theme') ?? 'dark'}}">
+
+<body data-bs-theme="{{ session('theme') ?? 'dark' }}">
 <header>
-	<nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
-		<div class="container">
-			<a class="navbar-brand" href="{{route('home.index')}}"> {{config('app.name')}}</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item">
-						<a class="
+    <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
+        <div class="container">
+            <a class="navbar-brand" href="{{ route('home.index') }}"> {{ config('app.name') }}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="
 								nav-link
 
-								@if(Route::currentRouteName() == 'home.index')
-								active
-								@endif
+								@if (Route::currentRouteName() == 'home.index') active @endif
 
-								" aria-current="page" href="{{route('home.index')}}">Главная</a>
-					</li>
+								"
+                           aria-current="page" href="{{ route('home.index') }}">Главная</a>
+                    </li>
 
 
-					@if(@Auth::user()->role === 'admin')
+                    @if (@Auth::user()->role === 'admin')
 
-						@if(@Auth::user()->login === 'admin')
-							<li class="nav-item">
-								<a class="
+                        @if (@Auth::user()->login === 'admin')
+                            <li class="nav-item">
+                                <a class="
 								nav-link
 
-								@if(Route::currentRouteName() == 'admin.index')
-								active
-								@endif
+								@if (Route::currentRouteName() == 'admin.index') active @endif
 
-								" aria-current="page" href="{{route('admin.index')}}">Администраторы</a>
-							</li>
-						@endif
+								"
+                                   aria-current="page" href="{{ route('admin.index') }}">Администраторы</a>
+                            </li>
+                        @endif
 
-						<li class="nav-item">
-							<a class="
+                        <li class="nav-item">
+                            <a class="
 								nav-link
 
-								@if(Route::currentRouteName() == 'company.list')
-								active
-								@endif
+								@if (Route::currentRouteName() == 'company.list') active @endif
 
-								" aria-current="page" href="{{route('company.list')}}">Настройки</a>
-						</li>
+								"
+                               aria-current="page" href="{{ route('company.list') }}">Настройки</a>
+                        </li>
 
+                    @endif
 
-
-					@endif
-
-					@if(@Auth::user()->role === 'user')
-						<li class="nav-item">
-							<a class="
+                    @if (@Auth::user()->role === 'user')
+                        <li class="nav-item">
+                            <a class="
 								nav-link
 
-								@if(Route::currentRouteName() == 'user.permission')
-								active
-								@endif
+								@if (Route::currentRouteName() == 'user.permission') active @endif
 
-								" aria-current="page" href="{{route('user.permission')}}">Задачи</a>
-						</li>
-					@endif
+								"
+                               aria-current="page" href="{{ route('user.permission') }}">Задачи</a>
+                        </li>
+                    @endif
 
-				</ul>
+                </ul>
 
 
-				<ul class="d-flex navbar-nav mb-2 mb-lg-0">
-					@yield('nav_right')
+                <ul class="d-flex navbar-nav mb-2 mb-lg-0">
+                    @yield('nav_right')
 
-					@hasSection('nav_right')
-						<div class="vr mx-1  mr-2 d-none d-lg-block"></div>
-					@endif
+                    @hasSection('nav_right')
+                        <div class="vr mx-1  mr-2 d-none d-lg-block"></div>
+                    @endif
 
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							Тема
-						</a>
-						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="{{route('theme.switch', 'light')}}">Яркая</a></li>
-							<li><a class="dropdown-item" href="{{route('theme.switch', 'dark')}}">Тёмная</a></li>
-						</ul>
-					</li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Тема
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('theme.switch', 'light') }}">Яркая</a></li>
+                            <li><a class="dropdown-item" href="{{ route('theme.switch', 'dark') }}">Тёмная</a></li>
+                        </ul>
+                    </li>
 
-					@if(!Auth::check())
-						<li class="nav-item">
-							<a class="
+                    @if (!Auth::check())
+                        <li class="nav-item">
+                            <a class="
 									nav-link
 
-									@if(Route::currentRouteName() == 'auth.sign_in')
-									active
-									@endif
+									@if (Route::currentRouteName() == 'auth.sign_in') active @endif
 
-									" aria-current="page" href="{{route('auth.sign_in')}}">Войти</a>
-						</li>
-					@else
-						<li class="nav-item">
-							<a class="nav-link" aria-current="page" href="{{route('auth.logout')}}">Выйти</a>
-						</li>
-					@endif
+									"
+                               aria-current="page" href="{{ route('auth.sign_in') }}">Войти</a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{{ route('auth.logout') }}">Выйти</a>
+                        </li>
+                    @endif
 
-				</ul>
+                </ul>
 
-			</div>
-		</div>
-	</nav>
+            </div>
+        </div>
+    </nav>
 </header>
 
 <main class="container">
 
-	@if (Session::has('success'))
-		<div class="alert alert-success mt-3">
-			<ul>
-				<li>{{ Session::get('success') }}</li>
-			</ul>
-		</div>
-	@endif
+    @if (Session::has('success'))
+        <div class="alert alert-success mt-3">
+            <ul>
+                <li>{{ Session::get('success') }}</li>
+            </ul>
+        </div>
+    @endif
 
-	@if (Session::has('warning'))
-		<div class="alert alert-warning mt-3">
-			<ul>
-				<li>{{ Session::get('warning') }}</li>
-			</ul>
-		</div>
-	@endif
+    @if (Session::has('warning'))
+        <div class="alert alert-warning mt-3">
+            <ul>
+                <li>{{ Session::get('warning') }}</li>
+            </ul>
+        </div>
+    @endif
 
-	@if ($errors->any())
-		<div class="alert alert-danger mt-3">
-			<ul>
-				@foreach ($errors->all() as $error)
-					<li>{{ $error }}</li>
-				@endforeach
-			</ul>
-		</div>
-	@endif
+    @if ($errors->any())
+        <div class="alert alert-danger mt-3">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-	@yield('content')
+    @yield('content')
 
 </main>
 
@@ -159,12 +157,13 @@
 </footer>
 
 {{-- Import JavaScript --}}
-@if(@Auth::user() -> role === 'admin')
-	@vite(['resources/js/admin.js'])
-@elseif(@Auth::user() -> role === 'user')
-	@vite(['resources/js/user.js'])
+@if (@Auth::user()->role === 'admin')
+    @vite(['resources/js/admin.js'])
+@elseif(@Auth::user()->role === 'user')
+    @vite(['resources/js/user.js'])
 @else
-	@vite(['resources/js/default.js'])
+    @vite(['resources/js/default.js'])
 @endif
 </body>
+
 </html>

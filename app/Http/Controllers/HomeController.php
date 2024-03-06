@@ -7,17 +7,20 @@ use App\Models\Department;
 use App\Models\Permission;
 use App\Models\Post;
 use App\Models\Field;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
 	public function index()
 	{
-		if(Auth::check()){
-			switch (Auth::user() -> role) {
-				case ('admin'):
+		if (Auth::check()) {
+			switch (Auth::user()->role) {
+				case('admin'):
 					$companies = Company::all();
 
 
@@ -30,6 +33,10 @@ class HomeController extends Controller
 					$files_data = [];
 					$last_repor_urls = [];
 
+
+					$srv_reps = [];
+
+
 					// Перебираем каждый файл и получаем его URL
 					foreach ($files as $file) {
 						// Получаем путь к файлу относительно public директории
@@ -40,43 +47,105 @@ class HomeController extends Controller
 						$file_data = [
 							'name' => basename($file),
 							'company' => $file_name_data[0],
-							'url' => (string)asset($filePath),
+							'url' => (string) asset($filePath),
 							'date' => $this->getRussianMonthName($file_name_data[1]),
-							'sum' => number_format((int)$file_name_data[3], 0, '', ' '),
-							'count' => number_format((int)$file_name_data[4], 0, '', ' '),
-							'fakt' => number_format(@(int)$file_name_data[5], 0, '', ' ')
+							'sum' => number_format((int) $file_name_data[3], 0, '', ' '),
+							'count' => number_format((int) $file_name_data[4], 0, '', ' '),
+							'fakt' => number_format(@(int) $file_name_data[5], 0, '', ' ')
 						];
 
 						// Добавляем URL в массив
-						$files_data[] = (object)$file_data;
+						$files_data[] = (object) $file_data;
 					}
 
 					foreach ($companies as $company) {
-						$l_r_f_n = (string)@((array)json_decode($company -> data))['Last File'];
-						$l_r_path = storage_path('app/public/tmp/'.$l_r_f_n);
+						$l_r_f_n = (string) @((array) json_decode($company->data))['Last File'];
+						$l_r_path = storage_path('app/public/tmp/' . $l_r_f_n);
 						$l_r_path_proj = 'storage/app/public' . str_replace(storage_path('app/public'), '', $l_r_path);
 						$last_repor_urls[] = asset($l_r_path_proj);
 
 						$company->fields = Field::where('com_id', $company->id)->get(); // Получаем сотрудников для компании
 
+						$startDate = now()->startOfMonth(); // Начало текущего месяца
+						$endDate = now()->endOfMonth(); // Конец текущего месяца
+
+						$companyId = $company->id;
+
+						// $result = json_decode(DB::table('reports')
+						// 	->select(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.dop")) AS UNSIGNED)) as dop_sum'))
+						// 	->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.now")) AS UNSIGNED)) as now_sum'))
+						// 	->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.to")) AS UNSIGNED)) as to_sum'))
+						// 	->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.kuz")) AS UNSIGNED)) as kuz_sum'))
+						// 	->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.store")) AS UNSIGNED)) as store_sum'))
+						// 	->where('for_date', '>=', $startDate)
+						// 	->where('for_date', '<=', $endDate)
+						// 	->where('type', 'report_service')
+						// 	->where('com_id', $companyId)
+						// 	->get())[0];
+
+						$latestReport = DB::table('reports')
+							->where('type', 'report_service')
+							->where('com_id', $companyId)
+							->orderByDesc('for_date')
+							->first();
+
+						if ($latestReport == null) {
+							$srv_rep = [
+								'dop' => 0,
+								'now' => 0,
+								'to' => 0,
+								'kuz' => 0,
+								'store' => 0,
+								'SUM' => (0),
+								'for_date' => null,
+								'created_at' => null
+							];
+							$srv_reps[$company->id] = $srv_rep;
+							continue;
+						}
+
+						$result = json_decode($latestReport->data);
+
+						// Преобразуем результат в массив
+						$srv_rep = [
+							'dop' => $result->dop,
+							'now' => $result->now,
+							'to' => $result->to,
+							'kuz' => $result->kuz,
+							'store' => $result->store,
+							'SUM' => (
+								$result->dop +
+								$result->now +
+								$result->to +
+								$result->kuz +
+								$result->store
+							),
+							'for_date' => $latestReport->for_date ?? null,
+							'created_at' => $latestReport->created_at ?? null
+						];
+
+
+						$srv_reps[$company->id] = $srv_rep;
+
 					}
 
 					$files_data = array_reverse($files_data);//dd($files_data);
 
-					return view('home', compact('companies', 'files_data', 'last_repor_urls'));
+
+					return view('home', compact('companies', 'files_data', 'last_repor_urls', 'srv_reps'));
 					break;
 
-				case ('user'):
-					$company = Company::find(Auth::user() -> com_id);
+				case('user'):
+					$company = Company::find(Auth::user()->com_id);
 
-					$department = Department::find(Auth::user() -> dep_id);
+					$department = Department::find(Auth::user()->dep_id);
 
-					$post = Post::find(@Auth::user() -> post_id);
-					$permission_ids = (array)json_decode(@$post -> permission);
-					$permissions = Permission::whereIn('id', @$permission_ids) -> get();
-					$permission_vals = @$permissions -> pluck('value') -> toArray();
+					$post = Post::find(@Auth::user()->post_id);
+					$permission_ids = (array) json_decode(@$post->permission);
+					$permissions = Permission::whereIn('id', @$permission_ids)->get();
+					$permission_vals = @$permissions->pluck('value')->toArray();
 
-					$data = (object)[
+					$data = (object) [
 						'company' => $company,
 						'department' => $department,
 						'post' => $post,
@@ -96,7 +165,8 @@ class HomeController extends Controller
 
 	}
 
-	private function getRussianMonthName($date) {
+	private function getRussianMonthName($date)
+	{
 		$monthNumber = date('n', strtotime($date));
 		$months = [
 			1 => 'Январь',
