@@ -5,7 +5,7 @@
 @section('nav_right')
     <li class="nav-item">
         <a class="btn btn-danger" aria-current="page"
-           href="">Удалить последний отчёт</a>
+           href="{{route('company.service.remove_last_report', compact('company'))}}">Удалить последний отчёт</a>
     </li>
 @endsection
 

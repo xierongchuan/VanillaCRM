@@ -10,4 +10,13 @@ class Report extends Model
 	use HasFactory;
 
 	protected $table = 'reports';
+
+    protected $fillable = [
+        'com_id',
+        'for_date',
+        'type',
+        'data',
+        'created_at',
+        'updated_at'
+    ];
 }

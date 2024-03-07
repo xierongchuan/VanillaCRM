@@ -66,17 +66,28 @@ class ModController extends Controller
 
 		$forDate = date('Y-m-d H:i:s', strtotime($request->date));
 
-		Report::updateOrInsert(
-			[
-				'com_id' => $company->id,
-				'for_date' => $forDate,
-				'type' => 'report_service'
-			],
-			[
-				'data' => json_encode($data)
-			]
-		);
+        $reportModel = Report::where([
+            'com_id' => $company->id,
+            'for_date' => $forDate,
+            'type' => 'report_service'
+        ])->first();
 
+        if ($reportModel) {
+            // Если запись существует, обновим ее
+            $reportModel->data = json_encode($data);
+            $reportModel->updated_at = now()->toDateTimeString();
+            $reportModel->save();
+        } else {
+            // Если запись не существует, создадим новую
+            Report::create([
+                'com_id' => $company->id,
+                'for_date' => $forDate,
+                'type' => 'report_service',
+                'data' => json_encode($data),
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
+            ]);
+        }
 		return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
 
 	}

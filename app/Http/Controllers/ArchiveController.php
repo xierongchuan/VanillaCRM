@@ -134,7 +134,12 @@ class ArchiveController extends Controller
             $i++;
         }
 
-        $sheet->setCellValue('F33', 'Всего за мес');
+        $sheet->setCellValue('A33', 'Всего за мес');
+        $sheet->setCellValue('B33', '=SUM(B2:B32)');
+        $sheet->setCellValue('C33', '=SUM(C2:C32)');
+        $sheet->setCellValue('D33', '=SUM(D2:D32)');
+        $sheet->setCellValue('E33', '=SUM(E2:E32)');
+        $sheet->setCellValue('F33', '=SUM(F2:F32)');
         $sheet->setCellValue('G33', '=SUM(G2:G32)');
 
         $fileName = $company->name . ' Service Report.xlsx';
@@ -184,6 +189,22 @@ class ArchiveController extends Controller
         }
 
         return view('company.service_archive', compact('company','reports'));
+    }
+
+    public function deleteLastServiceReport(Company $company)
+    {
+        $latestReport = DB::table('reports')
+            ->where('type', 'report_service')
+            ->where('com_id', $company->id)
+            ->orderByDesc('for_date')
+            ->first();
+
+        if ($latestReport) {
+            DB::table('reports')->where('id', $latestReport->id)->delete();
+            return redirect()->route('home.index')->with('success', 'Последний отчёт успешно удалён!');
+        }
+
+        return redirect()->route('home.index')->withErrors( 'Небыло никакого отчёта!');
     }
 
     private function getRussianMonthName($date)

@@ -515,52 +515,73 @@
 
                                     <h4>{{ $srv_reps[$company->id]['created_at'] ?? 'Отчёта нету.' }}</h4>
 
-                                    @if ($srv_reps[$company->id]['created_at'])
+                                    @if ($srv_reps[$company->id]['have'])
                                         <div class="mx-sm-1"></div>
                                         <h4>| На дату: </h4>
                                         <div class="mx-sm-1"></div>
 
-                                        <h4>{{ $srv_reps[$company->id]['for_date'] ?? 'Отчёта нету.' }}</h4>
+                                        <h4>{{ $srv_reps[$company->id]['created_at']}}</h4>
                                     @endif
+                                        <div class="mx-sm-1"></div>
+
+                                    <a href="{{ route('company.service.archive.list', compact('company')) }}"
+                                       class="lead">Архив</a>
                                 </div>
                             </div>
 
                             <div class="bg-body-tertiary rounded p-3 mb-2">
 
-                                <h2>Реализация</h2>
 
                                 <table class="table mb-1 rounded overflow-hidden">
-
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Навзания</th>
+                                            <th scope="col">Отчёт</th>
+                                            <th scope="col">За мес</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
                                             <td>Доп</td>
                                             <td class="text-nowrap overflow-hidden text-end">
                                                 {{ $srv_reps[$company->id]['dop'] }}</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ $srv_reps[$company->id]['dop_sum'] }}</td>
                                         </tr>
                                         <tr>
                                             <td>Текущий</td>
                                             <td class="text-nowrap overflow-hidden text-end">
                                                 {{ $srv_reps[$company->id]['now'] }}</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ $srv_reps[$company->id]['now_sum'] }}</td>
                                         </tr>
                                         <tr>
                                             <td>ТО</td>
                                             <td class="text-nowrap overflow-hidden text-end">
                                                 {{ $srv_reps[$company->id]['to'] }}</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ $srv_reps[$company->id]['to_sum'] }}</td>
                                         </tr>
                                         <tr>
                                             <td>Кузовной</td>
                                             <td class="text-nowrap overflow-hidden text-end">
                                                 {{ $srv_reps[$company->id]['kuz'] }}</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ $srv_reps[$company->id]['kuz_sum'] }}</td>
                                         </tr>
                                         <tr>
                                             <td>Магазин</td>
                                             <td class="text-nowrap overflow-hidden text-end">
                                                 {{ $srv_reps[$company->id]['store'] }}</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ $srv_reps[$company->id]['store_sum'] }}</td>
                                         </tr>
                                         <tr>
                                             <td>Всего</td>
                                             <td class="text-nowrap overflow-hidden text-end">
                                                 {{ $srv_reps[$company->id]['SUM'] }}</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ $srv_reps[$company->id]['SUM_sum'] }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -616,6 +637,105 @@
                             <button type="submit" class="btn btn-primary">Изменить</button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+        @endif
+
+        @if (in_array('report_service', $data->perm))
+            @php
+                $data = (array) json_decode(@$company->data);
+                $workers = $data['Продажи'] ?? [];
+            @endphp
+
+            <div class="row flex-column align-items-center">
+                <div class="w-100">
+                    <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                        <div class="d-flex flex-wrap justify-content-center">
+                            <h2>Отчёт сервис</h2>
+                        </div>
+                    </div>
+
+                    <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                        <div class="d-flex flex-wrap justify-content-center">
+                            @if ($srv_rep['created_at'])
+                                <h4>Дата и время загрузки отчёта:
+                                </h4>
+                                <div class="mx-sm-1"></div>
+                            @endif
+
+                            <h4>{{ $srv_rep['created_at'] ?? 'Отчёта нету.' }}</h4>
+
+                            @if ($srv_rep['have'])
+                                <div class="mx-sm-1"></div>
+                                <h4>| На дату: </h4>
+                                <div class="mx-sm-1"></div>
+
+                                <h4>{{ $srv_rep['created_at']}}</h4>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="bg-body-tertiary rounded p-3 mb-2">
+
+
+                        <table class="table mb-1 rounded overflow-hidden">
+                            <thead>
+                            <tr>
+                                <th scope="col">Навзания</th>
+                                <th scope="col">Отчёт</th>
+                                <th scope="col">За мес</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Доп</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['dop'] }}</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['dop_sum'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Текущий</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['now'] }}</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['now_sum'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>ТО</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['to'] }}</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['to_sum'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Кузовной</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['kuz'] }}</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['kuz_sum'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Магазин</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['store'] }}</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['store_sum'] }}</td>
+                            </tr>
+                            <tr>
+                                <td>Всего</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['SUM'] }}</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ $srv_rep['SUM_sum'] }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
                 </div>
             </div>
 
