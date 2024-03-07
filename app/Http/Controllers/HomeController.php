@@ -196,40 +196,61 @@ class HomeController extends Controller
                         ->orderByDesc('for_date')
                         ->first();
 
+                    if ($latestReport == null) {
+                        $srv_rep = [
+                            'dop' => 0,
+                            'now' => 0,
+                            'to' => 0,
+                            'kuz' => 0,
+                            'store' => 0,
+                            'SUM' => (0),
+                            'dop_sum' => 0,
+                            'now_sum' => 0,
+                            'to_sum' => 0,
+                            'kuz_sum' => 0,
+                            'store_sum' => 0,
+                            'SUM_sum' => (0),
 
-                    $result = json_decode($latestReport->data);
+                            'for_date' => null,
+                            'created_at' => null,
+                            'have' => null
+                        ];
+                    } else {
 
-                    // Преобразуем результат в массив
-                    $srv_rep = [
-                        'dop' => $result->dop,
-                        'now' => $result->now,
-                        'to' => $result->to,
-                        'kuz' => $result->kuz,
-                        'store' => $result->store,
-                        'SUM' => (
-                            $result->dop +
-                            $result->now +
-                            $result->to +
-                            $result->kuz +
-                            $result->store
-                        ),
-                        'dop_sum' => $result_full->dop_sum,
-                        'now_sum' => $result_full->now_sum,
-                        'to_sum' => $result_full->to_sum,
-                        'kuz_sum' => $result_full->kuz_sum,
-                        'store_sum' => $result_full->store_sum,
-                        'SUM_sum' => (
-                            $result_full->dop_sum +
-                            $result_full->now_sum +
-                            $result_full->to_sum +
-                            $result_full->kuz_sum +
-                            $result_full->store_sum
-                        ),
+                        $result = json_decode($latestReport->data);
 
-                        'for_date' => $latestReport->for_date,
-                        'created_at' => $latestReport->created_at,
-                        'have' => true
-                    ];
+                        // Преобразуем результат в массив
+                        $srv_rep = [
+                            'dop' => $result->dop,
+                            'now' => $result->now,
+                            'to' => $result->to,
+                            'kuz' => $result->kuz,
+                            'store' => $result->store,
+                            'SUM' => (
+                                $result->dop +
+                                $result->now +
+                                $result->to +
+                                $result->kuz +
+                                $result->store
+                            ),
+                            'dop_sum' => $result_full->dop_sum,
+                            'now_sum' => $result_full->now_sum,
+                            'to_sum' => $result_full->to_sum,
+                            'kuz_sum' => $result_full->kuz_sum,
+                            'store_sum' => $result_full->store_sum,
+                            'SUM_sum' => (
+                                $result_full->dop_sum +
+                                $result_full->now_sum +
+                                $result_full->to_sum +
+                                $result_full->kuz_sum +
+                                $result_full->store_sum
+                            ),
+
+                            'for_date' => $latestReport->for_date,
+                            'created_at' => $latestReport->created_at,
+                            'have' => true
+                        ];
+                    }
 
                     return view('home', compact('company', 'data', 'srv_rep'));
                     break;

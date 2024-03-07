@@ -94,6 +94,7 @@ class ArchiveController extends Controller
             ->where('for_date', '<=', $endDate)
             ->where('type', 'report_service')
             ->where('com_id', $company->id)
+            ->orderBy('for_date')
             ->get();
 
         // Create a new spreadsheet
@@ -180,7 +181,7 @@ class ArchiveController extends Controller
         foreach ($monthsDataArray as $item) {
             $date = Carbon::parse($item['date']);
             $formattedYear = $date->format('Y');
-            $formattedMonth = $this->getRussianMonthName($date->format('m'));
+            $formattedMonth = $this->getRussianMonthNameStr($date->format('m'));
 
             $reports[$formattedYear . ' ' . $formattedMonth] = [
                 $item['date'],
@@ -196,7 +197,7 @@ class ArchiveController extends Controller
         $latestReport = DB::table('reports')
             ->where('type', 'report_service')
             ->where('com_id', $company->id)
-            ->orderByDesc('for_date')
+            ->orderBy('for_date')
             ->first();
 
         if ($latestReport) {
@@ -223,6 +224,26 @@ class ArchiveController extends Controller
             10 => 'Октябрь',
             11 => 'Ноябрь',
             12 => 'Декабрь'
+        ];
+
+        return $months[$monthNumber];
+    }
+
+    private function getRussianMonthNameStr(string $monthNumber)
+    {
+        $months = [
+            '01' => 'Январь',
+            '02' => 'Февраль',
+            '03' => 'Март',
+            '04' => 'Апрель',
+            '05' => 'Май',
+            '06' => 'Июнь',
+            '07' => 'Июль',
+            '08' => 'Август',
+            '09' => 'Сентябрь',
+            '10' => 'Октябрь',
+            '11' => 'Ноябрь',
+            '12' => 'Декабрь'
         ];
 
         return $months[$monthNumber];

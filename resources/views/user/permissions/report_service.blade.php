@@ -4,7 +4,7 @@
 			<h2 class="perm_panel_switch mx-1" panel="perm_panel_create_worker">Отчёт сервис в <b>{{$data -> company -> name}}</b></h2>
 			<button class="lead perm_panel_switch m-1" panel="perm_panel_create_worker"><i class="bi bi-nintendo-switch"></i></button>
 		</span>
-		<form id="perm_panel_create_worker" action="{{route('mod.report_service', $data -> company -> id)}}" method="post" class="perm-panel-list bg-body-tertiary rounded p-3">
+		<form id="perm_panel_create_worker" action="{{route('mod.report_service', $data -> company -> id)}}" method="post" class="perm-panel-list perm-panel bg-body-tertiary rounded p-3">
 			@csrf
 
 			<div class="form-group mb-2">
