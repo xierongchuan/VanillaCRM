@@ -33,6 +33,16 @@
 				<label for="store">Магазин:</label>
 				<input type="number" min="0" class="form-control" id="store" name="store" value="{{old('store')}}" required>
 			</div>
+
+            <div class="form-group mb-2">
+                <label for="zap">Запчасть:</label>
+                <input type="number" min="0" class="form-control" id="zap" name="zap" value="{{old('zap')}}" required>
+            </div>
+
+            <div class="form-group mb-2">
+                <label for="srv">Сервис:</label>
+                <input type="number" min="0" class="form-control" id="srv" name="srv" value="{{old('srv')}}" required>
+            </div>
 			<div class="d-flex justify-content-center">
 				<button type="submit" class="btn btn-primary">Создать</button>
 			</div>

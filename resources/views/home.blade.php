@@ -613,6 +613,26 @@
                                                 {{ number_format($srv_reps[$company->id]['SUM_sum'], 0, '', ' ') }}
                                             </td>
                                         </tr>
+
+                                        <tr class="border-3 border-white">
+                                            <td>Запчасти</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ number_format($srv_reps[$company->id]['zap'], 0, '', ' ') }}
+                                            </td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ number_format($srv_reps[$company->id]['zap_sum'], 0, '', ' ') }}
+                                            </td>
+                                        </tr>
+
+                                        <tr class="border-3 border-white">
+                                            <td>Сервис</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ number_format($srv_reps[$company->id]['srv'], 0, '', ' ') }}
+                                            </td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ number_format($srv_reps[$company->id]['srv_sum'], 0, '', ' ') }}
+                                            </td>
+                                        </tr>
                                     </tbody>
 
                                 </table>
@@ -771,6 +791,25 @@
                                 </td>
                                 <td class="text-nowrap overflow-hidden text-end">
                                     {{ number_format($srv_rep['SUM_sum'], 0, '', ' ') }}
+                                </td>
+                            </tr>
+                            <tr class="border-3 border-white">
+                                <td>Запчасти</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ number_format($srv_rep['zap'], 0, '', ' ') }}
+                                </td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ number_format($srv_rep['zap_sum'], 0, '', ' ') }}
+                                </td>
+                            </tr>
+
+                            <tr class="border-3 border-white">
+                                <td>Сервис</td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ number_format($srv_rep['srv'], 0, '', ' ') }}
+                                </td>
+                                <td class="text-nowrap overflow-hidden text-end">
+                                    {{ number_format($srv_rep['srv_sum'], 0, '', ' ') }}
                                 </td>
                             </tr>
                             </tbody>

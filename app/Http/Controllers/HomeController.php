@@ -76,6 +76,8 @@ class HomeController extends Controller
                             ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.to")) AS UNSIGNED)) as to_sum'))
                             ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.kuz")) AS UNSIGNED)) as kuz_sum'))
                             ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.store")) AS UNSIGNED)) as store_sum'))
+                            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.zap")) AS UNSIGNED)) as zap_sum'))
+                            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.srv")) AS UNSIGNED)) as srv_sum'))
                             ->where('for_date', '>=', $startDate)
                             ->where('for_date', '<=', $endDate)
                             ->where('type', 'report_service')
@@ -95,12 +97,16 @@ class HomeController extends Controller
                                 'to' => 0,
                                 'kuz' => 0,
                                 'store' => 0,
+                                'zap' => 0,
+                                'srv' => 0,
                                 'SUM' => (0),
                                 'dop_sum' => 0,
                                 'now_sum' => 0,
                                 'to_sum' => 0,
                                 'kuz_sum' => 0,
                                 'store_sum' => 0,
+                                'zap_sum' => 0,
+                                'srv_sum' => 0,
                                 'SUM_sum' => (0),
 
                                 'for_date' => null,
@@ -120,6 +126,8 @@ class HomeController extends Controller
                             'to' => $result->to,
                             'kuz' => $result->kuz,
                             'store' => $result->store,
+                            'zap' => $result->zap,
+                            'srv' => $result->srv,
                             'SUM' => (
                                 $result->dop +
                                 $result->now +
@@ -132,6 +140,8 @@ class HomeController extends Controller
                             'to_sum' => $result_full->to_sum,
                             'kuz_sum' => $result_full->kuz_sum,
                             'store_sum' => $result_full->store_sum,
+                            'zap_sum' => $result_full->zap_sum,
+                            'srv_sum' => $result_full->srv_sum,
                             'SUM_sum' => (
                                 $result_full->dop_sum +
                                 $result_full->now_sum +
@@ -184,6 +194,8 @@ class HomeController extends Controller
                         ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.to")) AS UNSIGNED)) as to_sum'))
                         ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.kuz")) AS UNSIGNED)) as kuz_sum'))
                         ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.store")) AS UNSIGNED)) as store_sum'))
+                        ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.zap")) AS UNSIGNED)) as zap_sum'))
+                        ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.srv")) AS UNSIGNED)) as srv_sum'))
                         ->where('for_date', '>=', $startDate)
                         ->where('for_date', '<=', $endDate)
                         ->where('type', 'report_service')
@@ -203,12 +215,16 @@ class HomeController extends Controller
                             'to' => 0,
                             'kuz' => 0,
                             'store' => 0,
+                            'zap' => 0,
+                            'srv' => 0,
                             'SUM' => (0),
                             'dop_sum' => 0,
                             'now_sum' => 0,
                             'to_sum' => 0,
                             'kuz_sum' => 0,
                             'store_sum' => 0,
+                            'zap_sum' => 0,
+                            'srv_sum' => 0,
                             'SUM_sum' => (0),
 
                             'for_date' => null,
@@ -226,6 +242,8 @@ class HomeController extends Controller
                             'to' => $result->to,
                             'kuz' => $result->kuz,
                             'store' => $result->store,
+                            'zap' => $result->store,
+                            'srv' => $result->store,
                             'SUM' => (
                                 $result->dop +
                                 $result->now +
@@ -238,6 +256,8 @@ class HomeController extends Controller
                             'to_sum' => $result_full->to_sum,
                             'kuz_sum' => $result_full->kuz_sum,
                             'store_sum' => $result_full->store_sum,
+                            'zap_sum' => $result_full->zap_sum,
+                            'srv_sum' => $result_full->srv_sum,
                             'SUM_sum' => (
                                 $result_full->dop_sum +
                                 $result_full->now_sum +

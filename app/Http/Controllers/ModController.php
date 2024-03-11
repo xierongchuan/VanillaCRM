@@ -53,7 +53,10 @@ class ModController extends Controller
 			'now' => 'required|numeric',
 			'to' => 'required|numeric',
 			'kuz' => 'required|numeric',
-			'store' => 'required|numeric'
+			'store' => 'required|numeric',
+
+            'zap' => 'required|numeric',
+            'srv' => 'required|numeric',
 		]);
 
 		$data = [
@@ -61,7 +64,10 @@ class ModController extends Controller
 			'now' => $request->now,
 			'to' => $request->to,
 			'kuz' => $request->kuz,
-			'store' => $request->store
+            'store' => $request->store,
+
+			'zap' => $request->zap,
+			'srv' => $request->srv
 		];
 
 		$forDate = date('Y-m-d H:i:s', strtotime($request->date));
