@@ -242,8 +242,8 @@ class HomeController extends Controller
                             'to' => $result->to,
                             'kuz' => $result->kuz,
                             'store' => $result->store,
-                            'zap' => $result->store,
-                            'srv' => $result->store,
+                            'zap' => $result->zap,
+                            'srv' => $result->srv,
                             'SUM' => (
                                 $result->dop +
                                 $result->now +

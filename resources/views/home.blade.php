@@ -653,8 +653,8 @@
     @if (@Auth::user()->role === 'user' && !empty($company->data))
         @if (in_array('report_xlsx', $data->perm))
             @php
-                $data = (array) json_decode(@$company->data);
-                $workers = $data['Продажи'] ?? [];
+                $data_com = (array) json_decode(@$company->data);
+                $workers = $data_com['Продажи'] ?? [];
             @endphp
 
             <div class="row flex-column align-items-center">
@@ -695,8 +695,8 @@
 
         @if (in_array('report_service', $data->perm))
             @php
-                $data = (array) json_decode(@$company->data);
-                $workers = $data['Продажи'] ?? [];
+                $data_com = (array) json_decode(@$company->data);
+                $workers = $data_com['Продажи'] ?? [];
             @endphp
 
             <div class="row flex-column align-items-center">
