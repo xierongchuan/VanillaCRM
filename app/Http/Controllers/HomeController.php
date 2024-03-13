@@ -111,6 +111,7 @@ class HomeController extends Controller
 
                                 'for_date' => null,
                                 'created_at' => null,
+                                'updated_at' => null,
                                 'have' => null
                             ];
                             $srv_reps[$company->id] = $srv_rep;
@@ -152,6 +153,7 @@ class HomeController extends Controller
 
                             'for_date' => $latestReport->for_date,
                             'created_at' => $latestReport->created_at,
+                            'updated_at' => $latestReport->updated_at,
                             'have' => true
                         ];
 
@@ -229,6 +231,7 @@ class HomeController extends Controller
 
                             'for_date' => null,
                             'created_at' => null,
+                            'updated_at' => null,
                             'have' => null
                         ];
                     } else {
@@ -268,6 +271,7 @@ class HomeController extends Controller
 
                             'for_date' => $latestReport->for_date,
                             'created_at' => $latestReport->created_at,
+                            'updated_at' => $latestReport->updated_at,
                             'have' => true
                         ];
                     }

@@ -523,14 +523,14 @@
 
                             <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
                                 <div class="d-flex flex-wrap justify-content-center">
-                                    @if ($srv_reps[$company->id]['created_at'])
+                                    @if ($srv_reps[$company->id]['updated_at'])
                                         <h4>Дата и время загрузки <a
-                                                href="{{ route('company.service.archive', [$company, $srv_reps[$company->id]['created_at']]) }}">отчёта</a>:
+                                                href="{{ route('company.service.archive', [$company, $srv_reps[$company->id]['updated_at']]) }}">отчёта</a>:
                                         </h4>
                                         <div class="mx-sm-1"></div>
                                     @endif
 
-                                    <h4>{{ $srv_reps[$company->id]['created_at'] ?? 'Отчёта нету.' }}</h4>
+                                    <h4>{{ $srv_reps[$company->id]['updated_at'] ?? 'Отчёта нету.' }}</h4>
 
                                     @if ($srv_reps[$company->id]['have'])
                                         <div class="mx-1"></div>
@@ -709,13 +709,13 @@
 
                     <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
                         <div class="d-flex flex-wrap justify-content-center">
-                            @if ($srv_rep['created_at'])
+                            @if ($srv_rep['updated_at'])
                                 <h4>Дата и время загрузки отчёта:
                                 </h4>
                                 <div class="mx-sm-1"></div>
                             @endif
 
-                            <h4>{{ $srv_rep['created_at'] ?? 'Отчёта нету.' }}</h4>
+                            <h4>{{ $srv_rep['updated_at'] ?? 'Отчёта нету.' }}</h4>
 
                             @if ($srv_rep['have'])
                                 <div class="mx-sm-1"></div>
