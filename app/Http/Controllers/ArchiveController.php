@@ -110,6 +110,8 @@ class ArchiveController extends Controller
         $sheet->getColumnDimension('E')->setWidth(13);
         $sheet->getColumnDimension('F')->setWidth(13);
         $sheet->getColumnDimension('G')->setWidth(13);
+        $sheet->getColumnDimension('H')->setWidth(13);
+        $sheet->getColumnDimension('I')->setWidth(13);
 
         $sheet->setCellValue('A1', 'Дата');
         $sheet->setCellValue('B1', 'Доп');
@@ -118,6 +120,8 @@ class ArchiveController extends Controller
         $sheet->setCellValue('E1', 'Кузов');
         $sheet->setCellValue('F1', 'Магазин');
         $sheet->setCellValue('G1', 'Всего');
+        $sheet->setCellValue('H1', 'Запчасть');
+        $sheet->setCellValue('I1', 'Сервис');
 
         $i = 2;
         foreach ($reports as $key => $value) {
@@ -131,6 +135,8 @@ class ArchiveController extends Controller
             $sheet->setCellValue('E' . $i, $val->kuz);
             $sheet->setCellValue('F' . $i, $val->store);
             $sheet->setCellValue('G' . $i, '=SUM(A' . $i . ':F' . $i . ')');
+            $sheet->setCellValue('H' . $i, $val->zap);
+            $sheet->setCellValue('I' . $i, $val->srv);
 
             $i++;
         }
@@ -142,6 +148,8 @@ class ArchiveController extends Controller
         $sheet->setCellValue('E33', '=SUM(E2:E32)');
         $sheet->setCellValue('F33', '=SUM(F2:F32)');
         $sheet->setCellValue('G33', '=SUM(G2:G32)');
+        $sheet->setCellValue('H33', '=SUM(H2:H32)');
+        $sheet->setCellValue('I33', '=SUM(I2:I32)');
 
         $fileName = $company->name . ' Service Report.xlsx';
 
