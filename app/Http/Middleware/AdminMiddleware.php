@@ -20,7 +20,7 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param Closure(Request): (Response)
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)
      */
     public function handle(Request $request, Closure $next): Response
     {

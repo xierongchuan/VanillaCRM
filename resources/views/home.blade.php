@@ -23,15 +23,14 @@
                             </h1>
                             <div class="order-last lead">
                                 <button class="btn btn-primary slider_prev_button" section-id="{{ $company->id }}">
-                                    < </button>
+                                    </button>
                                         <button class="btn btn-primary slider_next_button"
                                                 section-id="{{ $company->id }}">
-                                            > </button>
+                                            </button>
                                         <button class="btn btn-danger perm_panel_switch" data-bs-toggle="collapse"
                                                 panel="perm_panel_{{ $company->id }}"><i
                                                 class="bi bi-nintendo-switch"></i></button>
                             </div>
-                            {{-- <button class="lead perm_panel_switch order-last" panel="perm_panel_{{$company->id}}"><i class="bi bi-nintendo-switch"></i></button> --}}
                         </span>
 
                         <span id="perm_panel_{{ $company->id }}">

@@ -27,9 +27,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home.index');
 /// Theme Controller
 Route::get('/theme/{name}', [ThemeController::class, 'switch'])->name('theme.switch');
 
-/// Telegram Bot Controller
-// Route::post('/webhook', [TelegramBotController::class, 'index']);
-
 /// UserController
 
 // Маршрут для отображения формы входа
@@ -153,7 +150,7 @@ Route::group(['middleware' => 'user'], function () {
 
     Route::post('/company/{company}/report_service', [ModController::class, 'report_service'])->name('mod.report_service');
 
-    Route::post('/company/{company}/report_xlsx', [ModController::class, 'report_xlsx'])->name('mod.report_xlsx');
+    Route::post('/company/{company}/report_xlsx', [\App\Http\Controllers\ReportXlsxController::class, 'report_xlsx'])->name('mod.report_xlsx');
 
     Route::post('/company/{company}/report_xlsx_sales', [ModController::class, 'report_xlsx_sales'])->name('mod.report_xlsx_sales');
 });

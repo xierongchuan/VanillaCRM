@@ -2,10 +2,10 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="800a5dab-5fea-4f1a-b474-aab353f46f15" name="andcrm.ru" url="https://andcrm.ru">
-        <fileTransfer rootFolder="/var/www/html/vanillacrm" accessType="SFTP" host="andcrm.ru" port="22" sshConfigId="665aff2c-ffbd-4498-92fa-f048f03ffd3d" sshConfig="andcrm.ru">
+      <webServer id="35a51765-53c3-438b-afad-c91281094dd4" name="Dev AndCRM" url="https://dev.andcrm.ru">
+        <fileTransfer rootFolder="/var/www/html/vanillacrm" accessType="SFTP" host="dev.andcrm.ru" port="22" sshConfigId="b131c0a7-6fee-4029-8856-24b3f885f4bf" sshConfig="root@dev.andcrm.ru:22 password">
           <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" isUseSudo="true" />
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" isUseRsync="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>

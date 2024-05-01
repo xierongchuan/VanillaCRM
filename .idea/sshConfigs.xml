@@ -2,9 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig authType="PASSWORD" connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="andcrm.ru" id="665aff2c-ffbd-4498-92fa-f048f03ffd3d" port="22" customName="andcrm.ru" nameFormat="CUSTOM" username="root" useOpenSSHConfig="true">
-        <option name="customName" value="andcrm.ru" />
-      </sshConfig>
+      <sshConfig authType="PASSWORD" host="dev.andcrm.ru" id="b131c0a7-6fee-4029-8856-24b3f885f4bf" port="22" nameFormat="DESCRIPTIVE" username="root" useOpenSSHConfig="true" />
     </configs>
   </component>
 </project>
