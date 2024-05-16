@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>DEV - {{ config('app.name') }} - @yield('title')</title>
+    <link rel="icon" href="/icon.png" type="image/png">
 
     {{-- Import Styles --}}
     @vite(['resources/sass/app.scss'])

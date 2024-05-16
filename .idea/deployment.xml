@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="Dev AndCRM" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="Dev AndCRM" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
     <serverData>
       <paths name="Dev AndCRM">
         <serverdata>
           <mappings>
-            <mapping deploy="/var/www/html/vanillacrm" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
           </mappings>
           <excludedPaths>
             <excludedPath path="/.env" />
             <excludedPath path="/vendor" />
             <excludedPath path="/node_modules" />
             <excludedPath path="/storage" />
+            <excludedPath path="/.git" />
           </excludedPaths>
         </serverdata>
       </paths>
