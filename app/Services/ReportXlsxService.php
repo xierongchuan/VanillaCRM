@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\ReportXlsxRule;
 use App\Models\Company;
 use App\Models\Permission;
+use App\Models\Report;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -226,7 +227,11 @@ class ReportXlsxService
             $sheetData['Last File'] = $request->file('file')->getClientOriginalName();
         }
 
-        $company->data = json_encode($sheetData);
-        $company->save();
+        $report = new Report();
+        $report->type = 'report_xlsx';
+        $report->com_id = $company->id;
+        $report->for_date = $request->for_date;
+        $report->data = json_encode($sheetData);
+        $report->save();
     }
 }

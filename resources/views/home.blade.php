@@ -23,13 +23,11 @@
                             </h1>
                             <div class="order-last lead">
                                 <button class="btn btn-primary slider_prev_button" section-id="{{ $company->id }}">
-                                    </button>
-                                        <button class="btn btn-primary slider_next_button"
-                                                section-id="{{ $company->id }}">
-                                            </button>
-                                        <button class="btn btn-danger perm_panel_switch" data-bs-toggle="collapse"
-                                                panel="perm_panel_{{ $company->id }}"><i
-                                                class="bi bi-nintendo-switch"></i></button>
+                                </button>
+                                <button class="btn btn-primary slider_next_button" section-id="{{ $company->id }}">
+                                </button>
+                                <button class="btn btn-danger perm_panel_switch" data-bs-toggle="collapse"
+                                    panel="perm_panel_{{ $company->id }}"><i class="bi bi-nintendo-switch"></i></button>
                             </div>
                         </span>
 
@@ -43,8 +41,7 @@
 
                                 <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
                                     <div class="d-flex flex-wrap justify-content-center">
-                                        <h4>Дата загрузки <a
-                                                href="{{ $last_repor_urls[$loop->index] }}">отчёта</a>:</h4>
+                                        <h4>Дата загрузки <a href="{{ $last_repor_urls[$loop->index] }}">отчёта</a>:</h4>
                                         <div class="mx-sm-1"></div>
                                         <h4>{{ date('d.m.Y H:i', strtotime($data['Дата'])) }}</h4>
                                     </div>
@@ -333,10 +330,9 @@
                                                 </tr>
 
                                                 @php
-                                                    $now_men += (int)$manager->sold;
-                                                    $mon_men += (int)$manager->month;
+                                                    $now_men += (int) $manager->sold;
+                                                    $mon_men += (int) $manager->month;
                                                 @endphp
-
                                             @endforeach
 
                                             <tr>
@@ -436,7 +432,7 @@
                                         <h2>Прошлые месяцы</h2>
 
                                         <a href="{{ route('company.archive', compact('company')) }}"
-                                           class="lead">Архив</a>
+                                            class="lead">Архив</a>
                                     </div>
 
                                     <div class="my-1 m-auto border rounded py-2 row h4">
@@ -483,9 +479,9 @@
                                         </div>
 
                                         @if ($file->company == $company->name)
-                                            @break
-                                        @endif
-                                    @endforeach
+                                        @break
+                                    @endif
+                                @endforeach
 
                             </div>
 
@@ -536,12 +532,12 @@
                                         <h4> | На дату: </h4>
                                         <div class="mx-1"></div>
 
-                                        <h4>{{ $srv_reps[$company->id]['for_date']}}</h4>
+                                        <h4>{{ $srv_reps[$company->id]['for_date'] }}</h4>
                                     @endif
-                                        <div class="mx-1"></div>
+                                    <div class="mx-1"></div>
 
                                     <a href="{{ route('company.service.archive.list', compact('company')) }}"
-                                       class="lead">Архив</a>
+                                        class="lead">Архив</a>
                                 </div>
                             </div>
 
@@ -641,23 +637,23 @@
 
                         </div>
                     </span>
-                    </div>
                 </div>
-            @endif
-        @endforeach
+            </div>
+        @endif
+    @endforeach
 
-    @endif
+@endif
 
 
-    @if (@Auth::user()->role === 'user' && !empty($company->data))
-        @if (in_array('report_xlsx', $data->perm))
-            @php
-                $data_com = (array) json_decode(@$company->data);
-                $workers = $data_com['Продажи'] ?? [];
-            @endphp
+@if (@Auth::user()->role === 'user' && !empty($company->data))
+    @if (in_array('report_xlsx', $data->perm))
+        @php
+            $data_com = (array) json_decode(@$company->data);
+            $workers = $data_com['Продажи'] ?? [];
+        @endphp
 
-            <div class="row flex-column align-items-center">
-                <div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
+        <div class="row flex-column align-items-center">
+            <div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
                 <span class="d-flex justify-content-between">
                     <h2 class="perm_panel_switch mb-1" panel="perm_panel_report_xlsx_sales"
                         style="font-size: calc(1.105rem + .66vw);margin-top: 0.1rem;">Продажи менеджеров
@@ -666,78 +662,77 @@
                     <button class="lead perm_panel_switch m-1" panel="perm_panel_report_xlsx_sales"><i
                             class="bi bi-nintendo-switch"></i></button>
                 </span>
-                    <form id="perm_panel_report_xlsx_sales" action="{{ route('mod.report_xlsx_sales', $company) }}"
-                          method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
-                        @csrf
-                        @foreach ($workers as $worker)
-                            <input type="hidden" name="worker_name_{{ $loop->iteration }}"
-                                   value="{{ $worker->name }}">
-                            <div class="input-group mb-2">
-                                <span class="input-group-text col-7 col-md-9">{{ $worker->name }}</span>
-                                <input type="number" class="col-4 col-md-2 form-control repost_xlsx_required_inputs"
-                                       name="worker_month_{{ $loop->iteration }}"
-                                       id="worker_month_{{ $loop->iteration }}"
-                                       placeholder="Sold" value="{{ $worker->month }}" aria-label="Sold" required>
-                                <span class="input-group-text px-1 px-md-2 col-2 col-md-1"
-                                      id="report_worker_percent_{{ $loop->iteration }}">99.9 %</span>
-                            </div>
-                        @endforeach
-
-                        <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary">Изменить</button>
+                <form id="perm_panel_report_xlsx_sales" action="{{ route('mod.report_xlsx_sales', $company) }}"
+                    method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
+                    @csrf
+                    @foreach ($workers as $worker)
+                        <input type="hidden" name="worker_name_{{ $loop->iteration }}"
+                            value="{{ $worker->name }}">
+                        <div class="input-group mb-2">
+                            <span class="input-group-text col-7 col-md-9">{{ $worker->name }}</span>
+                            <input type="number" class="col-4 col-md-2 form-control repost_xlsx_required_inputs"
+                                name="worker_month_{{ $loop->iteration }}" id="worker_month_{{ $loop->iteration }}"
+                                placeholder="Sold" value="{{ $worker->month }}" aria-label="Sold" required>
+                            <span class="input-group-text px-1 px-md-2 col-2 col-md-1"
+                                id="report_worker_percent_{{ $loop->iteration }}">99.9 %</span>
                         </div>
-                    </form>
-                </div>
+                    @endforeach
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">Изменить</button>
+                    </div>
+                </form>
             </div>
+        </div>
 
-        @endif
+    @endif
 
-        @if (in_array('report_service', $data->perm))
-            @php
-                $data_com = (array) json_decode(@$company->data);
-                $workers = $data_com['Продажи'] ?? [];
-            @endphp
+    @if (in_array('report_service', $data->perm))
+        @php
+            $data_com = (array) json_decode(@$company->data);
+            $workers = $data_com['Продажи'] ?? [];
+        @endphp
 
-            <div class="row flex-column align-items-center">
-                <div class="w-100">
-                    <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
-                        <div class="d-flex flex-wrap justify-content-center">
-                            <h2>Отчёт сервис</h2>
-                        </div>
+        <div class="row flex-column align-items-center">
+            <div class="w-100">
+                <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                    <div class="d-flex flex-wrap justify-content-center">
+                        <h2>Отчёт сервис</h2>
                     </div>
+                </div>
 
-                    <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
-                        <div class="d-flex flex-wrap justify-content-center">
-                            @if ($srv_rep['updated_at'])
-                                <h4>Дата и время загрузки отчёта:
-                                </h4>
-                                <div class="mx-sm-1"></div>
-                            @endif
+                <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                    <div class="d-flex flex-wrap justify-content-center">
+                        @if ($srv_rep['updated_at'])
+                            <h4>Дата и время загрузки отчёта:
+                            </h4>
+                            <div class="mx-sm-1"></div>
+                        @endif
 
-                            <h4>{{ $srv_rep['updated_at'] ?? 'Отчёта нету.' }}</h4>
+                        <h4>{{ $srv_rep['updated_at'] ?? 'Отчёта нету.' }}</h4>
 
-                            @if ($srv_rep['have'])
-                                <div class="mx-sm-1"></div>
-                                <h4>| На дату: </h4>
-                                <div class="mx-sm-1"></div>
+                        @if ($srv_rep['have'])
+                            <div class="mx-sm-1"></div>
+                            <h4>| На дату: </h4>
+                            <div class="mx-sm-1"></div>
 
-                                <h4>{{ $srv_rep['for_date']}}</h4>
-                            @endif
-                        </div>
+                            <h4>{{ $srv_rep['for_date'] }}</h4>
+                        @endif
                     </div>
+                </div>
 
-                    <div class="bg-body-tertiary rounded p-3 mb-2">
+                <div class="bg-body-tertiary rounded p-3 mb-2">
 
 
-                        <table class="table mb-1 rounded overflow-hidden">
-                            <thead>
+                    <table class="table mb-1 rounded overflow-hidden">
+                        <thead>
                             <tr>
                                 <th scope="col">Навзания</th>
                                 <th scope="col">Сегодня</th>
                                 <th scope="col">За мес</th>
                             </tr>
-                            </thead>
-                            <tbody>
+                        </thead>
+                        <tbody>
                             <tr>
                                 <td>Доп</td>
                                 <td class="text-nowrap overflow-hidden text-end">
@@ -811,18 +806,18 @@
                                     {{ number_format($srv_rep['srv_sum'], 0, '', ' ') }}
                                 </td>
                             </tr>
-                            </tbody>
+                        </tbody>
 
-                        </table>
-
-                    </div>
-
+                    </table>
 
                 </div>
-            </div>
 
-        @endif
+
+            </div>
+        </div>
 
     @endif
+
+@endif
 
 @endsection
