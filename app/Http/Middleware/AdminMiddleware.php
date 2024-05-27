@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-		/**
-		 * Get the path the admin should be redirected to when they are not authenticated.
-		 */
-		protected function redirectTo(Request $request): ?string
-		{
-				return $request->expectsJson() ? null : route('auth.sign_in');
-		}
+    /**
+     * Get the path the admin should be redirected to when they are not authenticated.
+     */
+    protected function redirectTo(Request $request): ?string
+    {
+        return $request->expectsJson() ? null : route('auth.sign_in');
+    }
 
     /**
      * Handle an incoming request.
@@ -24,10 +24,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-				if (Auth::check() && Auth::user()->role === 'admin') {
-						return $next($request);
-				}
+        if (Auth::check() && Auth::user()->role === 'admin') {
+            return $next($request);
+        }
 
-				abort(403, 'Доступ запрещен');
+        abort(403, 'Доступ запрещен');
     }
 }

@@ -100,31 +100,32 @@ class ModController extends Controller
 
     public function report_xlsx_sales(Company $company)
     {
-        $inputData = request()->all();
+        ///ToDo
+        // $inputData = request()->all();
 
-        $data = (array)json_decode($company->data);
+        // $data = (array)json_decode($company->data);
 
-        $workers = (array)$data['Продажи'];
+        // $workers = (array)$data['Продажи'];
 
-        foreach ($inputData as $key => $value) {
-            if (preg_match('/^worker_month_(\d+)$/', $key, $matches) && is_numeric($value)) {
-                $workerNumber = $matches[1]; // Извлекаем номер рабочего
-                $workerMonth = $inputData['worker_month_' . $workerNumber];
-                $workerName = $inputData['worker_name_' . $workerNumber]; // Извлекаем соответствующее имя рабочего
+        // foreach ($inputData as $key => $value) {
+        //     if (preg_match('/^worker_month_(\d+)$/', $key, $matches) && is_numeric($value)) {
+        //         $workerNumber = $matches[1]; // Извлекаем номер рабочего
+        //         $workerMonth = $inputData['worker_month_' . $workerNumber];
+        //         $workerName = $inputData['worker_name_' . $workerNumber]; // Извлекаем соответствующее имя рабочего
 
-                $workers[$workerNumber] = [
-                    'name' => (string)$workerName,
-                    'sold' => (int)$workers[$workerNumber]->sold,
-                    'month' => (int)$workerMonth
-                ];
-            }
-        }
+        //         $workers[$workerNumber] = [
+        //             'name' => (string)$workerName,
+        //             'sold' => (int)$workers[$workerNumber]->sold,
+        //             'month' => (int)$workerMonth
+        //         ];
+        //     }
+        // }
 
-        $data['Продажи'] = $workers;
-        $company->data = json_encode($data);
-        $company->save();
+        // $data['Продажи'] = $workers;
+        // $company->data = json_encode($data);
+        // $company->save();
 
-        return redirect()->route('home.index')->with('success', 'Продажи успешно изменены.');
+        // return redirect()->route('home.index')->with('success', 'Продажи успешно изменены.');
     }
 
     private function numberToColumn($number)

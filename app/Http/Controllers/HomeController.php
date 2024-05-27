@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\Permission;
 use App\Models\Post;
 use App\Models\Field;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Report;
@@ -16,9 +17,12 @@ use Carbon\Carbon;
 
 class HomeController extends Controller
 {
+    // Главная функция контроллера
     public function index()
     {
+        // Проверка, авторизован ли пользователь
         if (Auth::check()) {
+            // Определение роли пользователя и вызов соответствующего метода
             switch (Auth::user()->role) {
                 case 'admin':
                     return $this->adminView();
@@ -29,100 +33,219 @@ class HomeController extends Controller
                     return false;
             }
         } else {
+            // Если пользователь не авторизован, показываем домашнюю страницу
             return view('home');
         }
     }
 
+    // Метод для отображения админской панели
     private function adminView()
     {
+        // Получение всех компаний
         $companies = Company::all();
+        // Получение данных файлов из папки 'archive'
         $files_data = $this->getFilesData('archive');
+        // Получение URL последних отчетов
         $last_repor_urls = $this->getLastReportUrls($companies);
+        // Получение сервисных отчетов
         $srv_reps = $this->getServiceReports($companies);
+        // Получение ежедневных отчётов
+        $coms_data = $this->getComData($companies);
+        // Получение списка месячных продаж менеджеров
+        $sales_data = $this->getSalesData($companies);
 
-        return view('home', compact('companies', 'files_data', 'last_repor_urls', 'srv_reps'));
+        // Возврат вида 'home' с данными
+        return view(
+            'home',
+            compact(
+                'companies',
+                'files_data',
+                'last_repor_urls',
+                'srv_reps',
+                'coms_data',
+                'sales_data'
+            )
+        );
     }
 
+    // Метод для отображения пользовательской панели
     private function userView()
     {
+        // Получение компании, департамента и поста пользователя
         $company = Company::find(Auth::user()->com_id);
         $department = Department::find(Auth::user()->dep_id);
         $post = Post::find(Auth::user()->post_id);
+        // Получение разрешений пользователя
         $permissions = Permission::whereIn('id', json_decode($post->permission, true))->get();
         $permission_vals = $permissions->pluck('value')->toArray();
 
-        $data = (object)[
+        // Создание объекта с данными пользователя
+        $data = (object) [
             'company' => $company,
             'department' => $department,
             'post' => $post,
             'perm' => $permission_vals,
         ];
 
+        // Получение сервисного отчета
         $srv_rep = $this->getServiceReport($company->id);
 
+        // Возврат вида 'home' с данными
         return view('home', compact('company', 'data', 'srv_rep'));
     }
 
+    // Метод для получения ежедневного отчёта
+    private function getComData($companies): array
+    {
+        $com_data = [];
+        foreach ($companies as $company) {
+            $data = @Report::where('type', 'report_xlsx')
+                ->where('com_id', $company->id)
+                ->orderBy('for_date', 'desc')
+                ->first()['data'];
+
+            if (empty($data))
+                continue;
+
+            $com_data[$company->id] = $data;
+        }
+
+        return $com_data;
+    }
+
+    // Метод для получения списка месячных продаж менеджеров
+    private function getSalesData($companies): array
+    {
+        $sales_data = [];
+
+        foreach ($companies as $company) {
+            // Отчёты продаж менеджеров компаний
+            $monthSales = [];
+
+            // Определение начальной и конечной даты текущего месяца
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+
+            // Выполняем запрос с фильтрацией по типу, компании и диапазону дат
+            $reports = Report::where('type', 'report_xlsx')
+                ->where('com_id', $company->id)
+                ->whereBetween('for_date', [$startDate, $endDate]) // Фильтр по диапазону дат
+                ->orderBy('for_date', 'desc')
+                ->get();
+
+            if ($reports->isEmpty())
+                continue;
+
+            foreach ($reports as $report) {
+                $monthSales[] = (array) (((array) json_decode($report->data))['Sales']);
+            }
+
+            $managerId = array_key_first($monthSales[0]);
+
+            // Получение менеджера из отчёта
+            $manager = User::where('id', $managerId)->first();
+            // Получение сотрудников из департамента менеджера отчёта
+            $workers = User::where('dep_id', $manager->dep_id)->get();
+            // Перевод ID сотрудников на массив
+            $workerIds = $workers->pluck('id')->toArray();
+
+            // Инициализация массива для хранения сумм
+            $sums = array_fill_keys($workerIds, 0);
+
+            // Проход по всем массивам данных
+            foreach ($monthSales as $dataSet) {
+                foreach ($workerIds as $id) {
+                    if (isset($dataSet[$id])) {
+                        $sums[$id] += $dataSet[$id];
+                    }
+                }
+            }
+
+            $sales_data[$company->id] = $sums;
+
+        }
+
+        return $sales_data;
+    }
+
+    // Метод для получения данных файлов из указанной папки
     private function getFilesData($folder)
     {
+        // Определение пути к папке
         $path = storage_path('app/public/' . $folder);
 
+        // Если папка не существует, возвращаем пустой массив
         if (!File::exists($path)) {
             return [];
         }
 
+        // Получение всех файлов из папки
         $files = File::allFiles($path);
         $files_data = [];
 
+        // Обработка каждого файла
         foreach ($files as $file) {
             $filePath = 'storage/' . $folder . '/' . $file->getFilename();
             $file_name_data = explode('_', basename($file));
 
-            $files_data[] = (object)[
+            // Сбор данных о файле
+            $files_data[] = (object) [
                 'name' => basename($file),
                 'company' => $file_name_data[0],
-                'url' => (string)asset($filePath),
+                'url' => (string) asset($filePath),
                 'date' => $this->getRussianMonthName($file_name_data[1]),
-                'sum' => number_format((int)$file_name_data[3], 0, '', ' '),
-                'count' => number_format((int)$file_name_data[4], 0, '', ' '),
-                'fakt' => number_format(@(int)$file_name_data[5], 0, '', ' ')
+                'sum' => number_format((int) $file_name_data[3], 0, '', ' '),
+                'count' => number_format((int) $file_name_data[4], 0, '', ' '),
+                'fakt' => number_format(@(int) $file_name_data[5], 0, '', ' ')
             ];
         }
 
+        // Возврат данных файлов в обратном порядке
         return array_reverse($files_data);
     }
 
+    // Метод для получения URL последних отчетов
     private function getLastReportUrls($companies)
     {
         $last_repor_urls = [];
 
+        // Обработка каждой компании
         foreach ($companies as $company) {
-            $l_r_f_n = (string)@((array)json_decode($company->data))['Last File'];
+            // Получение имени последнего файла отчета
+            $l_r_f_n = (string) @((array) json_decode($company->data))['Last File'];
             $l_r_path = storage_path('app/public/tmp/' . $l_r_f_n);
             $l_r_path_proj = 'storage/app/public' . str_replace(storage_path('app/public'), '', $l_r_path);
+            // Формирование URL
             $last_repor_urls[] = asset($l_r_path_proj);
         }
 
         return $last_repor_urls;
     }
 
+    // Метод для получения сервисных отчетов
     private function getServiceReports($companies)
     {
         $srv_reps = [];
 
+        // Обработка каждой компании
         foreach ($companies as $company) {
+            // Получение полей компании
             $company->fields = Field::where('com_id', $company->id)->get();
+            // Получение сервисного отчета для компании
             $srv_reps[$company->id] = $this->getServiceReport($company->id);
         }
 
         return $srv_reps;
     }
 
+    // Метод для получения сервисного отчета для конкретной компании
     private function getServiceReport($companyId)
     {
+        // Определение начальной и конечной даты текущего месяца
         $startDate = now()->startOfMonth();
         $endDate = now()->endOfMonth();
 
+        // Получение данных из таблицы 'reports'
         $result_full = json_decode(DB::table('reports')
             ->select(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.dop")) AS UNSIGNED)) as dop_sum'))
             ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.now")) AS UNSIGNED)) as now_sum'))
@@ -137,18 +260,21 @@ class HomeController extends Controller
             ->where('com_id', $companyId)
             ->get())[0];
 
+        // Получение последнего отчета
         $latestReport = DB::table('reports')
             ->where('type', 'report_service')
             ->where('com_id', $companyId)
             ->orderByDesc('for_date')
             ->first();
 
+        // Если отчета нет, возвращаем данные по умолчанию
         if (!$latestReport) {
             return $this->defaultServiceReport();
         }
 
         $result = json_decode($latestReport->data);
 
+        // Формирование данных для отчета
         return [
             'dop' => $result->dop,
             'now' => $result->now,
@@ -185,6 +311,7 @@ class HomeController extends Controller
         ];
     }
 
+    // Метод для возвращения данных по умолчанию, если отчета нет
     private function defaultServiceReport()
     {
         return [
@@ -211,9 +338,12 @@ class HomeController extends Controller
         ];
     }
 
+    // Метод для получения названия месяца на русском языке
     private function getRussianMonthName($date)
     {
+        // Определение номера месяца
         $monthNumber = date('n', strtotime($date));
+        // Массив с названиями месяцев на русском языке
         $months = [
             1 => 'Январь',
             2 => 'Февраль',
@@ -229,6 +359,7 @@ class HomeController extends Controller
             12 => 'Декабрь'
         ];
 
+        // Возвращение названия месяца
         return $months[$monthNumber];
     }
 }

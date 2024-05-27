@@ -19,8 +19,8 @@
             @csrf
 
             <div class="form-group mb-2">
-                <label for="date">Дата:</label>
-                <input type="date" class="form-control" id="date" name="date"
+                <label for="for_date">Дата:</label>
+                <input type="date" class="form-control" id="for_date" name="for_date"
                     value="{{ old('date') ?? date('Y-m-d') }}" required>
             </div>
 
@@ -35,22 +35,14 @@
             </div>
             <label for="">Продажи: </label>
             @foreach ($workers as $worker)
-                <input type="hidden" name="worker_name_{{ $loop->iteration }}" value="{{ $worker->full_name }}">
+                <input type="hidden" name="worker_name_{{ $worker->id }}" value="{{ $worker->full_name }}">
                 <div class="input-group mb-2">
                     <span class="input-group-text col-8">{{ $worker->full_name }}</span>
                     <input type="number" class="form-control col-4 repost_xlsx_required_inputs"
-                        name="worker_sold_{{ $loop->iteration }}" placeholder="Sold"
-                        value="{{ old('worker_sold_' . $loop->iteration, '0') }}" aria-label="Sold" required>
+                        name="worker_sold_{{ $worker->id }}" placeholder="Sold"
+                        value="{{ old('worker_sold_' . $worker->id, '0') }}" aria-label="Sold" required>
                 </div>
             @endforeach
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="1" id="repost_xlsx_checkbox"
-                    name="close_month">
-                <label class="form-check-label" for="repost_xlsx_checkbox">
-                    Закрыть месяц
-                </label>
-            </div>
 
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary">Отправить</button>

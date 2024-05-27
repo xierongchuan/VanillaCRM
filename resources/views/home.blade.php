@@ -9,12 +9,12 @@
     @if (isset($companies))
 
         @foreach ($companies as $company)
-            @php
+            @if (isset($coms_data[$company->id]))
 
-                $data = (array) json_decode($company->data);
-            @endphp
+                @php
+                    $data = (array)json_decode($coms_data[$company->id]);
+                @endphp
 
-            @if (!empty($data))
                 <div class="row flex-column align-items-center">
                     <div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
                         <span class="d-flex justify-content-between">
@@ -23,8 +23,10 @@
                             </h1>
                             <div class="order-last lead">
                                 <button class="btn btn-primary slider_prev_button" section-id="{{ $company->id }}">
+                                    <i class="bi bi-chevron-left"></i>
                                 </button>
                                 <button class="btn btn-primary slider_next_button" section-id="{{ $company->id }}">
+                                    <i class="bi bi-chevron-right"></i>
                                 </button>
                                 <button class="btn btn-danger perm_panel_switch" data-bs-toggle="collapse"
                                     panel="perm_panel_{{ $company->id }}"><i class="bi bi-nintendo-switch"></i></button>
@@ -43,18 +45,24 @@
                                     <div class="d-flex flex-wrap justify-content-center">
                                         <h4>Дата загрузки <a href="{{ $last_repor_urls[$loop->index] }}">отчёта</a>:</h4>
                                         <div class="mx-sm-1"></div>
-                                        <h4>{{ date('d.m.Y H:i', strtotime($data['Дата'])) }}</h4>
+                                        <h4>{{ date('d.m.Y H:i:s', strtotime($data['UploadDate'])) }}</h4>
+
+                                        <div class="mx-1"></div>
+                                        <h4> | На дату: </h4>
+                                        <div class="mx-1"></div>
+
+                                        <h4>{{ date('d.m.Y', strtotime($data['Дата'])) }}</h4>
                                     </div>
                                 </div>
 
                                 <div class="bg-body-tertiary rounded p-3 mb-2">
-                                    <div class="d-flex flex-wrap justify-content-center">
+                                    {{-- <div class="d-flex flex-wrap justify-content-center">
                                         @if ($data['Clear Sales'])
                                             <h2>Месяц Закрыт</h2>
                                         @else
                                             <h2>Сегодня</h2>
                                         @endif
-                                    </div>
+                                    </div> --}}
                                     <div class="col">
                                         <div
                                             class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
@@ -284,21 +292,18 @@
 
                                     @php
 
-                                        $managers = $data['Продажи'];
-                                        $totalSum = 0;
-                                        foreach ($managers as $manager) {
-                                            $totalSum += (int) $manager->month;
-                                        }
+                                        $sales = $sales_data[$company->id];
+                                        $totalSum = array_sum($sales);
 
                                         $percentages = [];
-                                        foreach ($managers as $key => $manager) {
-                                            if ((int) $manager->month == 0) {
-                                                $percentages[$key] = 0;
+                                        foreach ($sales as $id => $sale) {
+                                            if ((int) $sale == 0) {
+                                                $percentages[$id] = 0;
                                                 continue;
                                             }
 
-                                            $percentage = ($manager->month / $totalSum) * 100;
-                                            $percentages[$key] = round($percentage, 1);
+                                            $percentage = ($sale / $totalSum) * 100;
+                                            $percentages[$id] = round($percentage, 1);
                                         }
 
                                         $now_men = 0;
@@ -308,7 +313,7 @@
 
                                     <h2>Менеджеры</h2>
 
-                                    <table class="table mb-1 rounded overflow-hidden">
+                                    <table class="table mb-1 overflow-hidden">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
@@ -320,13 +325,18 @@
                                         </thead>
                                         <tbody>
 
-                                            @foreach ($managers as $key => $manager)
+                                            @foreach ($data['Sales'] as $id => $sale)
+
+                                            @php
+                                            $manager = App\Models\User::where('id', $id)->first();
+                                            @endphp
+
                                                 <tr>
                                                     <th scope="row">{{ $loop->iteration }}</th>
-                                                    <td>{{ $manager->name }}</td>
-                                                    <td class="text-nowrap overflow-hidden">{{ $manager->sold }} шт</td>
-                                                    <td class="text-nowrap overflow-hidden">{{ $manager->month }} шт</td>
-                                                    <td class="text-nowrap overflow-hidden">{{ $percentages[$key] }} %</td>
+                                                    <td>{{ $manager->full_name }}</td>
+                                                    <td class="text-nowrap overflow-hidden">{{ $sale }} шт</td>
+                                                    <td class="text-nowrap overflow-hidden">{{ $sales[$id] }} шт</td>
+                                                    <td class="text-nowrap overflow-hidden">{{ $percentages[$id] }} %</td>
                                                 </tr>
 
                                                 @php
@@ -378,7 +388,7 @@
 
                                     <h2>Реализация</h2>
 
-                                    <table class="table mb-1 rounded overflow-hidden">
+                                    <table class="table mb-1 overflow-hidden">
 
                                         <tbody>
                                             <tr>
@@ -519,7 +529,7 @@
                             <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
                                 <div class="d-flex flex-wrap justify-content-center">
                                     @if ($srv_reps[$company->id]['updated_at'])
-                                        <h4>Дата и время загрузки <a
+                                        <h4>Дата загрузки <a
                                                 href="{{ route('company.service.archive', [$company, $srv_reps[$company->id]['updated_at']]) }}">отчёта</a>:
                                         </h4>
                                         <div class="mx-sm-1"></div>
@@ -544,7 +554,7 @@
                             <div class="bg-body-tertiary rounded p-3 mb-2">
 
 
-                                <table class="table mb-1 rounded overflow-hidden">
+                                <table class="table mb-1 overflow-hidden">
                                     <thead>
                                         <tr>
                                             <th scope="col">Навзания</th>
@@ -641,7 +651,6 @@
             </div>
         @endif
     @endforeach
-
 @endif
 
 

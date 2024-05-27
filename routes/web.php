@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ModController;
+use App\Http\Controllers\ReportXlsxController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -149,7 +150,7 @@ Route::group(['middleware' => 'user'], function () {
 
     Route::post('/company/{company}/report_service', [ModController::class, 'report_service'])->name('mod.report_service');
 
-    Route::post('/company/{company}/report_xlsx', [\App\Http\Controllers\ReportXlsxController::class, 'report_xlsx'])->name('mod.report_xlsx');
+    Route::post('/company/{company}/report_xlsx', [ReportXlsxController::class, 'report_xlsx'])->name('mod.report_xlsx');
 
     Route::post('/company/{company}/report_xlsx_sales', [ModController::class, 'report_xlsx_sales'])->name('mod.report_xlsx_sales');
 });
