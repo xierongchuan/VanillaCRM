@@ -340,8 +340,8 @@
                                                 </tr>
 
                                                 @php
-                                                    $now_men += (int) $manager->sold;
-                                                    $mon_men += (int) $manager->month;
+                                                    $now_men += (int) $sale;
+                                                    $mon_men += (int) $sales[$id];
                                                 @endphp
                                             @endforeach
 
