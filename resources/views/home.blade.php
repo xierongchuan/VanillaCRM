@@ -7,12 +7,16 @@
     <div class="m-2"></div>
 
     @if (isset($companies))
-
+        <div class="bg-transparent mt-2 rounded p-3 pb-2 mb-0">
+            <div class="d-flex flex-wrap justify-content-center">
+                <h2>Отчёты</h2>
+            </div>
+        </div>
         @foreach ($companies as $company)
             @if (isset($coms_data[$company->id]))
 
                 @php
-                    $data = (array)json_decode($coms_data[$company->id]);
+                    $data = (array) json_decode($coms_data[$company->id]);
                 @endphp
 
                 <div class="row flex-column align-items-center">
@@ -21,7 +25,7 @@
                             <h1 class="m-0 mx-1 perm_panel_switch" panel="perm_panel_{{ $company->id }}">
                                 <b>{{ $company->name }}</b>
                             </h1>
-                            <div class="order-last lead">
+                            <div class="order-last lead my-auto">
                                 <button class="btn btn-primary slider_prev_button" section-id="{{ $company->id }}">
                                     <i class="bi bi-chevron-left"></i>
                                 </button>
@@ -326,10 +330,9 @@
                                         <tbody>
 
                                             @foreach ($data['Sales'] as $id => $sale)
-
-                                            @php
-                                            $manager = App\Models\User::where('id', $id)->first();
-                                            @endphp
+                                                @php
+                                                    $manager = App\Models\User::where('id', $id)->first();
+                                                @endphp
 
                                                 <tr>
                                                     <th scope="row">{{ $loop->iteration }}</th>

@@ -11,6 +11,11 @@
 @section('content')
 
     <div class="row flex-column align-items-center">
+        <div class="bg-transparent mt-2 rounded p-3 pb-2 mb-0">
+            <div class="d-flex flex-wrap justify-content-center">
+                <h2>Компании</h2>
+            </div>
+        </div>
         @foreach ($companies as $company)
             <div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
                 <div class="d-flex justify-content-between mx-2">
@@ -18,7 +23,7 @@
                         style="font-size: calc(1.605rem + .66vw);margin-top: 0.1rem;"><b>{{ $company->name }}</b></h2>
 
                     <div class="btn-group align-items-center col-lg-3 p-0 mb-0" role="group"
-                         aria-label="Basic mixed styles example">
+                        aria-label="Basic mixed styles example">
                         <a href="{{ route('company.update', $company->id) }}" type="button" class="btn btn-warning"><i
                                 class="bi bi-pencil"></i></a>
                         <a href="{{ route('company.delete', $company->id) }}" type="button" class="btn btn-danger"><i
@@ -34,23 +39,23 @@
                         @foreach ($company->departments as $department)
                             <span>
                                 <div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
-                                    <div class="col-lg-9 lead"><a
+                                    <div class="col-lg-9 lead"><a style="font-size: 1.5rem;"
                                             href="{{ route('company.department.index', compact('company', 'department')) }}"
                                             class="nav-link">{{ $department->name }}</a></div>
 
                                     <div class="btn-group col-lg-3 p-0 mb-2" role="group"
-                                         aria-label="Basic mixed styles example">
+                                        aria-label="Basic mixed styles example">
                                         <a href="{{ route('company.department.update', ['company' => $company, 'department' => $department]) }}"
-                                           type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                            type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
                                         <a href="{{ route('company.department.delete', ['company' => $company, 'department' => $department]) }}"
-                                           type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                            type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                     </div>
                                 </div>
                             </span>
                         @endforeach
 
                         <a href="{{ route('company.department.create', $company->id) }}"
-                           class="btn btn-success w-100 mt-1">Создать <i class="bi bi-people"></i></a>
+                            class="btn btn-success w-100 mt-1">Создать <i class="bi bi-people"></i></a>
 
                     </div>
 
@@ -59,17 +64,18 @@
                         @foreach ($company->permissions as $permission)
                             <span>
                                 <div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
-                                    <div class="col-lg-9 lead"><a href="#" class="nav-link">{{ $permission->name }}
+                                    <div class="col-lg-9 lead"><a href="#" style="font-size: 1.5rem;"
+                                            class="nav-link">{{ $permission->name }}
                                             ({{ $permission->value }})
                                         </a></div>
 
                                     <div class="btn-group col-lg-3 p-0 mb-2" role="group"
-                                         aria-label="Basic mixed styles example">
+                                        aria-label="Basic mixed styles example">
                                         <a href="{{ route('company.permission.update', compact('company', 'permission')) }}"
-                                           type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                            type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
                                         @if (config('app.debug'))
                                             <a href="{{ route('company.permission.delete', compact('company', 'permission')) }}"
-                                               type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                                type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                         @endif
                                     </div>
                                 </div>
@@ -78,7 +84,7 @@
 
 
                         <a href="{{ route('company.permission.create', $company->id) }}"
-                           class="btn btn-success w-100 mt-1">Создать <i class="bi bi-person-vcard"></i></a>
+                            class="btn btn-success w-100 mt-1">Создать <i class="bi bi-person-vcard"></i></a>
                     </div>
 
                     <div class="p-2 border border-2 rounded mt-2">
@@ -86,25 +92,24 @@
                         @foreach ($company->users as $user)
                             <span>
                                 <div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
-                                    <div class="col-lg-9 lead"><a
+                                    <div class="col-lg-9 lead"><a style="font-size: 1.5rem;"
                                             href="{{ route('company.user.update', compact('company', 'user')) }}"
                                             class="nav-link">{{ $user->full_name }} ({{ $user->login }})</a></div>
 
                                     <div class="btn-group col-lg-3 p-0 mb-2" role="group"
-                                         aria-label="Basic mixed styles example">
+                                        aria-label="Basic mixed styles example">
                                         <a href="{{ route('company.user.update', compact('company', 'user')) }}"
-                                           type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                            type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
                                         <a href="{{ route('company.user.delete', compact('company', 'user')) }}"
-                                           type="button" data-id="{{ $user->id }}"
-                                           data-name="{{ $user->name }}" class="btn btn-danger delete-user"><i
-                                                class="bi bi-trash"></i></a>
+                                            type="button" data-id="{{ $user->id }}" data-name="{{ $user->name }}"
+                                            class="btn btn-danger delete-user"><i class="bi bi-trash"></i></a>
                                     </div>
                                 </div>
                             </span>
                         @endforeach
 
                         <a href="{{ route('company.user.create', compact('company')) }}"
-                           class="btn btn-success w-100 mt-1">Создать <i class="bi bi-person"></i></a>
+                            class="btn btn-success w-100 mt-1">Создать <i class="bi bi-person"></i></a>
                     </div>
 
                     <div class="p-2 border border-2 rounded mt-2">
@@ -112,43 +117,24 @@
                         @foreach ($company->fields as $field)
                             <span>
                                 <div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
-                                    <div class="col-lg-9 lead"><a
+                                    <div class="col-lg-9 lead"><a style="font-size: 1.5rem;"
                                             href="{{ route('company.field.update', compact('company', 'field')) }}"
                                             class="nav-link">{{ $field->title }}</a></div>
 
                                     <div class="btn-group col-lg-3 p-0 mb-2" role="group"
-                                         aria-label="Basic mixed styles example">
+                                        aria-label="Basic mixed styles example">
                                         <a href="{{ route('company.field.update', compact('company', 'field')) }}"
-                                           type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                            type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
                                         <a href="{{ route('company.field.delete', compact('company', 'field')) }}"
-                                           type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                            type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                     </div>
                                 </div>
                             </span>
                         @endforeach
 
                         <a href="{{ route('company.field.create', compact('company')) }}"
-                           class="btn btn-success w-100 mt-1">Создать <i class="bi bi-link"></i></a>
+                            class="btn btn-success w-100 mt-1">Создать <i class="bi bi-link"></i></a>
                     </div>
-
-                    {{--					<script> --}}
-                    {{--						document.querySelectorAll('.delete-user').forEach(item => { --}}
-                    {{--							item.addEventListener('click', function(event) { --}}
-                    {{--								event.preventDefault(); --}}
-                    {{--								event.stopPropagation(); // Добавлено здесь --}}
-
-                    {{--								var userId = this.getAttribute('data-id'); --}}
-                    {{--								var userName = this.getAttribute('data-name'); --}}
-                    {{--								var link = this.getAttribute('href'); --}}
-
-                    {{--								var confirmed = confirm("Вы точно хотите удалить " + userName + "?"); --}}
-
-                    {{--								if (confirmed) { --}}
-                    {{--									window.location.href = link; --}}
-                    {{--								} --}}
-                    {{--							}); --}}
-                    {{--						}); --}}
-                    {{--					</script> --}}
                 </div>
             </div>
         @endforeach

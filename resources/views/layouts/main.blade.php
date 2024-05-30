@@ -43,7 +43,7 @@
 
 </head>
 
-<body data-bs-theme="{{ session('theme') ?? 'dark' }}">
+<body data-bs-theme="{{ session('theme') ?? 'light' }}">
 
     <header>
         <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
@@ -116,13 +116,21 @@
                         @endif
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            <a class="nav-link dropdown-toggle fs-5 p-0" style="padding-top: 0.38rem!important;" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                Тема
+                                @if (session('theme') == 'light')
+                                    <i class="bi bi-lightbulb-fill"></i>
+                                @elseif (session('theme') == 'dark')
+                                    <i class="bi bi-cloud-haze2"></i>
+                                @else
+                                    <i class="bi bi-palette2"></i>
+                                @endif
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('theme.switch', 'light') }}">Яркая</a></li>
-                                <li><a class="dropdown-item" href="{{ route('theme.switch', 'dark') }}">Тёмная</a></li>
+                                <li><a class="dropdown-item" href="{{ route('theme.switch', 'light') }}"><i
+                                            class="bi bi-lightbulb-fill"></i> Светлая</a></li>
+                                <li><a class="dropdown-item" href="{{ route('theme.switch', 'dark') }}"><i
+                                            class="bi bi-cloud-haze2"></i> Тёмная</a></li>
                             </ul>
                         </li>
 
