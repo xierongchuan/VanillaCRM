@@ -18,14 +18,19 @@ use PhpOffice\PhpSpreadsheet\Shared\Date as Date;
 
 class ReportXlsxService
 {
-
+    // Метод для генерации отчета
     public function generateReport(Request $request): array
     {
+        // Получение всех входных данных из запроса
         $inputData = $request->all();
+
+        // Получение компании текущего пользователя
         $company = Company::find(Auth::user()->com_id);
 
+        // Инициализация массива для хранения данных работников
         $workers = [];
 
+        // Перебор входных данных для извлечения информации о работниках
         foreach ($inputData as $key => $value) {
             if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
                 $workerNumber = $matches[1];
@@ -34,17 +39,26 @@ class ReportXlsxService
             }
         }
 
+        // Получение данных для листа Excel
         $sheetData = $this->getSheetData($request, $company, $workers);
 
+        // Валидация запроса
         $this->validateRequest($request);
+
+        // Проверка типа файла
         $this->validateFileType($request);
 
+        // Получение данных о правах доступа для компании
         $permission = $this->getPermissionData($company);
+
+        // Заполнение данных листа Excel
         $this->fillSheetData($sheetData, $permission, $request, $company);
 
+        // Возврат данных листа
         return $sheetData;
     }
 
+    // Метод для получения данных для листа Excel
     private function getSheetData(Request $request, Company $company, array $workers): array
     {
         return [
@@ -83,28 +97,35 @@ class ReportXlsxService
         ];
     }
 
+    // Метод для валидации запроса
     private function validateRequest(Request $request): void
     {
         $request->validate([
-            'file' => 'max:51200',
-            'note' => 'max:5500',
+            'file' => 'max:51200', // Максимальный размер файла 50MB
+            'note' => 'max:5500',  // Максимальная длина заметки 5500 символов
         ]);
     }
 
+    // Метод для проверки типа файла
     private function validateFileType(Request $request): void
     {
         if ($request->file('file')->getMimeType() !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-            throw new Exception('Файл должен быть типа xlsx (Exel).');
+            throw new Exception('Файл должен быть типа xlsx (Excel).');
         }
     }
 
+    // Метод для получения данных о правах доступа для компании
     private function getPermissionData(Company $company): array
     {
+        // Получение права доступа для отчета типа xlsx
         $permission = Permission::where('com_id', $company->id)
             ->where('value', 'report_xlsx')
             ->first();
 
+        // Разделение данных права доступа на строки
         $lines = explode(PHP_EOL, $permission->data);
+
+        // Парсинг строк для получения правил
         $rule = [];
         foreach ($lines as $line) {
             if (trim($line)) {
@@ -113,23 +134,30 @@ class ReportXlsxService
             }
         }
 
+        // Возврат массива правил
         return $rule;
     }
 
+    // Метод для заполнения данных листа Excel
     private function fillSheetData(array &$sheetData, array $rule, Request $request, Company $company): void
     {
+        // Загрузка файла Excel
         $sheet = IOFactory::load($request->file('file'));
         $wsheet = $sheet->getActiveSheet();
 
+        // Перебор строк листа
         foreach ($wsheet->getRowIterator() as $row) {
 
             $cellIterate = $row->getCellIterator();
             $cellIterate->setIterateOnlyExistingCells(true);
+
+            // Перебор ячеек строки
             foreach ($cellIterate as $cell) {
                 $cellAddress = $cell->getCoordinate();
                 $cellLetter = preg_replace('/[0-9]/', '', $cellAddress);
                 $cellNum = preg_replace('/[A-z]/', '', $cellAddress);
 
+                // Обработка ячеек в колонке A для заполнения данных отчета
                 if (($cellLetter == 'A') && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS] && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]) {
                     $date = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A' . $cellNum)->getCalculatedValue()));
                     if ($date == Carbon::createFromFormat('Y-m-d', $request->for_date)->format('d.m.Y')) {
@@ -143,6 +171,7 @@ class ReportXlsxService
                     }
                 }
 
+                // Обработка ячеек в колонке E для заполнения данных отчета
                 if (($cellLetter == 'E') && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS] && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]) {
                     $date2 = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A' . $cellNum)->getCalculatedValue()));
                     if ($date2 == Carbon::createFromFormat('Y-m-d', $request->for_date)->format('d.m.Y')) {
@@ -151,14 +180,17 @@ class ReportXlsxService
                 }
             }
 
+            // Прерывание цикла, если данные найдены
             if ($sheetData[ReportXlsxRule::CONTRACTS] != '' && $sheetData[ReportXlsxRule::CONTRACTS] !== null)
                 break;
         }
 
+        // Если данные не найдены, выбрасываем исключение
         if ($sheetData[ReportXlsxRule::CONTRACTS] == '' || $sheetData[ReportXlsxRule::CONTRACTS] === null) {
             throw new Exception('Не найден отчёт на заданный день');
         }
 
+        // Заполнение оставшихся данных отчета
         $sheetData['Дата'] = $request->for_date;
         $sheetData['File'] = $request->file('file')->getClientOriginalName();
 
@@ -169,6 +201,7 @@ class ReportXlsxService
         $sheetData[ReportXlsxRule::CONTRACTS_2] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2])->getCalculatedValue();
         $sheetData[ReportXlsxRule::PERCENT_OF_QUANTITY] = round(($wsheet->getCell($rule[ReportXlsxRule::PERCENT_OF_QUANTITY])->getCalculatedValue() * 100), 2);
 
+        // Вычисление коэффициента конверсии
         $num1 = (int) $wsheet->getCell($rule[ReportXlsxRule::ACTUAL_QUANTITY])->getCalculatedValue();
         $num2 = (int) $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2])->getCalculatedValue();
         $result = 0;
@@ -177,13 +210,12 @@ class ReportXlsxService
         }
         $sheetData[ReportXlsxRule::CONVERSION_2] = round($result, 2);
 
+        // Заполнение оставшихся данных отчета
         $sheetData[ReportXlsxRule::PERCENT_OF_SUM] = round(($wsheet->getCell($rule[ReportXlsxRule::PERCENT_OF_SUM])->getCalculatedValue()), 2);
-
         $sheetData[ReportXlsxRule::PAYMENT_3] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_3])->getCalculatedValue();
         $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT_3] = $wsheet->getCell($rule[ReportXlsxRule::ADDITIONAL_PAYMENT_3])->getCalculatedValue();
         $sheetData[ReportXlsxRule::LEASING_3] = $wsheet->getCell($rule[ReportXlsxRule::LEASING_3])->getCalculatedValue();
         $sheetData[ReportXlsxRule::BALANCE_3] = $wsheet->getCell($rule[ReportXlsxRule::BALANCE_3])->getCalculatedValue();
-
         $sheetData[ReportXlsxRule::THROUGH_BANK_QTY_5] = $wsheet->getCell($rule[ReportXlsxRule::THROUGH_BANK_QTY_5])->getCalculatedValue();
         $sheetData[ReportXlsxRule::THROUGH_BANK_SUM_5] = $wsheet->getCell($rule[ReportXlsxRule::THROUGH_BANK_SUM_5])->getCalculatedValue();
         $sheetData[ReportXlsxRule::THROUGH_LEASING_QTY_5] = $wsheet->getCell($rule[ReportXlsxRule::THROUGH_LEASING_QTY_5])->getCalculatedValue();
@@ -191,7 +223,7 @@ class ReportXlsxService
         $sheetData[ReportXlsxRule::TOTAL_QTY_5] = $wsheet->getCell($rule[ReportXlsxRule::TOTAL_QTY_5])->getCalculatedValue();
         $sheetData[ReportXlsxRule::SUM_5] = $wsheet->getCell($rule[ReportXlsxRule::SUM_5])->getCalculatedValue();
 
-
+        // Сохранение отчета в базе данных
         $report = new Report();
         $report->type = 'report_xlsx';
         $report->com_id = $company->id;
