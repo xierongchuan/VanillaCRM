@@ -295,7 +295,6 @@
                                 <div class="bg-body-tertiary rounded p-3 mb-2">
 
                                     @php
-
                                         $sales = $sales_data[$company->id];
                                         $totalSum = array_sum($sales);
 
@@ -329,21 +328,21 @@
                                         </thead>
                                         <tbody>
 
-                                            @foreach ($data['Sales'] as $id => $sale)
+                                            @foreach ($sales as $id => $sale)
                                                 @php
-                                                    $manager = App\Models\User::where('id', $id)->first();
+                                                    $worker = App\Models\User::where('id', $id)->first();
                                                 @endphp
 
                                                 <tr>
                                                     <th scope="row">{{ $loop->iteration }}</th>
-                                                    <td>{{ $manager->full_name }}</td>
-                                                    <td class="text-nowrap overflow-hidden">{{ $sale }} шт</td>
+                                                    <td>{{ $worker->full_name }}</td>
+                                                    <td class="text-nowrap overflow-hidden">{{ ((array)$data['Sales'])[$id] }} шт</td>
                                                     <td class="text-nowrap overflow-hidden">{{ $sales[$id] }} шт</td>
                                                     <td class="text-nowrap overflow-hidden">{{ $percentages[$id] }} %</td>
                                                 </tr>
 
                                                 @php
-                                                    $now_men += (int) $sale;
+                                                    $now_men += (int) ((array)$data['Sales'])[$id];
                                                     $mon_men += (int) $sales[$id];
                                                 @endphp
                                             @endforeach
@@ -657,11 +656,25 @@
 @endif
 
 
-@if (@Auth::user()->role === 'user' && !empty($company->data))
+@if (@Auth::user()->role === 'user')
     @if (in_array('report_xlsx', $data->perm))
         @php
-            $data_com = (array) json_decode(@$company->data);
-            $workers = $data_com['Продажи'] ?? [];
+            $sale_data = (array) $data->sale_data;
+            $totalSum = array_sum($sale_data);
+
+            $percentages = [];
+            foreach ($sale_data as $id => $sale) {
+                if ((int) $sale == 0) {
+                    $percentages[$id] = 0;
+                    continue;
+                }
+
+                $percentage = ($sale / $totalSum) * 100;
+                $percentages[$id] = round($percentage, 1);
+            }
+
+            $now_men = 0;
+            $mon_men = 0;
         @endphp
 
         <div class="row flex-column align-items-center">
@@ -677,14 +690,17 @@
                 <form id="perm_panel_report_xlsx_sales" action="{{ route('mod.report_xlsx_sales', $company) }}"
                     method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
                     @csrf
-                    @foreach ($workers as $worker)
-                        <input type="hidden" name="worker_name_{{ $loop->iteration }}"
-                            value="{{ $worker->name }}">
+
+                    @foreach ($sale_data as $id => $sale)
+                        @php
+                            $worker = App\Models\User::where('id', $id)->first();
+                        @endphp
+                        <input type="hidden" name="worker_name_{{ $worker->id }}" value="{{ $worker->full_name }}">
                         <div class="input-group mb-2">
-                            <span class="input-group-text col-7 col-md-9">{{ $worker->name }}</span>
-                            <input type="number" class="col-4 col-md-2 form-control repost_xlsx_required_inputs"
-                                name="worker_month_{{ $loop->iteration }}" id="worker_month_{{ $loop->iteration }}"
-                                placeholder="Sold" value="{{ $worker->month }}" aria-label="Sold" required>
+                            <span class="input-group-text col-8">{{ $worker->full_name }}</span>
+                            <input type="number" class="form-control col-4 repost_xlsx_required_inputs"
+                                name="worker_sold_{{ $worker->id }}" placeholder="Sold"
+                                value="{{ $sale }}" aria-label="Sold" required>
                             <span class="input-group-text px-1 px-md-2 col-2 col-md-1"
                                 id="report_worker_percent_{{ $loop->iteration }}">99.9 %</span>
                         </div>
@@ -700,10 +716,6 @@
     @endif
 
     @if (in_array('report_service', $data->perm))
-        @php
-            $data_com = (array) json_decode(@$company->data);
-            $workers = $data_com['Продажи'] ?? [];
-        @endphp
 
         <div class="row flex-column align-items-center">
             <div class="w-100">

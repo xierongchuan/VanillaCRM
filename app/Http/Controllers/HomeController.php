@@ -78,6 +78,8 @@ class HomeController extends Controller
         // Получение разрешений пользователя
         $permissions = Permission::whereIn('id', json_decode($post->permission, true))->get();
         $permission_vals = $permissions->pluck('value')->toArray();
+        // Получение последнего отчёта продеж менеджеров
+        $sale_data = $this->getSaleData($company);
 
         // Создание объекта с данными пользователя
         $data = (object) [
@@ -85,6 +87,7 @@ class HomeController extends Controller
             'department' => $department,
             'post' => $post,
             'perm' => $permission_vals,
+            'sale_data' => $sale_data
         ];
 
         // Получение сервисного отчета
@@ -113,6 +116,56 @@ class HomeController extends Controller
         return $com_data;
     }
 
+    // Метод для получения поледнего отчёта продажы менеджеров
+    private function getSaleData($company): array
+    {
+        // Получаем последний отчет report_xlsx для данной компании
+        $lastReport = Report::where('type', 'report_xlsx')
+            ->where('com_id', $company->id)
+            ->orderBy('for_date', 'desc')
+            ->first();
+
+        if (!$lastReport) {
+            return [];
+        }
+
+        // Преобразуем данные отчета из JSON в массив
+        $lastReportData = (array) json_decode($lastReport->data);
+        $salesData = (array) $lastReportData['Sales'];
+
+        // Получаем ID первого менеджера из данных о продажах
+        $managerId = array_key_first($salesData);
+
+        if (!$managerId) {
+            return [];
+        }
+
+        // Получаем менеджера из отчета
+        $manager = User::where('id', $managerId)->first();
+
+        if (!$manager) {
+            return [];
+        }
+
+        // Получаем сотрудников из департамента менеджера отчета
+        $workers = User::where('dep_id', $manager->dep_id)->get();
+
+        // Переводим ID сотрудников в массив
+        $workerIds = $workers->pluck('id')->toArray();
+
+        // Инициализация массива для хранения данных о продажах
+        $saleData = array_fill_keys($workerIds, 0);
+
+        // Заполняем массив данными о продажах из последнего отчета
+        foreach ($workerIds as $id) {
+            if (isset($salesData[$id])) {
+                $saleData[$id] = $salesData[$id];
+            }
+        }
+
+        return $saleData;
+    }
+
     // Метод для получения списка месячных продаж менеджеров
     private function getSalesData($companies): array
     {
@@ -127,25 +180,51 @@ class HomeController extends Controller
             $endDate = now()->endOfMonth();
 
             // Выполняем запрос с фильтрацией по типу, компании и диапазону дат
-            $reports = Report::where('type', 'report_xlsx')
+            $monthReports = Report::where('type', 'report_xlsx')
                 ->where('com_id', $company->id)
                 ->whereBetween('for_date', [$startDate, $endDate]) // Фильтр по диапазону дат
                 ->orderBy('for_date', 'desc')
                 ->get();
 
-            if ($reports->isEmpty())
-                continue;
+            // Если нету отчётов м месяц
+            if ($monthReports->isEmpty()) {
+                // Находим последний отчет report_xlsx для данной компании по полю for_date
+                $lastReport = Report::where('type', 'report_xlsx')
+                    ->where('com_id', $company->id)
+                    ->orderBy('for_date', 'desc')
+                    ->first();
+
+                if (!$lastReport)
+                    continue;
+
+                // Извлекаем дату последнего отчета и вычисляем начало и конец месяца
+                $lastReportDate = Carbon::createFromFormat('Y-m-d', $lastReport->for_date);
+                $startDate = $lastReportDate->copy()->startOfMonth()->format('Y-m-d');
+                $endDate = $lastReportDate->copy()->endOfMonth()->format('Y-m-d');
+
+                // Получаем все отчеты за месяц, в котором был найден последний отчет
+                $monthReports = Report::where('type', 'report_xlsx')
+                    ->where('com_id', $company->id)
+                    ->whereBetween('for_date', [$startDate, $endDate])
+                    ->orderBy('for_date', 'desc')
+                    ->get();
+            }
+
+            $reports = $monthReports;
+
 
             foreach ($reports as $report) {
                 $monthSales[] = (array) (((array) json_decode($report->data))['Sales']);
             }
 
-            $managerId = array_key_first($monthSales[0]);
+            $managerId = array_key_first($monthSales[0]);//dd($monthSales);
 
             // Получение менеджера из отчёта
             $manager = User::where('id', $managerId)->first();
             // Получение сотрудников из департамента менеджера отчёта
             $workers = User::where('dep_id', $manager->dep_id)->get();
+            // Получение всех сотрудников компании
+            // $workers = User::where('com_id', $company->id)->get();
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
 
@@ -207,20 +286,36 @@ class HomeController extends Controller
     // Метод для получения URL последних отчетов
     private function getLastReportUrls($companies)
     {
-        $last_repor_urls = [];
+        $last_report_urls = [];
 
         // Обработка каждой компании
         foreach ($companies as $company) {
-            // Получение имени последнего файла отчета
-            $l_r_f_n = (string) @((array) json_decode($company->data))['Last File'];
-            $l_r_path = storage_path('app/public/tmp/' . $l_r_f_n);
-            $l_r_path_proj = 'storage/app/public' . str_replace(storage_path('app/public'), '', $l_r_path);
-            // Формирование URL
-            $last_repor_urls[] = asset($l_r_path_proj);
+            // Получение последнего отчета для данной компании
+            $lastReport = Report::where('com_id', $company->id)
+                ->where('type', 'report_xlsx')
+                ->orderBy('for_date', 'desc')
+                ->first();
+
+            if ($lastReport) {
+                // Декодирование данных отчета
+                $data = json_decode($lastReport->data, true);
+
+                // Проверка на наличие ключа 'File' в данных отчета
+                if (isset($data['File'])) {
+                    // Получение имени файла из данных отчета
+                    $fileName = (string) $data['File'];
+                    $filePath = storage_path('app/public/tmp/' . $fileName);
+                    $fileUrl = 'storage/app/public' . str_replace(storage_path('app/public'), '', $filePath);
+
+                    // Формирование URL
+                    $last_report_urls[] = asset($fileUrl);
+                }
+            }
         }
 
-        return $last_repor_urls;
+        return $last_report_urls;
     }
+
 
     // Метод для получения сервисных отчетов
     private function getServiceReports($companies)

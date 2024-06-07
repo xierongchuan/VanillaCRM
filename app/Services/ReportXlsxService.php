@@ -51,8 +51,11 @@ class ReportXlsxService
         // Получение данных о правах доступа для компании
         $permission = $this->getPermissionData($company);
 
+        // Сохранение файла из запроса
+        $fileName = $this->saveFile($request);
+
         // Заполнение данных листа Excel
-        $this->fillSheetData($sheetData, $permission, $request, $company);
+        $this->fillSheetData($sheetData, $permission, $request, $company, $fileName);
 
         // Возврат данных листа
         return $sheetData;
@@ -139,7 +142,7 @@ class ReportXlsxService
     }
 
     // Метод для заполнения данных листа Excel
-    private function fillSheetData(array &$sheetData, array $rule, Request $request, Company $company): void
+    private function fillSheetData(array &$sheetData, array $rule, Request $request, Company $company, string $fileName): void
     {
         // Загрузка файла Excel
         $sheet = IOFactory::load($request->file('file'));
@@ -192,7 +195,7 @@ class ReportXlsxService
 
         // Заполнение оставшихся данных отчета
         $sheetData['Дата'] = $request->for_date;
-        $sheetData['File'] = $request->file('file')->getClientOriginalName();
+        $sheetData['File'] = $fileName;
 
         $sheetData[ReportXlsxRule::PLAN_QUANTITY] = $wsheet->getCell($rule[ReportXlsxRule::PLAN_QUANTITY])->getCalculatedValue();
         $sheetData[ReportXlsxRule::PLAN_SUM] = $wsheet->getCell($rule[ReportXlsxRule::PLAN_SUM])->getCalculatedValue();
@@ -230,5 +233,15 @@ class ReportXlsxService
         $report->for_date = Carbon::createFromFormat('Y-m-d', $request->for_date)->format('Y-m-d');
         $report->data = json_encode($sheetData, true);
         $report->save();
+    }
+
+    // Метод для сохранения файла
+    private function saveFile(Request $request): string
+    {
+        $file = $request->file('file');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->storeAs('public/tmp', $fileName);
+
+        return $fileName;
     }
 }

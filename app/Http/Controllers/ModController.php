@@ -100,33 +100,52 @@ class ModController extends Controller
 
     public function report_xlsx_sales(Company $company)
     {
-        ///ToDo
-        // $inputData = request()->all();
+        // Получаем последний отчет report_xlsx для данной компании
+        $lastReport = Report::where('com_id', $company->id)
+            ->where('type', 'report_xlsx')
+            ->orderBy('for_date', 'desc')
+            ->first();
 
-        // $data = (array)json_decode($company->data);
+        if (!$lastReport) {
+            return redirect()->route('home.index')->with('error', 'Отчет не найден.');
+        }
 
-        // $workers = (array)$data['Продажи'];
+        // Декодируем данные отчета
+        $data = json_decode($lastReport->data, true);
 
-        // foreach ($inputData as $key => $value) {
-        //     if (preg_match('/^worker_month_(\d+)$/', $key, $matches) && is_numeric($value)) {
-        //         $workerNumber = $matches[1]; // Извлекаем номер рабочего
-        //         $workerMonth = $inputData['worker_month_' . $workerNumber];
-        //         $workerName = $inputData['worker_name_' . $workerNumber]; // Извлекаем соответствующее имя рабочего
+        // Проверка на наличие данных о продажах
+        if (!isset($data['Sales'])) {
+            return redirect()->route('home.index')->with('error', 'Отчет не содержит данных о продажах.');
+        }
 
-        //         $workers[$workerNumber] = [
-        //             'name' => (string)$workerName,
-        //             'sold' => (int)$workers[$workerNumber]->sold,
-        //             'month' => (int)$workerMonth
-        //         ];
-        //     }
-        // }
+        // Получаем все входные данные из запроса
+        $inputData = request()->all();
 
-        // $data['Продажи'] = $workers;
-        // $company->data = json_encode($data);
-        // $company->save();
+        // Инициализируем массив для хранения данных работников
+        $workers = $data['Sales'];
 
-        // return redirect()->route('home.index')->with('success', 'Продажи успешно изменены.');
+        // Перебираем входные данные и обновляем данные о продажах работников
+        foreach ($inputData as $key => $value) {
+            if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
+                $workerNumber = $matches[1];
+                if (isset($inputData['worker_sold_' . $workerNumber])) {
+                    $workerSold = (int) $inputData['worker_sold_' . $workerNumber];
+                    $workers[$workerNumber] = $workerSold;
+                }
+            }
+        }
+
+        // Обновляем данные о продажах в отчете
+        $data['Sales'] = $workers;
+        $lastReport->data = json_encode($data);
+
+        // Сохраняем обновленный отчет
+        $lastReport->save();
+
+        return redirect()->route('home.index')->with('success', 'Продажи успешно изменены.');
     }
+
+
 
     private function numberToColumn($number)
     {
@@ -134,7 +153,7 @@ class ModController extends Controller
         while ($number > 0) {
             $remainder = ($number - 1) % 26;
             $column = chr(65 + $remainder) . $column;
-            $number = (int)(($number - $remainder) / 26);
+            $number = (int) (($number - $remainder) / 26);
         }
         return $column;
     }
