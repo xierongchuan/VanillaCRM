@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ReportXlsxRule;
+use App\Models\Report;
 use Illuminate\Support\Facades\DB;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -38,49 +40,107 @@ class ArchiveController extends Controller
             $file_data = [
                 'name' => basename($file),
                 'company' => $file_name_data[0],
-                'url' => (string)asset($filePath),
+                'url' => (string) asset($filePath),
                 'date' => $this->getRussianMonthName($file_name_data[1]),
-                'sum' => number_format((int)$file_name_data[3], 0, '', ' '),
-                'count' => number_format((int)$file_name_data[4], 0, '', ' '),
-                'fakt' => number_format(@(int)$file_name_data[5], 0, '', ' ')
+                'sum' => number_format((int) $file_name_data[3], 0, '', ' '),
+                'count' => number_format((int) $file_name_data[4], 0, '', ' '),
+                'fakt' => number_format(@(int) $file_name_data[5], 0, '', ' ')
             ];
 
             // Добавляем URL в массив
-            $files_data[] = (object)$file_data;
+            $files_data[] = (object) $file_data;
         }
 
         $files_data = array_reverse($files_data);
 
-        return view('company.archive', compact('company', 'files_data'));
+        $groupedReports = $this->groupReportsByMonth();
+
+        return view('company.archive', compact('company', 'files_data', 'groupedReports'));
+    }
+
+
+    public function groupReportsByMonth()
+    {
+        // Извлекаем все отчеты типа "report_xlsx"
+        $reports = Report::where('type', 'report_xlsx')
+            ->orderBy('for_date', 'desc')
+            ->get();
+
+        // Инициализируем массив для хранения отчетов, сгруппированных по месяцам
+        $groupedReports = [];
+
+        // Проходим по каждому отчету
+        foreach ($reports as $report) {
+            // Получаем месяц и год из даты отчета
+            $date = Carbon::parse($report->for_date);
+            $month = $date->format('Y-m'); // Форматируем дату как 'YYYY-MM'
+
+            // Если месяц еще не существует в массиве, создаем его
+            if (!isset($groupedReports[$month])) {
+                $groupedReports[$month] = [];
+            }
+
+            // Декодируем данные отчета
+            $reportData = json_decode($report->data, true);
+
+            // Извлекаем суммы, количество и фактические значения из данных
+            $url = '/storage/app/public/tmp/' . $reportData['File'];
+            $sum = isset($reportData[ReportXlsxRule::SUM_5]) ? $reportData[ReportXlsxRule::SUM_5] : 0;
+            $quantity = isset($reportData[ReportXlsxRule::TOTAL_QTY_5]) ? $reportData[ReportXlsxRule::TOTAL_QTY_5] : 0;
+            $fact = isset($reportData[ReportXlsxRule::ACTUAL_QUANTITY]) ? $reportData[ReportXlsxRule::ACTUAL_QUANTITY] : 0;
+
+            // Добавляем отчет и извлеченные данные в соответствующий месяц
+            $groupedReports[$month][] = [
+                'report' => $report,
+                'url' => $url,
+                'sum' => $sum,
+                'quantity' => $quantity,
+                'fact' => $fact
+            ];
+        }
+
+        return $groupedReports;
     }
 
     public function remove_last_report(Company $company)
     {
-        if (empty($company->data)) {
-            return redirect()->route('home.index')->withErrors('Последний отчтёт и так был удалён!');
+        // Получение последнего отчета report_xlsx для данной компании
+        $lastReport = Report::where('com_id', $company->id)
+            ->where('type', 'report_xlsx')
+            ->orderBy('for_date', 'desc')
+            ->first();
+
+        // Проверка, существует ли отчет
+        if (!$lastReport) {
+            return redirect()->route('home.index')->withErrors('Последний отчет уже был удален!');
         }
 
-        $file = (string)@((array)json_decode($company->data))['Last File'];
+        // Декодирование данных отчета
+        $data = json_decode($lastReport->data, true);
+
+        // Получение имени последнего файла отчета
+        $file = isset($data['File']) ? (string) $data['File'] : '';
+
+        // Путь к файлу во временной папке и архиве
         $file_tmp_path = storage_path('app/public/tmp/' . $file);
         $file_path = storage_path('app/public/archive/' . $file);
 
-        // Проверяем, существует ли файл
+        // Проверка и удаление файла из временной папки
         if (File::exists($file_tmp_path)) {
-            // Удаляем файл
             File::delete($file_tmp_path);
         }
 
-        // Проверяем, существует ли файл
+        // Проверка и удаление файла из архива
         if (File::exists($file_path)) {
-            // Удаляем файл
             File::delete($file_path);
         }
 
-        $company->data = '';
-        $company->save();
+        // Удаление данных последнего отчета из компании
+        $lastReport->delete();
 
-        return redirect()->route('home.index')->with('success', 'Последний отчёт успешно удалён!');
+        return redirect()->route('home.index')->with('success', 'Последний отчет успешно удален!');
     }
+
 
     public function getServiceReportXlsx(Company $company, string $date)
     {
@@ -126,7 +186,7 @@ class ArchiveController extends Controller
         $i = 2;
         foreach ($reports as $key => $value) {
 
-            $val = (object)json_decode($value->data);
+            $val = (object) json_decode($value->data);
 
             $sheet->setCellValue('A' . $i, $value->for_date);
             $sheet->setCellValue('B' . $i, $val->dop);
@@ -193,11 +253,11 @@ class ArchiveController extends Controller
 
             $reports[$formattedYear . ' ' . $formattedMonth] = [
                 $item['date'],
-                (int)$item['total_sum'],
+                (int) $item['total_sum'],
             ];
         }
 
-        return view('company.service_archive', compact('company','reports'));
+        return view('company.service_archive', compact('company', 'reports'));
     }
 
     public function deleteLastServiceReport(Company $company)
@@ -213,7 +273,7 @@ class ArchiveController extends Controller
             return redirect()->route('home.index')->with('success', 'Последний отчёт успешно удалён!');
         }
 
-        return redirect()->route('home.index')->withErrors( 'Небыло никакого отчёта!');
+        return redirect()->route('home.index')->withErrors('Небыло никакого отчёта!');
     }
 
     private function getRussianMonthName($date)

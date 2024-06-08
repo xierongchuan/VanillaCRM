@@ -8,6 +8,7 @@ use App\Models\Permission;
 use App\Models\Post;
 use App\Models\Field;
 use App\Models\User;
+use App\Services\ReportXlsxService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Report;
@@ -52,7 +53,7 @@ class HomeController extends Controller
         // Получение ежедневных отчётов
         $coms_data = $this->getComData($companies);
         // Получение списка месячных продаж менеджеров
-        $sales_data = $this->getSalesData($companies);
+        $sales_data = (new ReportXlsxService())->getSalesData($companies);
 
         // Возврат вида 'home' с данными
         return view(
@@ -79,7 +80,7 @@ class HomeController extends Controller
         $permissions = Permission::whereIn('id', json_decode($post->permission, true))->get();
         $permission_vals = $permissions->pluck('value')->toArray();
         // Получение последнего отчёта продеж менеджеров
-        $sale_data = $this->getSaleData($company);
+        $sale_data = (new ReportXlsxService())->getSaleData($company);
 
         // Создание объекта с данными пользователя
         $data = (object) [
@@ -114,137 +115,6 @@ class HomeController extends Controller
         }
 
         return $com_data;
-    }
-
-    // Метод для получения поледнего отчёта продажы менеджеров
-    private function getSaleData($company): array
-    {
-        // Получаем последний отчет report_xlsx для данной компании
-        $lastReport = Report::where('type', 'report_xlsx')
-            ->where('com_id', $company->id)
-            ->orderBy('for_date', 'desc')
-            ->first();
-
-        if (!$lastReport) {
-            return [];
-        }
-
-        // Преобразуем данные отчета из JSON в массив
-        $lastReportData = (array) json_decode($lastReport->data);
-        $salesData = (array) $lastReportData['Sales'];
-
-        // Получаем ID первого менеджера из данных о продажах
-        $managerId = array_key_first($salesData);
-
-        if (!$managerId) {
-            return [];
-        }
-
-        // Получаем менеджера из отчета
-        $manager = User::where('id', $managerId)->first();
-
-        if (!$manager) {
-            return [];
-        }
-
-        // Получаем сотрудников из департамента менеджера отчета
-        $workers = User::where('dep_id', $manager->dep_id)->get();
-
-        // Переводим ID сотрудников в массив
-        $workerIds = $workers->pluck('id')->toArray();
-
-        // Инициализация массива для хранения данных о продажах
-        $saleData = array_fill_keys($workerIds, 0);
-
-        // Заполняем массив данными о продажах из последнего отчета
-        foreach ($workerIds as $id) {
-            if (isset($salesData[$id])) {
-                $saleData[$id] = $salesData[$id];
-            }
-        }
-
-        return $saleData;
-    }
-
-    // Метод для получения списка месячных продаж менеджеров
-    private function getSalesData($companies): array
-    {
-        $sales_data = [];
-
-        foreach ($companies as $company) {
-            // Отчёты продаж менеджеров компаний
-            $monthSales = [];
-
-            // Определение начальной и конечной даты текущего месяца
-            $startDate = now()->startOfMonth();
-            $endDate = now()->endOfMonth();
-
-            // Выполняем запрос с фильтрацией по типу, компании и диапазону дат
-            $monthReports = Report::where('type', 'report_xlsx')
-                ->where('com_id', $company->id)
-                ->whereBetween('for_date', [$startDate, $endDate]) // Фильтр по диапазону дат
-                ->orderBy('for_date', 'desc')
-                ->get();
-
-            // Если нету отчётов м месяц
-            if ($monthReports->isEmpty()) {
-                // Находим последний отчет report_xlsx для данной компании по полю for_date
-                $lastReport = Report::where('type', 'report_xlsx')
-                    ->where('com_id', $company->id)
-                    ->orderBy('for_date', 'desc')
-                    ->first();
-
-                if (!$lastReport)
-                    continue;
-
-                // Извлекаем дату последнего отчета и вычисляем начало и конец месяца
-                $lastReportDate = Carbon::createFromFormat('Y-m-d', $lastReport->for_date);
-                $startDate = $lastReportDate->copy()->startOfMonth()->format('Y-m-d');
-                $endDate = $lastReportDate->copy()->endOfMonth()->format('Y-m-d');
-
-                // Получаем все отчеты за месяц, в котором был найден последний отчет
-                $monthReports = Report::where('type', 'report_xlsx')
-                    ->where('com_id', $company->id)
-                    ->whereBetween('for_date', [$startDate, $endDate])
-                    ->orderBy('for_date', 'desc')
-                    ->get();
-            }
-
-            $reports = $monthReports;
-
-
-            foreach ($reports as $report) {
-                $monthSales[] = (array) (((array) json_decode($report->data))['Sales']);
-            }
-
-            $managerId = array_key_first($monthSales[0]);//dd($monthSales);
-
-            // Получение менеджера из отчёта
-            $manager = User::where('id', $managerId)->first();
-            // Получение сотрудников из департамента менеджера отчёта
-            $workers = User::where('dep_id', $manager->dep_id)->get();
-            // Получение всех сотрудников компании
-            // $workers = User::where('com_id', $company->id)->get();
-            // Перевод ID сотрудников на массив
-            $workerIds = $workers->pluck('id')->toArray();
-
-            // Инициализация массива для хранения сумм
-            $sums = array_fill_keys($workerIds, 0);
-
-            // Проход по всем массивам данных
-            foreach ($monthSales as $dataSet) {
-                foreach ($workerIds as $id) {
-                    if (isset($dataSet[$id])) {
-                        $sums[$id] += $dataSet[$id];
-                    }
-                }
-            }
-
-            $sales_data[$company->id] = $sums;
-
-        }
-
-        return $sales_data;
     }
 
     // Метод для получения данных файлов из указанной папки

@@ -5,13 +5,13 @@
 @section('nav_right')
     <li class="nav-item">
         <a class="btn btn-danger" aria-current="page"
-           href="{{route('company.service.remove_last_report', compact('company'))}}">Удалить последний отчёт</a>
+            href="{{ route('company.service.remove_last_report', compact('company')) }}">Удалить последний отчёт</a>
     </li>
 @endsection
 
 @section('content')
     <h1 class="text-center my-2">
-        Архив Сервис {{$company -> name}}
+        Архив Сервис {{ $company->name }}
     </h1>
 
     <div class="flex-column align-items-center">
@@ -29,20 +29,18 @@
 
             </div>
 
-            @foreach($reports as $key => $val)
-
+            @foreach ($reports as $key => $val)
                 <div class="my-1 m-auto border rounded py-2 row h4">
 
                     <div class="col-6 h5">
-                        <a href="{{ route('company.service.archive', [$company, $val[0]]) }}">{{$key}}</a>
+                        <a href="{{ route('company.service.archive', [$company, $val[0]]) }}">{{ $key }}</a>
                     </div>
 
 
                     <div class="col-6 text-end">
-                        {{$val[1]}}
+                        {{ number_format((int) $val[1], 0, '', ' ') }}
                     </div>
                 </div>
-
             @endforeach
 
         </div>
