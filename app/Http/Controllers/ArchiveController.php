@@ -53,16 +53,17 @@ class ArchiveController extends Controller
 
         $files_data = array_reverse($files_data);
 
-        $groupedReports = $this->groupReportsByMonth();
+        $groupedReports = $this->groupReportsByMonth($company);
 
         return view('company.archive', compact('company', 'files_data', 'groupedReports'));
     }
 
 
-    public function groupReportsByMonth()
+    public function groupReportsByMonth(Company $company)
     {
         // Извлекаем все отчеты типа "report_xlsx"
-        $reports = Report::where('type', 'report_xlsx')
+        $reports = Report::where('com_id', $company->id)
+            ->where('type', 'report_xlsx')
             ->orderBy('for_date', 'desc')
             ->get();
 

@@ -39,6 +39,14 @@
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
+
+        .bg-body-test {
+            background: repeating-linear-gradient(45deg,
+                    rgb(109, 109, 0),
+                    rgb(109, 109, 0) 10px,
+                    black 10px,
+                    black 20px);
+        }
     </style>
 
 </head>
@@ -46,7 +54,7 @@
 <body data-bs-theme="{{ session('theme') ?? 'light' }}">
 
     <header>
-        <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
+        <nav class="navbar navbar-expand-lg {{ (config('app.debug')) ? 'bg-body-test' : 'bg-body-secondary'}} px-2h">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home.index') }}"> {{ config('app.name') }}</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -68,18 +76,15 @@
 
 
                         @if (@Auth::user()->role === 'admin')
-
-                            @if (@Auth::user()->login === 'admin')
-                                <li class="nav-item">
-                                    <a class="
+                            <li class="nav-item">
+                                <a class="
 								nav-link
 
 								@if (Route::currentRouteName() == 'admin.index') active @endif
 
 								"
-                                        aria-current="page" href="{{ route('admin.index') }}">Администраторы</a>
-                                </li>
-                            @endif
+                                    aria-current="page" href="{{ route('admin.index') }}">Администраторы</a>
+                            </li>
 
                             <li class="nav-item">
                                 <a class="
@@ -91,6 +96,15 @@
                                     aria-current="page" href="{{ route('company.list') }}">Настройки</a>
                             </li>
 
+                            <li class="nav-item">
+                                <a class="
+								nav-link
+
+								@if (Route::currentRouteName() == 'company.stats') active @endif
+
+								"
+                                    aria-current="page" href="">Статистика</a>
+                            </li>
                         @endif
 
                         @if (@Auth::user()->role === 'user')
@@ -116,8 +130,8 @@
                         @endif
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle fs-5 p-0" style="padding-top: 0.38rem!important;" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <a class="nav-link dropdown-toggle fs-5 p-0" style="padding-top: 0.38rem!important;"
+                                href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 @if (session('theme') == 'light')
                                     <i class="bi bi-lightbulb-fill"></i>
                                 @elseif (session('theme') == 'dark')
@@ -201,10 +215,6 @@
     @elseif(@Auth::user()->role === 'user')
         @vite(['resources/js/user.js'])
     @else
-        <div class="overlay-f">
-            <h1 class="display-1">Сайт в разработке!</h1>
-        </div>
-
         @vite(['resources/js/default.js'])
     @endif
 </body>

@@ -76,9 +76,16 @@ class HomeController extends Controller
         $company = Company::find(Auth::user()->com_id);
         $department = Department::find(Auth::user()->dep_id);
         $post = Post::find(Auth::user()->post_id);
+
         // Получение разрешений пользователя
-        $permissions = Permission::whereIn('id', json_decode($post->permission, true))->get();
-        $permission_vals = $permissions->pluck('value')->toArray();
+        if ($post !== null) {
+            $permissions = Permission::whereIn('id', json_decode($post->permission, true))->get();
+            $permission_vals = $permissions->pluck('value')->toArray();
+        } else {
+            // Действия, которые нужно выполнить, если $post равен null
+            $permission_vals = [];
+        }
+
         // Получение последнего отчёта продеж менеджеров
         $sale_data = (new ReportXlsxService())->getSaleData($company);
 

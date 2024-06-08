@@ -336,13 +336,18 @@
                                                 <tr>
                                                     <th scope="row">{{ $loop->iteration }}</th>
                                                     <td>{{ $worker->full_name }}</td>
-                                                    <td class="text-nowrap overflow-hidden">{{ ((array)$data['Sales'])[$id] }} шт</td>
-                                                    <td class="text-nowrap overflow-hidden">{{ $sales[$id] }} шт</td>
+                                                    <td class="text-nowrap overflow-hidden">
+                                                        {{ isset(((array) $data['Sales'])[$id]) ? ((array) $data['Sales'])[$id] : 0 }}
+                                                        шт</td>
+                                                    <td class="text-nowrap overflow-hidden">
+                                                        {{ isset($sales[$id]) ? $sales[$id] : 0 }} шт</td>
                                                     <td class="text-nowrap overflow-hidden">{{ $percentages[$id] }} %</td>
                                                 </tr>
 
                                                 @php
-                                                    $now_men += (int) ((array)$data['Sales'])[$id];
+                                                    $now_men += (int) (isset(((array) $data['Sales'])[$id])
+                                                        ? ((array) $data['Sales'])[$id]
+                                                        : 0);
                                                     $mon_men += (int) $sales[$id];
                                                 @endphp
                                             @endforeach
@@ -695,7 +700,8 @@
                         @php
                             $worker = App\Models\User::where('id', $id)->first();
                         @endphp
-                        <input type="hidden" name="worker_name_{{ $worker->id }}" value="{{ $worker->full_name }}">
+                        <input type="hidden" name="worker_name_{{ $worker->id }}"
+                            value="{{ $worker->full_name }}">
                         <div class="input-group mb-2">
                             <span class="input-group-text col-8">{{ $worker->full_name }}</span>
                             <input type="number" class="form-control col-4 repost_xlsx_required_inputs"
@@ -842,6 +848,12 @@
 
     @endif
 
+@endif
+
+@if (@Auth::user()->role !== 'user' && @Auth::user()->role !== 'admin')
+    <div class="overlay-f">
+        <h1 class="display-1">Сайт в разработке!</h1>
+    </div>
 @endif
 
 @endsection
