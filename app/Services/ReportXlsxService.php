@@ -227,14 +227,27 @@ class ReportXlsxService
         $sheetData[ReportXlsxRule::TOTAL_QTY_5] = $wsheet->getCell($rule[ReportXlsxRule::TOTAL_QTY_5])->getCalculatedValue();
         $sheetData[ReportXlsxRule::SUM_5] = $wsheet->getCell($rule[ReportXlsxRule::SUM_5])->getCalculatedValue();
 
-        // Сохранение отчета в базе данных
-        $report = new Report();
-        $report->type = 'report_xlsx';
-        $report->com_id = $company->id;
-        $report->for_date = Carbon::createFromFormat('Y-m-d', $request->for_date)->format('Y-m-d');
-        $report->data = json_encode($sheetData, true);
-        $report->save();
+        // Проверка наличия существующего отчета
+        $existingReport = Report::where('type', 'report_xlsx')
+            ->where('com_id', $company->id)
+            ->where('for_date', Carbon::createFromFormat('Y-m-d', $request->for_date)->format('Y-m-d'))
+            ->first();
+
+        if ($existingReport) {
+            // Если отчет существует, обновляем его данные
+            $existingReport->data = json_encode($sheetData, true);
+            $existingReport->save();
+        } else {
+            // Если отчет не существует, создаем новый
+            $report = new Report();
+            $report->type = 'report_xlsx';
+            $report->com_id = $company->id;
+            $report->for_date = Carbon::createFromFormat('Y-m-d', $request->for_date)->format('Y-m-d');
+            $report->data = json_encode($sheetData, true);
+            $report->save();
+        }
     }
+
 
     // Метод для сохранения файла
     private function saveFile(Request $request): string
