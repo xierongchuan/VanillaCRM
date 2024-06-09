@@ -44,8 +44,8 @@ class HomeController extends Controller
     {
         // Получение всех компаний
         $companies = Company::all();
-        // Получение данных файлов из папки 'archive'
-        $files_data = $this->getFilesData('archive');
+        // Получение последнего отчёта последнего месяца (не объязательно именно прошлый месяц)
+        $archiveReports = $this->getArchiveReports();
         // Получение URL последних отчетов
         $last_repor_urls = $this->getLastReportUrls($companies);
         // Получение сервисных отчетов
@@ -60,7 +60,7 @@ class HomeController extends Controller
             'home',
             compact(
                 'companies',
-                'files_data',
+                'archiveReports',
                 'last_repor_urls',
                 'srv_reps',
                 'coms_data',
@@ -103,6 +103,23 @@ class HomeController extends Controller
 
         // Возврат вида 'home' с данными
         return view('home', compact('company', 'data', 'srv_rep'));
+    }
+
+    private function getArchiveReports(): array
+    {
+        $companies = Company::all();
+
+        $archiveReports = [];
+
+        foreach ($companies as $company) {
+            $months = (new ArchiveController())->groupReportsByMonth($company);
+            $lastMonth = (array)reset($months);
+            $archiveReports[$company->id] = [array_key_first($months) => (object)reset($lastMonth)];
+        }
+
+        // dd($archiveReports);
+
+        return $archiveReports;
     }
 
     // Метод для получения ежедневного отчёта

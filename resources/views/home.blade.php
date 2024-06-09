@@ -14,7 +14,6 @@
         </div>
         @foreach ($companies as $company)
             @if (isset($coms_data[$company->id]))
-
                 @php
                     $data = (array) json_decode($coms_data[$company->id]);
                 @endphp
@@ -471,389 +470,381 @@
                                         </div>
                                     </div>
 
-                                    @foreach ($files_data as $file)
-                                        @if ($file->company != $company->name)
-                                            @continue
-                                        @endif
-
+                                    @foreach ($archiveReports[$company->id] as $month => $archiveReport)
                                         <div class="my-1 m-auto border rounded py-2 row h4">
 
                                             <div class="col-3 h4 m-0">
-                                                <a href="{{ $file->url }}">{{ $file->date }}</a>
+                                                <a href="{{ $archiveReport->url }}">{{ $month }}</a>
                                             </div>
 
                                             <div class="col-4 text-end">
-                                                {{ $file->sum }}
+                                                {{ number_format($archiveReport->sum, 0, '', ' ') }}
                                             </div>
 
                                             <div class="col-2 text-end">
-                                                {{ $file->count }}
+                                                {{ $archiveReport->quantity }}
                                             </div>
 
                                             <div class="col-3 text-end">
-                                                {{ $file->fakt }}
+                                                {{ $archiveReport->fact }}
                                             </div>
                                         </div>
+                                    @endforeach
 
-                                        @if ($file->company == $company->name)
-                                        @break
-                                    @endif
-                                @endforeach
-
-                            </div>
-
-                            <div class="bg-body-tertiary rounded p-3 mb-2">
-
-                                <div class="my-1 m-auto p-0 d-flex justify-content-between">
-                                    <h2>Ссылки</h2>
                                 </div>
 
-                                @foreach ($company->fields as $field)
-                                    <div class="my-1 m-auto border rounded py-2 row h4">
+                                <div class="bg-body-tertiary rounded p-3 mb-2">
 
-                                        <div class="col-6 h4 m-0">
-                                            {{ $field->title }}
-                                        </div>
-
-                                        <div class="col-6 text-end">
-                                            <a href="{{ $field->link }}">Открыть</a>
-                                        </div>
+                                    <div class="my-1 m-auto p-0 d-flex justify-content-between">
+                                        <h2>Ссылки</h2>
                                     </div>
-                                @endforeach
 
-                            </div>
+                                    @foreach ($company->fields as $field)
+                                        <div class="my-1 m-auto border rounded py-2 row h4">
 
+                                            <div class="col-6 h4 m-0">
+                                                {{ $field->title }}
+                                            </div>
 
-                        </div>
+                                            <div class="col-6 text-end">
+                                                <a href="{{ $field->link }}">Открыть</a>
+                                            </div>
+                                        </div>
+                                    @endforeach
 
-                        <div id="serv_perm_panel_{{ $company->id }}" class="collapse perm-panel w-100">
-                            <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
-                                <div class="d-flex flex-wrap justify-content-center">
-                                    <h2>Отчёт сервис</h2>
                                 </div>
+
+
                             </div>
 
-                            <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
-                                <div class="d-flex flex-wrap justify-content-center">
-                                    @if ($srv_reps[$company->id]['updated_at'])
-                                        <h4>Дата загрузки <a
-                                                href="{{ route('company.service.archive', [$company, $srv_reps[$company->id]['updated_at']]) }}">отчёта</a>:
-                                        </h4>
-                                        <div class="mx-sm-1"></div>
-                                    @endif
-
-                                    <h4>{{ $srv_reps[$company->id]['updated_at'] ?? 'Отчёта нету.' }}</h4>
-
-                                    @if ($srv_reps[$company->id]['have'])
-                                        <div class="mx-1"></div>
-                                        <h4> | На дату: </h4>
-                                        <div class="mx-1"></div>
-
-                                        <h4>{{ $srv_reps[$company->id]['for_date'] }}</h4>
-                                    @endif
-                                    <div class="mx-1"></div>
-
-                                    <a href="{{ route('company.service.archive.list', compact('company')) }}"
-                                        class="lead">Архив</a>
+                            <div id="serv_perm_panel_{{ $company->id }}" class="collapse perm-panel w-100">
+                                <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        <h2>Отчёт сервис</h2>
+                                    </div>
                                 </div>
+
+                                <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        @if ($srv_reps[$company->id]['updated_at'])
+                                            <h4>Дата загрузки <a
+                                                    href="{{ route('company.service.archive', [$company, $srv_reps[$company->id]['updated_at']]) }}">отчёта</a>:
+                                            </h4>
+                                            <div class="mx-sm-1"></div>
+                                        @endif
+
+                                        <h4>{{ $srv_reps[$company->id]['updated_at'] ?? 'Отчёта нету.' }}</h4>
+
+                                        @if ($srv_reps[$company->id]['have'])
+                                            <div class="mx-1"></div>
+                                            <h4> | На дату: </h4>
+                                            <div class="mx-1"></div>
+
+                                            <h4>{{ $srv_reps[$company->id]['for_date'] }}</h4>
+                                        @endif
+                                        <div class="mx-1"></div>
+
+                                        <a href="{{ route('company.service.archive.list', compact('company')) }}"
+                                            class="lead">Архив</a>
+                                    </div>
+                                </div>
+
+                                <div class="bg-body-tertiary rounded p-3 mb-2">
+
+
+                                    <table class="table mb-1 overflow-hidden">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Навзания</th>
+                                                <th scope="col">Сегодня</th>
+                                                <th scope="col">За месяц</th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Доп</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['dop'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['dop_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Текущий</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['now'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['now_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>ТО</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['to'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['to_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Кузовной</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['kuz'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['kuz_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Магазин</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['store'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['store_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Всего</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['SUM'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['SUM_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+
+                                            <tr class="border-3 border-white">
+                                                <td>Запчасти</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['zap'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['zap_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+
+                                            <tr class="border-3 border-white">
+                                                <td>Сервис</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['srv'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($srv_reps[$company->id]['srv_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+
                             </div>
-
-                            <div class="bg-body-tertiary rounded p-3 mb-2">
-
-
-                                <table class="table mb-1 overflow-hidden">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Навзания</th>
-                                            <th scope="col">Сегодня</th>
-                                            <th scope="col">За месяц</th>
-                                        </tr>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Доп</td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['dop'], 0, '', ' ') }}
-                                            </td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['dop_sum'], 0, '', ' ') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Текущий</td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['now'], 0, '', ' ') }}
-                                            </td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['now_sum'], 0, '', ' ') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>ТО</td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['to'], 0, '', ' ') }}
-                                            </td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['to_sum'], 0, '', ' ') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Кузовной</td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['kuz'], 0, '', ' ') }}
-                                            </td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['kuz_sum'], 0, '', ' ') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Магазин</td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['store'], 0, '', ' ') }}
-                                            </td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['store_sum'], 0, '', ' ') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Всего</td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['SUM'], 0, '', ' ') }}
-                                            </td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['SUM_sum'], 0, '', ' ') }}
-                                            </td>
-                                        </tr>
-
-                                        <tr class="border-3 border-white">
-                                            <td>Запчасти</td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['zap'], 0, '', ' ') }}
-                                            </td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['zap_sum'], 0, '', ' ') }}
-                                            </td>
-                                        </tr>
-
-                                        <tr class="border-3 border-white">
-                                            <td>Сервис</td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['srv'], 0, '', ' ') }}
-                                            </td>
-                                            <td class="text-nowrap overflow-hidden text-end">
-                                                {{ number_format($srv_reps[$company->id]['srv_sum'], 0, '', ' ') }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-
-                                </table>
-
-                            </div>
-
-
-                        </div>
-                    </span>
+                        </span>
+                    </div>
                 </div>
-            </div>
-        @endif
-    @endforeach
-@endif
+            @endif
+        @endforeach
+    @endif
 
 
-@if (@Auth::user()->role === 'user')
-    @if (in_array('report_xlsx', $data->perm))
-        @php
-            $sale_data = (array) $data->sale_data;
-            $totalSum = array_sum($sale_data);
+    @if (@Auth::user()->role === 'user')
+        @if (in_array('report_xlsx', $data->perm))
+            @php
+                $sale_data = (array) $data->sale_data;
+                $totalSum = array_sum($sale_data);
 
-            $percentages = [];
-            foreach ($sale_data as $id => $sale) {
-                if ((int) $sale == 0) {
-                    $percentages[$id] = 0;
-                    continue;
+                $percentages = [];
+                foreach ($sale_data as $id => $sale) {
+                    if ((int) $sale == 0) {
+                        $percentages[$id] = 0;
+                        continue;
+                    }
+
+                    $percentage = ($sale / $totalSum) * 100;
+                    $percentages[$id] = round($percentage, 1);
                 }
 
-                $percentage = ($sale / $totalSum) * 100;
-                $percentages[$id] = round($percentage, 1);
-            }
+                $now_men = 0;
+                $mon_men = 0;
+            @endphp
 
-            $now_men = 0;
-            $mon_men = 0;
-        @endphp
+            <div class="row flex-column align-items-center">
+                <div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
+                    <span class="d-flex justify-content-between">
+                        <h2 class="perm_panel_switch mb-1" panel="perm_panel_report_xlsx_sales"
+                            style="font-size: calc(1.105rem + .66vw);margin-top: 0.1rem;">Продажи менеджеров
+                            <b>{{ $company->name }}</b>
+                        </h2>
+                        <button class="lead perm_panel_switch m-1" panel="perm_panel_report_xlsx_sales"><i
+                                class="bi bi-nintendo-switch"></i></button>
+                    </span>
+                    <form id="perm_panel_report_xlsx_sales" action="{{ route('mod.report_xlsx_sales', $company) }}"
+                        method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
+                        @csrf
 
-        <div class="row flex-column align-items-center">
-            <div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
-                <span class="d-flex justify-content-between">
-                    <h2 class="perm_panel_switch mb-1" panel="perm_panel_report_xlsx_sales"
-                        style="font-size: calc(1.105rem + .66vw);margin-top: 0.1rem;">Продажи менеджеров
-                        <b>{{ $company->name }}</b>
-                    </h2>
-                    <button class="lead perm_panel_switch m-1" panel="perm_panel_report_xlsx_sales"><i
-                            class="bi bi-nintendo-switch"></i></button>
-                </span>
-                <form id="perm_panel_report_xlsx_sales" action="{{ route('mod.report_xlsx_sales', $company) }}"
-                    method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
-                    @csrf
+                        @foreach ($sale_data as $id => $sale)
+                            @php
+                                $worker = App\Models\User::where('id', $id)->first();
+                            @endphp
+                            <input type="hidden" name="worker_name_{{ $worker->id }}"
+                                value="{{ $worker->full_name }}">
+                            <div class="input-group mb-2">
+                                <span class="input-group-text col-8">{{ $worker->full_name }}</span>
+                                <input type="number" class="form-control col-4 repost_xlsx_required_inputs"
+                                    name="worker_sold_{{ $worker->id }}" placeholder="Sold"
+                                    value="{{ $sale }}" aria-label="Sold" required>
+                                <span class="input-group-text px-1 px-md-2 col-2 col-md-1"
+                                    id="report_worker_percent_{{ $loop->iteration }}">99.9 %</span>
+                            </div>
+                        @endforeach
 
-                    @foreach ($sale_data as $id => $sale)
-                        @php
-                            $worker = App\Models\User::where('id', $id)->first();
-                        @endphp
-                        <input type="hidden" name="worker_name_{{ $worker->id }}"
-                            value="{{ $worker->full_name }}">
-                        <div class="input-group mb-2">
-                            <span class="input-group-text col-8">{{ $worker->full_name }}</span>
-                            <input type="number" class="form-control col-4 repost_xlsx_required_inputs"
-                                name="worker_sold_{{ $worker->id }}" placeholder="Sold"
-                                value="{{ $sale }}" aria-label="Sold" required>
-                            <span class="input-group-text px-1 px-md-2 col-2 col-md-1"
-                                id="report_worker_percent_{{ $loop->iteration }}">99.9 %</span>
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary">Изменить</button>
                         </div>
-                    @endforeach
-
-                    <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary">Изменить</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
+
+        @endif
+
+        @if (in_array('report_service', $data->perm))
+
+            <div class="row flex-column align-items-center">
+                <div class="w-100">
+                    <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                        <div class="d-flex flex-wrap justify-content-center">
+                            <h2>Отчёт сервис</h2>
+                        </div>
+                    </div>
+
+                    <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                        <div class="d-flex flex-wrap justify-content-center">
+                            @if ($srv_rep['updated_at'])
+                                <h4>Дата и время загрузки отчёта:
+                                </h4>
+                                <div class="mx-sm-1"></div>
+                            @endif
+
+                            <h4>{{ $srv_rep['updated_at'] ?? 'Отчёта нету.' }}</h4>
+
+                            @if ($srv_rep['have'])
+                                <div class="mx-sm-1"></div>
+                                <h4>| На дату: </h4>
+                                <div class="mx-sm-1"></div>
+
+                                <h4>{{ $srv_rep['for_date'] }}</h4>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="bg-body-tertiary rounded p-3 mb-2">
+
+
+                        <table class="table mb-1 rounded overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Навзания</th>
+                                    <th scope="col">Сегодня</th>
+                                    <th scope="col">За мес</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Доп</td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['dop'], 0, '', ' ') }}
+                                    </td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['dop_sum'], 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Текущий</td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['now'], 0, '', ' ') }}
+                                    </td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['now_sum'], 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ТО</td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['to'], 0, '', ' ') }}
+                                    </td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['to_sum'], 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Кузовной</td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['kuz'], 0, '', ' ') }}
+                                    </td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['kuz_sum'], 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Магазин</td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['store'], 0, '', ' ') }}
+                                    </td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['store_sum'], 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Всего</td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['SUM'], 0, '', ' ') }}
+                                    </td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['SUM_sum'], 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr class="border-3 border-white">
+                                    <td>Запчасти</td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['zap'], 0, '', ' ') }}
+                                    </td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['zap_sum'], 0, '', ' ') }}
+                                    </td>
+                                </tr>
+
+                                <tr class="border-3 border-white">
+                                    <td>Сервис</td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['srv'], 0, '', ' ') }}
+                                    </td>
+                                    <td class="text-nowrap overflow-hidden text-end">
+                                        {{ number_format($srv_rep['srv_sum'], 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        @endif
 
     @endif
 
-    @if (in_array('report_service', $data->perm))
-
-        <div class="row flex-column align-items-center">
-            <div class="w-100">
-                <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
-                    <div class="d-flex flex-wrap justify-content-center">
-                        <h2>Отчёт сервис</h2>
-                    </div>
-                </div>
-
-                <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
-                    <div class="d-flex flex-wrap justify-content-center">
-                        @if ($srv_rep['updated_at'])
-                            <h4>Дата и время загрузки отчёта:
-                            </h4>
-                            <div class="mx-sm-1"></div>
-                        @endif
-
-                        <h4>{{ $srv_rep['updated_at'] ?? 'Отчёта нету.' }}</h4>
-
-                        @if ($srv_rep['have'])
-                            <div class="mx-sm-1"></div>
-                            <h4>| На дату: </h4>
-                            <div class="mx-sm-1"></div>
-
-                            <h4>{{ $srv_rep['for_date'] }}</h4>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="bg-body-tertiary rounded p-3 mb-2">
-
-
-                    <table class="table mb-1 rounded overflow-hidden">
-                        <thead>
-                            <tr>
-                                <th scope="col">Навзания</th>
-                                <th scope="col">Сегодня</th>
-                                <th scope="col">За мес</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Доп</td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['dop'], 0, '', ' ') }}
-                                </td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['dop_sum'], 0, '', ' ') }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Текущий</td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['now'], 0, '', ' ') }}
-                                </td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['now_sum'], 0, '', ' ') }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>ТО</td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['to'], 0, '', ' ') }}
-                                </td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['to_sum'], 0, '', ' ') }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Кузовной</td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['kuz'], 0, '', ' ') }}
-                                </td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['kuz_sum'], 0, '', ' ') }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Магазин</td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['store'], 0, '', ' ') }}
-                                </td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['store_sum'], 0, '', ' ') }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Всего</td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['SUM'], 0, '', ' ') }}
-                                </td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['SUM_sum'], 0, '', ' ') }}
-                                </td>
-                            </tr>
-                            <tr class="border-3 border-white">
-                                <td>Запчасти</td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['zap'], 0, '', ' ') }}
-                                </td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['zap_sum'], 0, '', ' ') }}
-                                </td>
-                            </tr>
-
-                            <tr class="border-3 border-white">
-                                <td>Сервис</td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['srv'], 0, '', ' ') }}
-                                </td>
-                                <td class="text-nowrap overflow-hidden text-end">
-                                    {{ number_format($srv_rep['srv_sum'], 0, '', ' ') }}
-                                </td>
-                            </tr>
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-
-            </div>
+    @if (@Auth::user()->role !== 'user' && @Auth::user()->role !== 'admin')
+        <div class="overlay-f">
+            <h1 class="display-1">Сайт в разработке!</h1>
         </div>
-
     @endif
-
-@endif
-
-@if (@Auth::user()->role !== 'user' && @Auth::user()->role !== 'admin')
-    <div class="overlay-f">
-        <h1 class="display-1">Сайт в разработке!</h1>
-    </div>
-@endif
 
 @endsection
