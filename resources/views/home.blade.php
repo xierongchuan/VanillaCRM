@@ -469,27 +469,36 @@
                                             Факт
                                         </div>
                                     </div>
+                                    @if (isset((reset($archiveReports[$company->id]))->url))
+                                        @foreach ($archiveReports[$company->id] as $month => $archiveReport)
+                                            <div class="my-1 m-auto border rounded py-2 row h4">
 
-                                    @foreach ($archiveReports[$company->id] as $month => $archiveReport)
-                                        <div class="my-1 m-auto border rounded py-2 row h4">
+                                                <div class="col-3 h4 m-0">
+                                                    <a href="{{ $archiveReport->url }}">{{ $month }}</a>
+                                                </div>
 
-                                            <div class="col-3 h4 m-0">
-                                                <a href="{{ $archiveReport->url }}">{{ $month }}</a>
+                                                <div class="col-4 text-end">
+                                                    {{ number_format($archiveReport->sum, 0, '', ' ') }}
+                                                </div>
+
+                                                <div class="col-2 text-end">
+                                                    {{ $archiveReport->quantity }}
+                                                </div>
+
+                                                <div class="col-3 text-end">
+                                                    {{ $archiveReport->fact }}
+                                                </div>
                                             </div>
+                                        @endforeach
+                                    @else
+                                        <div class="my-1 m-auto border border-danger rounded py-2 row h4">
 
-                                            <div class="col-4 text-end">
-                                                {{ number_format($archiveReport->sum, 0, '', ' ') }}
-                                            </div>
-
-                                            <div class="col-2 text-end">
-                                                {{ $archiveReport->quantity }}
-                                            </div>
-
-                                            <div class="col-3 text-end">
-                                                {{ $archiveReport->fact }}
+                                            <div class="col-12 d-flex justify-content-center">
+                                                Отсутствует отчёт
                                             </div>
                                         </div>
-                                    @endforeach
+                                    @endif
+
 
                                 </div>
 

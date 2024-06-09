@@ -108,19 +108,28 @@ class HomeController extends Controller
     private function getArchiveReports(): array
     {
         $companies = Company::all();
-
         $archiveReports = [];
 
         foreach ($companies as $company) {
             $months = (new ArchiveController())->groupReportsByMonth($company);
-            $lastMonth = (array)reset($months);
-            $archiveReports[$company->id] = [array_key_first($months) => (object)reset($lastMonth)];
-        }
 
-        // dd($archiveReports);
+            // Преобразуем ключи массива в индексы и получаем все ключи
+            $monthKeys = array_keys($months);
+
+            // Проверяем, есть ли хотя бы два элемента в массиве
+            if (count($monthKeys) >= 2) {
+                $secondMonthKey = $monthKeys[1];
+                $secondMonthReports = $months[$secondMonthKey];
+                $archiveReports[$company->id] = [$secondMonthKey => (object) reset($secondMonthReports)];
+            } else {
+                // Если второго месяца нет, добавляем пустой элемент или обрабатываем иначе
+                $archiveReports[$company->id] = [];
+            }
+        }
 
         return $archiveReports;
     }
+
 
     // Метод для получения ежедневного отчёта
     private function getComData($companies): array
