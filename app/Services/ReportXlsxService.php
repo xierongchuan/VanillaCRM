@@ -36,7 +36,7 @@ class ReportXlsxService
             if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
                 $workerNumber = $matches[1];
                 $workerSold = $inputData['worker_sold_' . $workerNumber];
-                $workers[$workerNumber] = (int)$workerSold;
+                $workers[$workerNumber] = (int) $workerSold;
             }
         }
 
@@ -320,7 +320,7 @@ class ReportXlsxService
             $monthSales = [];
 
             // Определение начальной и конечной даты текущего месяца
-            $startDate = now()->startOfMonth();
+            $startDate = now()->startOfYear();
             $endDate = now()->endOfMonth();
 
             // Выполняем запрос с фильтрацией по типу, компании и диапазону дат
@@ -361,14 +361,12 @@ class ReportXlsxService
                 $monthSales[] = (array) (((array) json_decode($report->data))['Sales']);
             }
 
-            $managerId = array_key_first($monthSales[0]);//dd($monthSales);
+            $managerId = array_key_first($monthSales[0]);
 
             // Получение менеджера из отчёта
             $manager = User::where('id', $managerId)->first();
             // Получение сотрудников из департамента менеджера отчёта
             $workers = User::where('dep_id', $manager->dep_id)->get();
-            // Получение всех сотрудников компании
-            // $workers = User::where('com_id', $company->id)->get();
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
 
@@ -385,6 +383,72 @@ class ReportXlsxService
             }
 
             $sales_data[$company->id] = $sums;
+
+        }
+
+        return $sales_data;
+    }
+
+    // Метод для получения списка годовых продаж менеджеров без суммирования результатов
+    public function getSalesDataNoSum($companies): array
+    {
+        $sales_data = [];
+
+        foreach ($companies as $company) {
+            // Отчёты продаж менеджеров компаний
+            $monthSales = [];
+
+            // Выполняем запрос с фильтрацией по типу, компании
+            $monthReports = Report::where('type', 'report_xlsx')
+                ->where('com_id', $company->id)
+                ->orderBy('for_date', 'desc')
+                ->get();
+
+            // Если нету отчётов м месяц
+            if ($monthReports->isEmpty()) {
+                // Находим последний отчет report_xlsx для данной компании по полю for_date
+                $lastReport = Report::where('type', 'report_xlsx')
+                    ->where('com_id', $company->id)
+                    ->orderBy('for_date', 'desc')
+                    ->first();
+
+                if (!$lastReport)
+                    continue;
+
+                // Получаем все отчеты за месяц, в котором был найден последний отчет
+                $monthReports = Report::where('type', 'report_xlsx')
+                    ->where('com_id', $company->id)
+                    ->orderBy('for_date', 'desc')
+                    ->get();
+            }
+
+            $reports = $monthReports;
+
+
+            foreach ($reports as $report) {
+                $decodedReport = (array) json_decode($report->data);
+                $monthSales[$decodedReport['Дата']] = (array) ($decodedReport['Sales']);
+            }
+
+            $managerId = array_key_first(reset($monthSales));
+
+            // Получение менеджера из отчёта
+            $manager = User::where('id', $managerId)->first();
+            // Получение сотрудников из департамента менеджера отчёта
+            $workers = User::where('dep_id', $manager->dep_id)->get();
+            // Перевод ID сотрудников на массив
+            $workerIds = $workers->pluck('id')->toArray();
+
+            // Проход по всем массивам данных
+            foreach ($monthSales as $date => $sales) {
+                foreach ($workerIds as $id) {
+                    if (isset($sales[$id])) {
+                        $worker = User::where('id', $id)->first();
+
+                        $sales_data[$company->id][$date][$worker->full_name] = $sales[$id];
+                    }
+                }
+            }
 
         }
 

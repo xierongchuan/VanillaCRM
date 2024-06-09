@@ -5,7 +5,7 @@
 @section('nav_right')
     <li class="nav-item">
         <a class="btn btn-danger" aria-current="page" href="{{ route('company.remove_last_report', compact('company')) }}">
-            Удалить последний отчёт
+            Удалить отчёт на последнюю дату
         </a>
     </li>
 @endsection
@@ -23,7 +23,8 @@
                         <h2 class="mb-0 d-flex justify-content-between align-items-center">
                             <div class="h3 mx-2 my-1" data-bs-toggle="collapse" aria-expanded="true"
                                 aria-controls="collapse-{{ $month }}" data-bs-target="#collapse-{{ $month }}">
-                                {{ $month }}</div>
+                                {{ $month }}
+                            </div>
                             <span>
                                 <span class="badge bg-secondary text-light p-2 px-3 mx-2">{{ count($reports) }} </span>
 

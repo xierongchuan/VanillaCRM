@@ -100,10 +100,10 @@
                                 <a class="
 								nav-link
 
-								@if (Route::currentRouteName() == 'company.stats') active @endif
+								@if (Route::currentRouteName() == 'stat.index') active @endif
 
 								"
-                                    aria-current="page" href="">Статистика</a>
+                                    aria-current="page" href="{{ route('stat.index') }}">Статистика</a>
                             </li>
                         @endif
 

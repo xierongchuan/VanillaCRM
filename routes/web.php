@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ModController;
 use App\Http\Controllers\ReportXlsxController;
+use App\Http\Controllers\StatController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -136,6 +137,10 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/company/{company}/archive/remove_last_report', [ArchiveController::class, 'remove_last_report'])->name('company.remove_last_report');
 
     Route::get('/company/{company}/service/remove_last_report', [ArchiveController::class, 'deleteLastServiceReport'])->name('company.service.remove_last_report');
+
+    /// StatController
+
+    Route::get('/stat', [StatController::class, 'index'])->name('stat.index');
 });
 
 Route::group(['middleware' => 'user'], function () {
