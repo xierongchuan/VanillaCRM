@@ -12,11 +12,12 @@ class StatController extends Controller
 {
     public function index()
     {
-
         $companies = Company::all();
+        $reportService = new ReportXlsxService();
 
-        $sales = (new ReportXlsxService())->getSalesDataNoSum($companies);
+        $sales = $reportService->getSalesDataNoSum($companies);
+        $growthStatistics = $reportService->getGrowthStatistics($companies);
 
-        return view("company.stat", compact('sales'));
+        return view("company.stat", compact('sales', 'growthStatistics'));
     }
 }

@@ -320,7 +320,7 @@ class ReportXlsxService
             $monthSales = [];
 
             // Определение начальной и конечной даты текущего месяца
-            $startDate = now()->startOfYear();
+            $startDate = now()->subYear()->startOfMonth();
             $endDate = now()->endOfMonth();
 
             // Выполняем запрос с фильтрацией по типу, компании и диапазону дат
@@ -453,6 +453,73 @@ class ReportXlsxService
         }
 
         return $sales_data;
+    }
+
+    // Метод для получения статистики роста (кроме продаж)
+    public function getGrowthStatistics($companies): array
+    {
+        $growthStatistics = [];
+
+        $startDate = now()->subYear()->startOfMonth();
+        $endDate = now()->endOfMonth();
+
+        foreach ($companies as $company) {
+            $reports = Report::where('type', 'report_xlsx')
+                ->where('com_id', $company->id)
+                ->whereBetween('for_date', [$startDate, $endDate]) // Фильтр по диапазону дат
+                ->orderBy('for_date', 'asc')
+                ->get();
+
+            if ($reports->isEmpty()) {
+                continue;
+            }
+
+            $statistics = [];
+
+            foreach ($reports as $report) {
+                $reportData = (array) json_decode($report->data);
+
+                // Собираем данные, исключая продажи
+                $statistics[$report->for_date] = [
+
+                    // 1
+
+                    'contracts' => $reportData[ReportXlsxRule::CONTRACTS],
+                    'payment_quantity' => $reportData[ReportXlsxRule::PAYMENT_QUANTITY],
+                    'leasing' => $reportData[ReportXlsxRule::LEASING],
+
+                    'total' => $reportData[ReportXlsxRule::TOTAL],
+                    'additional_payment' => $reportData[ReportXlsxRule::ADDITIONAL_PAYMENT],
+                    'payment_sum' => $reportData[ReportXlsxRule::PAYMENT_SUM],
+
+                    // 2
+                    'actual_quantity' => $reportData[ReportXlsxRule::ACTUAL_QUANTITY],
+                    'plan_quantity' => $reportData[ReportXlsxRule::PLAN_QUANTITY],
+                    'contracts_2' => $reportData[ReportXlsxRule::CONTRACTS_2],
+                    // 'conversion_2' => $reportData[ReportXlsxRule::CONVERSION_2],
+
+                    'actual_sum' => $reportData[ReportXlsxRule::ACTUAL_SUM],
+                    'plan_sum' => $reportData[ReportXlsxRule::PLAN_SUM],
+                    'payment_3' => $reportData[ReportXlsxRule::PAYMENT_3],
+                    'additional_payment_3' => $reportData[ReportXlsxRule::ADDITIONAL_PAYMENT_3],
+                    'leasing_3' => $reportData[ReportXlsxRule::LEASING_3],
+                    'balance_3' => $reportData[ReportXlsxRule::BALANCE_3],
+
+                    // 'percent_of_quantity' => $reportData[ReportXlsxRule::PERCENT_OF_QUANTITY],
+                    // 'percent_of_sum' => $reportData[ReportXlsxRule::PERCENT_OF_SUM],
+                    // 'through_bank_qty_5' => $reportData[ReportXlsxRule::THROUGH_BANK_QTY_5],
+                    // 'through_bank_sum_5' => $reportData[ReportXlsxRule::THROUGH_BANK_SUM_5],
+                    // 'through_leasing_qty_5' => $reportData[ReportXlsxRule::THROUGH_LEASING_QTY_5],
+                    // 'through_leasing_sum_5' => $reportData[ReportXlsxRule::THROUGH_LEASING_SUM_5],
+                    // 'total_qty_5' => $reportData[ReportXlsxRule::TOTAL_QTY_5],
+                    // 'sum_5' => $reportData[ReportXlsxRule::SUM_5],
+                ];
+            }
+
+            $growthStatistics[$company->id] = $statistics;
+        }
+
+        return $growthStatistics;
     }
 
 }

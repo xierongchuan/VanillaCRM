@@ -90,7 +90,7 @@ $(document).ready(function () {
 		// Получаем значение атрибута data-section-id
 		var slideId = $(this).attr("section-id");
 
-		console.log("Slide ID=" + slideId + " Next");
+		// console.log("Slide ID=" + slideId + " Next");
 
 		// Переходим к следующему слайду с указанным ID
 		$("#perm_panel_" + slideId).slick("slickNext");
@@ -101,7 +101,7 @@ $(document).ready(function () {
 		// Получаем значение атрибута data-section-id
 		var slideId = $(this).attr("section-id");
 
-		console.log("Slide ID=" + slideId + " Prev");
+		// console.log("Slide ID=" + slideId + " Prev");
 
 		// Переходим к следующему слайду с указанным ID
 		$("#perm_panel_" + slideId).slick("slickPrev");
