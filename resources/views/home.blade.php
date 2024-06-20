@@ -97,7 +97,7 @@
                                             </span>
 
                                             <span>
-                                                <b>{{ $data['Лизинг'] }}</b>
+                                                <b>{{ number_format((int) $data['Лизинг'], 0, '', ' ') }}</b>
                                             </span>
 
                                         </div>

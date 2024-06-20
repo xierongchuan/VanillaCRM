@@ -160,7 +160,6 @@
                         const reportData = {
                             'contracts': 'Договора',
                             'payment_quantity': 'Оплата',
-                            'leasing': 'Лизинг',
                         };
 
 
@@ -222,6 +221,7 @@
                             'total': 'Банк',
                             'additional_payment': 'Доплата',
                             'payment_sum': 'Всего',
+                            'leasing': 'Лизинг',
                         };
 
 
@@ -285,7 +285,7 @@
                         const reportData = {
                             'actual_quantity': 'Факт',
                             'plan_quantity': 'План',
-                            'contracts_2': 'Договора',
+                            // 'contracts_2': 'Договора',
                         };
 
 

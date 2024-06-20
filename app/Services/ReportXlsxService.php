@@ -483,7 +483,6 @@ class ReportXlsxService
                 $statistics[$report->for_date] = [
 
                     // 1
-
                     'contracts' => $reportData[ReportXlsxRule::CONTRACTS],
                     'payment_quantity' => $reportData[ReportXlsxRule::PAYMENT_QUANTITY],
                     'leasing' => $reportData[ReportXlsxRule::LEASING],

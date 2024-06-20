@@ -20,12 +20,23 @@
             @foreach ($groupedReports as $month => $reports)
                 <div class="card mb-3 overflow-hidden">
                     <div class="card-header p-2" id="heading-{{ $month }}">
-                        <h2 class="mb-0 d-flex justify-content-between align-items-center">
-                            <div class="h3 mx-2 my-1" data-bs-toggle="collapse" aria-expanded="true"
+                        <h2 class="mb-0 d-flex row justify-content-between align-items-center">
+                            <div class="h3 my-1 col-lg-2 col-5" data-bs-toggle="collapse" aria-expanded="true"
                                 aria-controls="collapse-{{ $month }}" data-bs-target="#collapse-{{ $month }}">
-                                {{ $month }}
+                                <b>{{ $month }}</b>
                             </div>
-                            <span>
+                            <div class="d-none d-lg-flex justify-content-between align-items-center col-lg-7">
+                                <div class="text-nowrap mb-0 pb-0 col-3 text-end h4">
+                                    {{ number_format(reset($reports)['sum'], 0, '', ' ') }} Сум
+                                </div>
+                                <div class="text-nowrap mb-0 pb-0 col-2 text-end h4 text-end">
+                                    {{ reset($reports)['quantity'] }} Шт
+                                </div>
+                                <div class="text-nowrap mb-0 pb-0 col-2 text-end h4 text-end">
+                                    {{ reset($reports)['fact'] }} Факт
+                                </div>
+                            </div>
+                            <span class="col-lg-3 col-5 text-end">
                                 <span class="badge bg-secondary text-light p-2 px-3 mx-2">{{ count($reports) }} </span>
 
                                 <a class="btn btn-success" href="{{ reset($reports)['url'] }}">
