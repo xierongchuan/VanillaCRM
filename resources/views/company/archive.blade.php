@@ -15,7 +15,7 @@
         Архив <b>{{ $company->name }}</b>
     </h1>
 
-    <div class="container">
+    <div class="">
         <div class="accordion" id="reportsAccordion">
             @foreach ($groupedReports as $month => $reports)
                 <div class="card mb-3 overflow-hidden">
@@ -36,7 +36,7 @@
                                     {{ reset($reports)['fact'] }} Факт
                                 </div>
                             </div>
-                            <span class="col-lg-3 col-5 text-end">
+                            <span class="col-lg-3 col-7 text-end">
                                 <span class="badge bg-secondary text-light p-2 px-3 mx-2">{{ count($reports) }} </span>
 
                                 <a class="btn btn-success" href="{{ reset($reports)['url'] }}">
@@ -54,23 +54,32 @@
 
                     <div id="collapse-{{ $month }}" class="collapse" aria-labelledby="heading-{{ $month }}"
                         data-bs-parent="#reportsAccordion">
-                        <div class="card-body">
+                        <div class="card-body p-lg-0">
 
-                            <div class="m-1 border rounded p-2 pt-3 row">
-                                <div class="col-2 h4">
+                            <div class="m-1 border rounded p-2 py-3 px-0 row">
+                                <!-- Для больших экранов -->
+                                <div class="mb-0 pb-0 col-2 h5 px-3 d-none d-md-block">
                                     День
                                 </div>
-                                <div class="col-3 h4 text-end">
+                                <!-- Для мобильных устройств -->
+                                <div class="mb-0 pb-0 col-2 h5 px-3 d-block d-md-none">
+                                    <i class="bi bi-calendar-day"></i>
+                                </div>
+
+                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end">
                                     Сум
                                 </div>
-                                <div class="col-2 h4 text-end">
+
+                                <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
                                     Шт
                                 </div>
-                                <div class="col-2 h4 text-end">
+
+                                <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
                                     Факт
                                 </div>
-                                <div class="col-3 h4 text-end">
 
+                                <div class="mb-0 pb-0 col-3 px-lg-0d px-2 text-end">
+                                    {{-- Пустой --}}
                                 </div>
                             </div>
 
@@ -78,27 +87,37 @@
 
                                 @foreach ($reports as $reportData)
                                     <div class="card overflow-hidden m-1">
-                                        <div class="card-header p-2 " id="heading-{{ $reportData['report']->for_date }}">
-                                            {{-- <h2 class="mb-0 d-flex justify-content-between align-items-center"> --}}
+                                        <div class="card-header p-2 px-0"
+                                            id="heading-{{ $reportData['report']->for_date }}">
                                             <h2 class="row m-0 d-flex align-items-center">
-                                                <div class="mb-0 pb-0 col-2 h4">
+                                                <div class="mb-0 pb-0 col-2 h5 px-3">
                                                     {{ (int) explode('-', $reportData['report']->for_date)[2] }}
                                                 </div>
-                                                <div class="mb-0 pb-0 col-3 text-end h4 text-end">
+
+                                                <!-- Для больших экранов -->
+                                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-none d-md-block">
                                                     {{ number_format($reportData['sum'], 0, '', ' ') }}
                                                 </div>
-                                                <div class="mb-0 pb-0 col-2 text-end h4 text-end">
+                                                <!-- Для мобильных устройств -->
+                                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-block d-md-none">
+                                                    {{ number_format((int) $reportData['sum'] / 1000000000, 1, '.', ' ') }}
+                                                    млн
+                                                </div>
+
+                                                <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
                                                     {{ $reportData['quantity'] }}
                                                 </div>
-                                                <div class="mb-0 pb-0 col-2 text-end h4 text-end">
+                                                <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
                                                     {{ $reportData['fact'] }}
                                                 </div>
-                                                <span class="mb-0 pb-0 col-3 text-end">
-                                                    <a class="btn btn-success" href="{{ $reportData['url'] }}">
+                                                <span class="mb-0 pb-0 col-3 px-lg-0d px-2 text-end">
+                                                    <a class="btn btn-success my-lg-0 my-1"
+                                                        href="{{ $reportData['url'] }}">
                                                         <i class="bi bi-download"></i>
                                                     </a>
 
-                                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                                    <button class="btn btn-primary my-lg-0 my-1" type="button"
+                                                        data-bs-toggle="collapse"
                                                         data-bs-target="#collapse-{{ $reportData['report']->for_date }}"
                                                         aria-expanded="true"
                                                         aria-controls="collapse-{{ $reportData['report']->for_date }}">
@@ -553,32 +572,37 @@
             <div class="card-body">
 
                 <div class="m-1 border rounded p-2 pt-3 row">
-                    <div class="col-3 h4">
+                    <div class="col-3 h5">
                         Дата
                     </div>
-                    <div class="col-3 h4 text-end">
+                    <div class="col-3 h5 text-end">
                         Сум
                     </div>
-                    <div class="col-3 h4 text-end">
+                    <div class="col-3 h5 text-end">
                         Шт
                     </div>
-                    <div class="col-3 h4 text-end">
+                    <div class="col-3 h5 text-end">
                         Факт
                     </div>
                 </div>
 
                 @foreach ($files_data as $file)
                     <div class="m-1 border rounded p-2 pt-3 row">
-                        <div class="col-3 h4">
+                        <div class="col-3 h5">
                             <a href="{{ $file->url }}">{{ $file->date }}</a>
                         </div>
-                        <div class="col-3 h4 text-end">
+                        <!-- Для больших экранов -->
+                        <div class="col-3 text-end h5 text-end d-none d-md-block format-full">
                             {{ $file->sum }}
                         </div>
-                        <div class="col-3 h4 text-end">
+                        <!-- Для мобильных устройств -->
+                        <div class="col-3 text-end h5 text-end d-block d-md-none format-short">
+                            {{ $file->sum }}
+                        </div>
+                        <div class="col-3 h5 text-end">
                             {{ $file->count }}
                         </div>
-                        <div class="col-3 h4 text-end">
+                        <div class="col-3 h5 text-end">
                             {{ $file->fakt }}
                         </div>
                     </div>
@@ -586,4 +610,41 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function formatNumberWithSpaces(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+
+        function formatNumber(value) {
+            const suffixes = ['', 'тыс', 'млн', 'млрд', 'трлн'];
+            let suffixIndex = 0;
+            let formattedValue = value;
+
+            while (formattedValue >= 1000 && suffixIndex < suffixes.length - 1) {
+                formattedValue /= 1000;
+                suffixIndex++;
+            }
+
+            return `${formattedValue.toFixed(1)} ${suffixes[suffixIndex]}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const fullElements = document.querySelectorAll('.format-full');
+            const shortElements = document.querySelectorAll('.format-short');
+
+            fullElements.forEach(element => {
+                const sumValue = element.textContent.replace(/\s/g,
+                    ''); // Удаляем пробелы для преобразования в число
+                const formattedSumWithSpaces = formatNumberWithSpaces(sumValue);
+                element.textContent = formattedSumWithSpaces;
+            });
+
+            shortElements.forEach(element => {
+                const sumValue = {{ $reportData['sum'] }}; // Получаем значение из Blade
+                const formattedSum = formatNumber(sumValue);
+                element.textContent = formattedSum;
+            });
+        });
+    </script>
 @endsection
