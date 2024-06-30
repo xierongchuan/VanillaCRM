@@ -850,7 +850,7 @@
 
     @endif
 
-    @if (@Auth::user()->role !== 'user' && @Auth::user()->role !== 'admin')
+    @if (@Auth::user()->role !== 'user' && @Auth::user()->role !== 'admin' && config('app.debug'))
         <div class="overlay-f">
             <h1 class="display-1">Сайт в разработке!</h1>
         </div>
