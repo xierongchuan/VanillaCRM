@@ -46,7 +46,7 @@
 
                                 <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
                                     <div class="d-flex flex-wrap justify-content-center">
-                                        <h4>Дата загрузки <a href="{{ $last_repor_urls[$loop->index] }}">отчёта</a>:</h4>
+                                        <h4>Дата загрузки <a href="{{ @$last_repor_urls[$loop->index] }}">отчёта</a>:</h4>
                                         <div class="mx-sm-1"></div>
                                         <h4>{{ date('d.m.Y H:i:s', strtotime($data['UploadDate'])) }}</h4>
 
