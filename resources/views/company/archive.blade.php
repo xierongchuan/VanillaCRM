@@ -641,7 +641,7 @@
             });
 
             shortElements.forEach(element => {
-                const sumValue = {{ $reportData['sum'] }}; // Получаем значение из Blade
+                const sumValue = {{ @$reportData['sum'] }}; // Получаем значение из Blade
                 const formattedSum = formatNumber(sumValue);
                 element.textContent = formattedSum;
             });
