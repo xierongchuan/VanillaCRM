@@ -19,12 +19,14 @@
         <div class="accordion" id="reportsAccordion">
             @foreach ($groupedReports as $month => $reports)
                 <div class="card mb-3 overflow-hidden">
-                    <div class="card-header p-2" id="heading-{{ $month }}">
+                    <div class="card-header p-2 d-flex flex-column" id="heading-{{ $month }}">
                         <h2 class="mb-0 d-flex row justify-content-between align-items-center">
                             <div class="h3 my-1 col-lg-2 col-5" data-bs-toggle="collapse" aria-expanded="true"
                                 aria-controls="collapse-{{ $month }}" data-bs-target="#collapse-{{ $month }}">
                                 <b>{{ $month }}</b>
                             </div>
+
+                            {{-- Для Десктоп версии --}}
                             <div class="d-none d-lg-flex justify-content-between align-items-center col-lg-7">
                                 <div class="text-nowrap mb-0 pb-0 col-3 text-end h4">
                                     {{ number_format(reset($reports)['sum'], 0, '', ' ') }} Сум
@@ -50,6 +52,19 @@
                                 </button>
                             </span>
                         </h2>
+
+                        {{-- Для Мобильной версии --}}
+                        <div class="d-flex d-lg-none ">
+                            <div class="text-nowrap mb-0 pb-0 col-5 text-start h4 format-short">
+                                {{ number_format(reset($reports)['sum'], 0, '', ' ') }}
+                            </div>
+                            <div class="text-nowrap mb-0 pb-0 col-3 text-end h4 text-end">
+                                {{ reset($reports)['quantity'] }} Шт
+                            </div>
+                            <div class="text-nowrap mb-0 pb-0 col-4 text-end h4 text-end">
+                                {{ reset($reports)['fact'] }} Факт
+                            </div>
+                        </div>
                     </div>
 
                     <div id="collapse-{{ $month }}" class="collapse" aria-labelledby="heading-{{ $month }}"
@@ -95,13 +110,12 @@
                                                 </div>
 
                                                 <!-- Для больших экранов -->
-                                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-none d-md-block">
+                                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-none d-md-block format-full">
                                                     {{ number_format($reportData['sum'], 0, '', ' ') }}
                                                 </div>
                                                 <!-- Для мобильных устройств -->
-                                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-block d-md-none">
-                                                    {{ number_format((int) $reportData['sum'] / 1000000000, 1, '.', ' ') }}
-                                                    млн
+                                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-block d-md-none format-short">
+                                                    {{ number_format($reportData['sum'], 0, '', ' ') }}
                                                 </div>
 
                                                 <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
