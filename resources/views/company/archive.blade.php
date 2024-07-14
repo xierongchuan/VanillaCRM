@@ -54,7 +54,7 @@
                         </h2>
 
                         {{-- Для Мобильной версии --}}
-                        <div class="d-flex d-lg-none ">
+                        <div class="d-flex d-lg-none mt-3">
                             <div class="text-nowrap mb-0 pb-0 col-5 text-start h4 format-short">
                                 {{ number_format(reset($reports)['sum'], 0, '', ' ') }}
                             </div>
@@ -85,11 +85,11 @@
                                     Сум
                                 </div>
 
-                                <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
+                                <div class="mb-0 pb-0 col-1-5 text-end h5 px-0 text-end">
                                     Шт
                                 </div>
 
-                                <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
+                                <div class="mb-0 pb-0 col-2-5 text-end h5 px-0 text-end">
                                     Факт
                                 </div>
 
@@ -118,10 +118,10 @@
                                                     {{ number_format($reportData['sum'], 0, '', ' ') }}
                                                 </div>
 
-                                                <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
+                                                <div class="mb-0 pb-0 col-1-5 text-end h5 px-0 text-end">
                                                     {{ $reportData['quantity'] }}
                                                 </div>
-                                                <div class="mb-0 pb-0 col-2 text-end h5 px-0 text-end">
+                                                <div class="mb-0 pb-0 col-2-5 text-end h5 px-0 text-end">
                                                     {{ $reportData['fact'] }}
                                                 </div>
                                                 <span class="mb-0 pb-0 col-3 px-lg-0d px-2 text-end">
@@ -437,6 +437,10 @@
                                                                             $id,
                                                                         )->first();
                                                                     @endphp
+
+                                                                    @if (empty($worker->full_name))
+                                                                        @continue
+                                                                    @endif
 
                                                                     <tr>
                                                                         <th scope="row">

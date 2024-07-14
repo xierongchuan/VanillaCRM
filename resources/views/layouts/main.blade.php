@@ -47,6 +47,18 @@
                     black 10px,
                     black 20px);
         }
+
+        /* Custom column sizes */
+        .col-1-5 {
+        flex: 0 0 12.5%;
+        max-width: 12.5%;
+        }
+
+        .col-2-5 {
+        flex: 0 0 20.833333%;
+        max-width: 20.833333%;
+        }
+
     </style>
 
 </head>
