@@ -652,15 +652,14 @@
             const shortElements = document.querySelectorAll('.format-short');
 
             fullElements.forEach(element => {
-                const sumValue = element.textContent.replace(/\s/g,
-                    ''); // Удаляем пробелы для преобразования в число
+                const sumValue = element.textContent.replace(/\s/g, ''); // Удаляем пробелы для преобразования в число
                 const formattedSumWithSpaces = formatNumberWithSpaces(sumValue);
                 element.textContent = formattedSumWithSpaces;
             });
 
             shortElements.forEach(element => {
-                const sumValue = {{ @$reportData['sum'] }}; // Получаем значение из Blade
-                const formattedSum = formatNumber(sumValue);
+                const sumValue = element.textContent.replace(/\s/g, ''); // Удаляем пробелы для преобразования в число
+                const formattedSum = formatNumber(Number(sumValue)); // Преобразуем строку в число
                 element.textContent = formattedSum;
             });
         });
