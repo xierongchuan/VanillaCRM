@@ -320,7 +320,7 @@ class ReportXlsxService
             $monthSales = [];
 
             // Определение начальной и конечной даты текущего месяца
-            $startDate = now()->subYear()->startOfMonth();
+            $startDate = now()->startOfMonth();
             $endDate = now()->endOfMonth();
 
             // Выполняем запрос с фильтрацией по типу, компании и диапазону дат
@@ -330,7 +330,7 @@ class ReportXlsxService
                 ->orderBy('for_date', 'desc')
                 ->get();
 
-            // Если нету отчётов м месяц
+            // Если нету отчётов в месяц
             if ($monthReports->isEmpty()) {
                 // Находим последний отчет report_xlsx для данной компании по полю for_date
                 $lastReport = Report::where('type', 'report_xlsx')
