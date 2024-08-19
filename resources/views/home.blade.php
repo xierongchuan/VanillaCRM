@@ -469,7 +469,7 @@
                                             Факт
                                         </div>
                                     </div>
-                                    @if (isset((reset($archiveReports[$company->id]))->url))
+                                    @if (isset(reset($archiveReports[$company->id])->url))
                                         @foreach ($archiveReports[$company->id] as $month => $archiveReport)
                                             <div class="my-1 m-auto border rounded py-2 row h4">
 
@@ -663,59 +663,421 @@
 
     @if (@Auth::user()->role === 'user')
         @if (in_array('report_xlsx', $data->perm))
+
             @php
-                $sale_data = (array) $data->sale_data;
-                $totalSum = array_sum($sale_data);
+                $dataCom = (array) json_decode($data -> com_data);
+                $sales_data = (array) ($data -> sales_data);
 
-                $percentages = [];
-                foreach ($sale_data as $id => $sale) {
-                    if ((int) $sale == 0) {
-                        $percentages[$id] = 0;
-                        continue;
-                    }
-
-                    $percentage = ($sale / $totalSum) * 100;
-                    $percentages[$id] = round($percentage, 1);
-                }
-
-                $now_men = 0;
-                $mon_men = 0;
             @endphp
 
             <div class="row flex-column align-items-center">
-                <div class="col-lg-9 bg-body-secondary rounded mt-3 p-2">
-                    <span class="d-flex justify-content-between">
-                        <h2 class="perm_panel_switch mb-1" panel="perm_panel_report_xlsx_sales"
-                            style="font-size: calc(1.105rem + .66vw);margin-top: 0.1rem;">Продажи менеджеров
+                <div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
+                    <span class="d-flex justify-content-center">
+                        <h1 class="m-0 mx-1 perm_panel_switch" panel="perm_panel_{{ $company->id }}">
                             <b>{{ $company->name }}</b>
-                        </h2>
-                        <button class="lead perm_panel_switch m-1" panel="perm_panel_report_xlsx_sales"><i
-                                class="bi bi-nintendo-switch"></i></button>
+                        </h1>
                     </span>
-                    <form id="perm_panel_report_xlsx_sales" action="{{ route('mod.report_xlsx_sales', $company) }}"
-                        method="post" enctype="multipart/form-data" class="perm-panel bg-body-tertiary rounded p-3">
-                        @csrf
 
-                        @foreach ($sale_data as $id => $sale)
-                            @php
-                                $worker = App\Models\User::where('id', $id)->first();
-                            @endphp
-                            <input type="hidden" name="worker_name_{{ $worker->id }}"
-                                value="{{ $worker->full_name }}">
-                            <div class="input-group mb-2">
-                                <span class="input-group-text col-8">{{ $worker->full_name }}</span>
-                                <input type="number" class="form-control col-4 repost_xlsx_required_inputs"
-                                    name="worker_sold_{{ $worker->id }}" placeholder="Sold"
-                                    value="{{ $sale }}" aria-label="Sold" required>
-                                <span class="input-group-text px-1 px-md-2 col-2 col-md-1"
-                                    id="report_worker_percent_{{ $loop->iteration }}">99.9 %</span>
+                    <span id="perm_panel_{{ $company->id }}">
+                        <div id="stat_perm_panel_{{ $company->id }}" class="collapse show perm-panel w-100">
+                            <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <h2>Ежедневная статистика</h2>
+                                </div>
                             </div>
-                        @endforeach
 
-                        <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary">Изменить</button>
+                            <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <h4>Дата загрузки <a href="{{ @$last_repor_urls[$loop->index] }}">отчёта</a>:</h4>
+                                    <div class="mx-sm-1"></div>
+                                    <h4>{{ date('d.m.Y H:i:s', strtotime($dataCom['UploadDate'])) }}</h4>
+
+                                    <div class="mx-1"></div>
+                                    <h4> | На дату: </h4>
+                                    <div class="mx-1"></div>
+
+                                    <h4>{{ date('d.m.Y', strtotime($dataCom['Дата'])) }}</h4>
+                                </div>
+                            </div>
+
+                            <div class="bg-body-tertiary rounded p-3 mb-2">
+                                {{-- <div class="d-flex flex-wrap justify-content-center">
+                                        @if ($dataCom['Clear Sales'])
+                                            <h2>Месяц Закрыт</h2>
+                                        @else
+                                            <h2>Сегодня</h2>
+                                        @endif
+                                    </div> --}}
+                                <div class="col">
+                                    <div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+                                        <span>
+                                            <b>Договора</b>:
+                                        </span>
+
+                                        <span>
+                                            <b>{{ $dataCom['Договора'] }}</b>
+                                        </span>
+                                    </div>
+
+                                    <div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+                                        <span>
+                                            <b>Оплата</b>:
+                                        </span>
+
+                                        <span>
+                                            <b>{{ $dataCom['Оплата Кол-во'] }}</b>
+                                        </span>
+
+                                    </div>
+
+                                    <div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+                                        <span>
+                                            <b>Лизинг</b>:
+                                        </span>
+
+                                        <span>
+                                            <b>{{ number_format((int) $dataCom['Лизинг'], 0, '', ' ') }}</b>
+                                        </span>
+
+                                    </div>
+
+                                    <div class="m-3"></div>
+
+                                    <div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+                                        <span>
+                                            <b>Банк</b>:
+                                        </span>
+
+                                        <span>
+                                            <b>{{ number_format((int) $dataCom['Всего'], 0, '', ' ') }}</b>
+                                        </span>
+                                    </div>
+
+                                    <div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+                                        <span>
+                                            <b>Доплата</b>:
+                                        </span>
+
+                                        <span>
+                                            <b>{{ number_format((int) $dataCom['Доплата'], 0, '', ' ') }}</b>
+                                        </span>
+                                    </div>
+
+                                    <div class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
+                                        <span>
+                                            <b>Всего</b>:
+                                        </span>
+
+                                        <span>
+                                            <b>{{ number_format((int) $dataCom['Оплата Сумм'], 0, '', ' ') }}</b>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="bg-body-tertiary rounded p-3 mb-2">
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <h2 class="mb-0">Этот месяц</h2>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="mb-2">
+
+                                        <div class="col-md-9 mt-1 row m-auto justify-content-between h4">
+
+                                            <span class="col-md-4 p-2 m-auto h4 d-none d-md-block">
+                                                Факт
+                                            </span>
+
+                                            <span class="col-md-4">
+
+                                            </span>
+
+
+                                            <span class="col-md-4 p-2 text-md-end d-none d-md-block">
+                                                План
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="col-md-9 my-1 row m-auto justify-content-between h4">
+                                            <span
+                                                class="col-md-5 p-2 border border-success rounded d-flex justify-content-between">
+                                                <b class="d-block d-md-none">Факт:</b>
+                                                <span><b>{{ $dataCom['Факт Кол-во'] }}</b> </span>
+                                            </span>
+
+                                            <span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+                                                <b>{{ $dataCom['% от кол-во'] }}</b> %
+                                            </span>
+
+
+                                            <span
+                                                class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
+                                                <b class="d-block d-md-none">План:</b>
+                                                <span><b>{{ $dataCom['План Кол-во'] }}</b> </span>
+                                            </span>
+
+                                        </div>
+
+                                        <div class="m-3 d-block d-md-none"></div>
+
+                                        <div class="col-md-9 my-1 row m-auto justify-content-between h4">
+                                            <span
+                                                class="col-md-5 p-2 border border-success rounded d-flex justify-content-between">
+                                                <b class="d-block d-md-none">Факт:</b>
+                                                <span><b>{{ number_format((int) $dataCom['Факт Сумм'], 0, '', ' ') }}</b>
+                                                </span>
+                                            </span>
+
+                                            <span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+                                                <b>{{ $dataCom['% от сумм'] }}</b> %
+                                            </span>
+
+
+                                            <span
+                                                class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
+                                                <b class="d-block d-md-none">План:</b>
+                                                <span><b>{{ number_format((int) $dataCom['План Сумм'], 0, '', ' ') }}</b>
+                                                </span>
+                                            </span>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div
+                                        class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
+                                        <span>
+                                            Договора
+                                        </span>
+
+                                        <span>
+                                            <b>{{ $dataCom['2 Договора'] }}</b> шт
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        class="col-md-5 my-1 m-auto border border-warning rounded p-2 d-flex justify-content-between lead">
+                                        <span>
+                                            Конверсия (CV)
+                                        </span>
+
+                                        <span>
+                                            <b>{{ $dataCom['2 Конверсия'] }}</b> %
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="bg-body-tertiary rounded p-3 mb-2">
+                                <div class="row">
+
+                                    <div
+                                        class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead ">
+                                        <span>
+                                            Банк
+                                        </span>
+
+                                        <span>
+                                            <b>{{ number_format((int) $dataCom['3 Оплата'], 0, '', ' ') }}</b> сум
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
+                                        <span>
+                                            Лизинг
+                                        </span>
+
+                                        <span>
+                                            <b>{{ number_format((int) $dataCom['3 Доплата'], 0, '', ' ') }}</b> сум
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
+                                        <span>
+                                            Доплата
+                                        </span>
+
+                                        <span>
+                                            <b>{{ number_format((int) $dataCom['3 Лизинг'], 0, '', ' ') }}</b> сум
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        class="col-md-5 my-1 m-auto border rounded p-2 d-flex justify-content-between lead">
+                                        <span>
+                                            Остаток
+                                        </span>
+
+                                        <span>
+                                            <b>{{ number_format((int) $dataCom['3 Остаток'], 0, '', ' ') }}</b> сум
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="bg-body-tertiary rounded p-3 mb-2">
+
+                                @php
+                                    $sales = $sales_data;
+                                    $totalSum = array_sum($sales);
+
+                                    $percentages = [];
+                                    foreach ($sales as $id => $sale) {
+                                        if ((int) $sale == 0) {
+                                            $percentages[$id] = 0;
+                                            continue;
+                                        }
+
+                                        $percentage = ($sale / $totalSum) * 100;
+                                        $percentages[$id] = round($percentage, 1);
+                                    }
+
+                                    $now_men = 0;
+                                    $mon_men = 0;
+
+                                @endphp
+
+                                <h2>Менеджеры</h2>
+
+                                <table class="table mb-1 overflow-hidden">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Имя</th>
+                                            <th scope="col">Сегодня</th>
+                                            <th scope="col">Мес</th>
+                                            <th scope="col">%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach ($sales as $id => $sale)
+                                            @php
+                                                $worker = App\Models\User::where('id', $id)->first();
+                                            @endphp
+
+                                            <tr>
+                                                <th scope="row">{{ $loop->iteration }}</th>
+                                                <td>{{ $worker->full_name }}</td>
+                                                <td class="text-nowrap overflow-hidden">
+                                                    {{ isset(((array) $dataCom['Sales'])[$id]) ? ((array) $dataCom['Sales'])[$id] : 0 }}
+                                                    шт</td>
+                                                <td class="text-nowrap overflow-hidden">
+                                                    {{ isset($sales[$id]) ? $sales[$id] : 0 }} шт</td>
+                                                <td class="text-nowrap overflow-hidden">{{ $percentages[$id] }} %</td>
+                                            </tr>
+
+                                            @php
+                                                $now_men += (int) (isset(((array) $dataCom['Sales'])[$id])
+                                                    ? ((array) $dataCom['Sales'])[$id]
+                                                    : 0);
+                                                $mon_men += (int) $sales[$id];
+                                            @endphp
+                                        @endforeach
+
+                                        <tr>
+                                            <th scope="row">#</th>
+                                            <td><b>Всего</b></td>
+                                            <td class="text-nowrap overflow-hidden">{{ $now_men }} шт</td>
+                                            <td class="text-nowrap overflow-hidden">{{ $mon_men }} шт</td>
+                                            <td class="text-nowrap overflow-hidden">%</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="bg-body-tertiary rounded p-3 mb-2">
+
+                                @php
+                                    $sums = [$dataCom['5 Через банк сумма'], $dataCom['5 Через лизинг сумма']];
+                                    $totalSumSums = array_sum($sums);
+
+                                    $sums_per = [];
+                                    foreach ($sums as $key => $sum) {
+                                        $percentage = 0;
+                                        if ($sum != 0 && $totalSumSums != 0) {
+                                            $percentage = ($sum / $totalSumSums) * 100;
+                                        }
+                                        $sums_per[$key] = round($percentage, 2);
+                                    }
+
+                                    $counts = [$dataCom['5 Через банк шт'], $dataCom['5 Через лизинг шт']];
+                                    $totalSumCounts = array_sum($counts);
+
+                                    $count_per = [];
+                                    foreach ($counts as $key => $sum) {
+                                        $percentage = 0;
+                                        if ($sum != 0 && $totalSumCounts != 0) {
+                                            $percentage = ($sum / $totalSumCounts) * 100;
+                                        }
+                                        $count_per[$key] = round($percentage, 1);
+                                    }
+                                @endphp
+
+                                <h2>Реализация</h2>
+
+                                <table class="table mb-1 overflow-hidden">
+
+                                    <tbody>
+                                        <tr>
+                                            <td>Через банк (шт)</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ $dataCom['5 Через банк шт'] }} </td>
+                                            <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
+                                                {{ $count_per[0] }} %</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Через банк (сумма)</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ number_format((int) $dataCom['5 Через банк сумма'], 0, '', ' ') }}
+                                            </td>
+                                            <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
+                                                {{ $sums_per[0] }} %</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Через лизинг (шт)</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ $dataCom['5 Через лизинг шт'] }} </td>
+                                            <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
+                                                {{ $count_per[1] }} %</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Через лизинг (сумма)</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ number_format((int) $dataCom['5 Через лизинг сумма'], 0, '', ' ') }}
+                                            </td>
+                                            <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
+                                                {{ $sums_per[1] }} %</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Итог (шт)</td>
+                                            <td class="text-nowrap overflow-hidden text-end">{{ $dataCom['5 Итог шт'] }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Итог (сумма)</td>
+                                            <td class="text-nowrap overflow-hidden text-end">
+                                                {{ number_format((int) $dataCom['5 Cумма'], 0, '', ' ') }} </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
                         </div>
-                    </form>
+
+                    </span>
                 </div>
             </div>
 

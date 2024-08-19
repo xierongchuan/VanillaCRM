@@ -51,7 +51,7 @@ class HomeController extends Controller
         // Получение сервисных отчетов
         $srv_reps = $this->getServiceReports($companies);
         // Получение ежедневных отчётов
-        $coms_data = $this->getComData($companies);
+        $coms_data = $this->getComsData($companies);
         // Получение списка месячных продаж менеджеров
         $sales_data = (new ReportXlsxService())->getSalesData($companies);
 
@@ -86,8 +86,10 @@ class HomeController extends Controller
             $permission_vals = [];
         }
 
-        // Получение последнего отчёта продеж менеджеров
-        $sale_data = (new ReportXlsxService())->getSaleData($company);
+        // Получение ежедневных отчётов
+        $com_data = $this->getComsData([$company]);
+        // Получение списка месячных продаж менеджеров
+        $sales_data = (new ReportXlsxService())->getSalesData([$company]);
 
         // Создание объекта с данными пользователя
         $data = (object) [
@@ -95,7 +97,8 @@ class HomeController extends Controller
             'department' => $department,
             'post' => $post,
             'perm' => $permission_vals,
-            'sale_data' => $sale_data
+            'com_data' => reset($com_data),
+            'sales_data' => reset($sales_data)
         ];
 
         // Получение сервисного отчета
@@ -132,7 +135,7 @@ class HomeController extends Controller
 
 
     // Метод для получения ежедневного отчёта
-    private function getComData($companies): array
+    private function getComsData($companies): array
     {
         $com_data = [];
         foreach ($companies as $company) {
