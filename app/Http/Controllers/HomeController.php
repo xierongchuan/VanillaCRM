@@ -77,14 +77,20 @@ class HomeController extends Controller
         $department = Department::find(Auth::user()->dep_id);
         $post = Post::find(Auth::user()->post_id);
 
+        // dd($post->permission);
+
         // Получение разрешений пользователя
         if ($post !== null) {
-            $permissions = Permission::whereIn('id', json_decode($post->permission, true))->get();
+            $permission_ids = json_decode((string) $post->permission, true);
+            if (!is_array($permission_ids)) {
+                $permission_ids = []; // Если результат json_decode не массив, заменяем его на пустой массив
+            }
+            $permissions = Permission::whereIn('id', $permission_ids)->get();
             $permission_vals = $permissions->pluck('value')->toArray();
         } else {
-            // Действия, которые нужно выполнить, если $post равен null
             $permission_vals = [];
         }
+
 
         // Получение ежедневных отчётов
         $com_data = $this->getComsData([$company]);
