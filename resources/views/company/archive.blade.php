@@ -110,11 +110,13 @@
                                                 </div>
 
                                                 <!-- Для больших экранов -->
-                                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-none d-md-block format-full">
+                                                <div
+                                                    class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-none d-md-block format-full">
                                                     {{ number_format($reportData['sum'], 0, '', ' ') }}
                                                 </div>
                                                 <!-- Для мобильных устройств -->
-                                                <div class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-block d-md-none format-short">
+                                                <div
+                                                    class="mb-0 pb-0 col-3 text-end h5 px-0 text-end d-block d-md-none format-short">
                                                     {{ number_format($reportData['sum'], 0, '', ' ') }}
                                                 </div>
 
@@ -399,11 +401,11 @@
                                                                 $reportData['report']['data'],
                                                             ))['Sales'];
 
-                                                            $totalSum = array_sum($sales);
+                                                            $totalSum = array_sum($reportData['sales']);
 
                                                             $percentages = [];
-                                                            foreach ($sales as $id => $sale) {
-                                                                if ((int) $sale == 0) {
+                                                            foreach ($reportData['sales'] as $id => $sale) {
+                                                                if (((int)$sale) == 0) {
                                                                     $percentages[$id] = 0;
                                                                     continue;
                                                                 }
@@ -413,7 +415,6 @@
                                                             }
 
                                                             $now_men = 0;
-                                                            $mon_men = 0;
 
                                                         @endphp
 
@@ -425,6 +426,7 @@
                                                                     <th scope="col">#</th>
                                                                     <th scope="col">Имя</th>
                                                                     <th scope="col">Сегодня</th>
+                                                                    <th scope="col">За мес</th>
                                                                     <th scope="col">%</th>
                                                                 </tr>
                                                             </thead>
@@ -449,6 +451,9 @@
                                                                         <td class="text-nowrap overflow-hidden">
                                                                             {{ $sales[$id] }}
                                                                             шт</td>
+                                                                        <td class="text-nowrap overflow-hidden">
+                                                                            {{ $reportData['sales'][$worker->id] }} шт
+                                                                        </td>
                                                                         <td class="text-nowrap overflow-hidden">
                                                                             {{ $percentages[$id] }} %</td>
                                                                     </tr>
@@ -652,13 +657,15 @@
             const shortElements = document.querySelectorAll('.format-short');
 
             fullElements.forEach(element => {
-                const sumValue = element.textContent.replace(/\s/g, ''); // Удаляем пробелы для преобразования в число
+                const sumValue = element.textContent.replace(/\s/g,
+                ''); // Удаляем пробелы для преобразования в число
                 const formattedSumWithSpaces = formatNumberWithSpaces(sumValue);
                 element.textContent = formattedSumWithSpaces;
             });
 
             shortElements.forEach(element => {
-                const sumValue = element.textContent.replace(/\s/g, ''); // Удаляем пробелы для преобразования в число
+                const sumValue = element.textContent.replace(/\s/g,
+                ''); // Удаляем пробелы для преобразования в число
                 const formattedSum = formatNumber(Number(sumValue)); // Преобразуем строку в число
                 element.textContent = formattedSum;
             });

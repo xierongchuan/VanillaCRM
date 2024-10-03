@@ -665,8 +665,8 @@
         @if (in_array('report_xlsx', $data->perm))
 
             @php
-                $dataCom = (array) json_decode($data -> com_data);
-                $sales_data = (array) ($data -> sales_data);
+                $dataCom = (array) json_decode($data->com_data);
+                $sales_data = (array) $data->sales_data;
 
             @endphp
 

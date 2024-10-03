@@ -389,6 +389,80 @@ class ReportXlsxService
         return $sales_data;
     }
 
+    // Метод для получения списка месячных продаж менеджеров для одной компании
+    public function getSalesDataDate($company, $month): array
+    {
+        // Отчёты продаж менеджеров компаний
+        $monthSales = [];
+
+        // Определение начальной и конечной даты заданного месяца
+        $startDate = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $endDate = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+        // Выполняем запрос с фильтрацией по типу, компании и диапазону дат
+        $monthReports = Report::where('type', 'report_xlsx')
+            ->where('com_id', $company->id)
+            ->whereBetween('for_date', [$startDate, $endDate]) // Фильтр по диапазону дат
+            ->orderBy('for_date', 'desc')
+            ->get();
+
+        // Если нет отчётов за заданный месяц
+        if ($monthReports->isEmpty()) {
+            // Находим последний отчёт report_xlsx для данной компании по полю for_date
+            $lastReport = Report::where('type', 'report_xlsx')
+                ->where('com_id', $company->id)
+                ->orderBy('for_date', 'desc')
+                ->first();
+
+            // Извлекаем дату последнего отчета и вычисляем начало и конец месяца
+            $lastReportDate = Carbon::createFromFormat('Y-m-d', $lastReport->for_date);
+            $startDate = $lastReportDate->copy()->startOfMonth()->format('Y-m-d');
+            $endDate = $lastReportDate->copy()->endOfMonth()->format('Y-m-d');
+
+            // Получаем все отчёты за месяц, в котором был найден последний отчёт
+            $monthReports = Report::where('type', 'report_xlsx')
+                ->where('com_id', $company->id)
+                ->whereBetween('for_date', [$startDate, $endDate])
+                ->orderBy('for_date', 'desc')
+                ->get();
+        }
+
+        $reports = $monthReports;
+
+        foreach ($reports as $report) {
+            $monthSales[] = (array) (((array) json_decode($report->data))['Sales']);
+        }
+
+        $sums = [];
+
+        if (!empty($monthSales)) {
+            $managerId = array_key_first($monthSales[0]);
+
+            // Получение менеджера из отчёта
+            $manager = User::where('id', $managerId)->first();
+            // Получение сотрудников из департамента менеджера отчёта
+            $workers = User::where('dep_id', $manager->dep_id)->get();
+            // Перевод ID сотрудников на массив
+            $workerIds = $workers->pluck('id')->toArray();
+
+            // Инициализация массива для хранения сумм
+            $sums = array_fill_keys($workerIds, 0);
+
+            // Проход по всем массивам данных
+            foreach ($monthSales as $dataSet) {
+                foreach ($workerIds as $id) {
+                    if (isset($dataSet[$id])) {
+                        $sums[$id] += $dataSet[$id];
+                    }
+                }
+            }
+
+        }
+
+        return $sums;
+    }
+
+
     // Метод для получения списка годовых продаж менеджеров без суммирования результатов
     public function getSalesDataNoSum($companies): array
     {

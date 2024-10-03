@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ReportXlsxRule;
 use App\Models\Report;
+use App\Services\ReportXlsxService;
 use Illuminate\Support\Facades\DB;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -55,6 +56,8 @@ class ArchiveController extends Controller
 
         $groupedReports = $this->groupReportsByMonth($company);
 
+        // dd($groupedReports);
+
         return view('company.archive', compact('company', 'files_data', 'groupedReports'));
     }
 
@@ -93,6 +96,7 @@ class ArchiveController extends Controller
             // Добавляем отчет и извлеченные данные в соответствующий месяц
             $groupedReports[$month][] = [
                 'report' => $report,
+                'sales' => (new ReportXlsxService())->getSalesDataDate($company, $month),
                 'url' => $url,
                 'sum' => $sum,
                 'quantity' => $quantity,
