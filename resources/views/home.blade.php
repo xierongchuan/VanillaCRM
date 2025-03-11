@@ -6,37 +6,44 @@
 
     <div class="m-2"></div>
 
-    @if (isset($companies))
-        <div class="bg-transparent mt-2 rounded p-3 pb-2 mb-0">
-            <div class="d-flex flex-wrap justify-content-center">
-                <h2>Отчёты</h2>
-            </div>
+    <div class="bg-transparent mt-2 rounded p-3 pb-2 mb-0">
+        <div class="d-flex flex-wrap justify-content-center">
+            <h2>Отчёты</h2>
         </div>
+    </div>
+
+    @if (isset($companies))
+
         @foreach ($companies as $company)
-            @if (isset($coms_data[$company->id]))
-                @php
-                    $data = (array) json_decode($coms_data[$company->id]);
-                @endphp
+            @php
+                $data = (array) json_decode(@$coms_data[$company->id]);
+            @endphp
 
-                <div class="row flex-column align-items-center">
-                    <div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
-                        <span class="d-flex justify-content-between">
-                            <h1 class="m-0 mx-1 perm_panel_switch" panel="perm_panel_{{ $company->id }}">
-                                <b>{{ $company->name }}</b>
-                            </h1>
-                            <div class="order-last lead my-auto">
-                                <button class="btn btn-primary slider_prev_button" section-id="{{ $company->id }}">
-                                    <i class="bi bi-chevron-left"></i>
-                                </button>
-                                <button class="btn btn-primary slider_next_button" section-id="{{ $company->id }}">
-                                    <i class="bi bi-chevron-right"></i>
-                                </button>
-                                <button class="btn btn-danger perm_panel_switch" data-bs-toggle="collapse"
-                                    panel="perm_panel_{{ $company->id }}"><i class="bi bi-nintendo-switch"></i></button>
-                            </div>
-                        </span>
 
-                        <span id="perm_panel_{{ $company->id }}">
+
+            <div class="row flex-column align-items-center">
+                <div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
+                    <span class="d-flex justify-content-between">
+                        <h1 class="m-0 mx-1 perm_panel_switch" panel="perm_panel_{{ $company->id }}">
+                            <b>{{ $company->name }}</b>
+                        </h1>
+                        <div class="order-last lead my-auto">
+                            <button class="btn btn-primary slider_prev_button" section-id="{{ $company->id }}">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <button class="btn btn-primary slider_next_button" section-id="{{ $company->id }}">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                            <button class="btn btn-danger perm_panel_switch" data-bs-toggle="collapse"
+                                panel="perm_panel_{{ $company->id }}"><i class="bi bi-nintendo-switch"></i></button>
+                        </div>
+                    </span>
+
+                    {{-- @dd($coms_perms) --}}
+
+                    <span id="perm_panel_{{ $company->id }}">
+                        @if (in_array('report_xlsx', $coms_perms[$company->id]) && !empty($coms_data[$company->id]))
+                            {{-- Ежедневный отчёт --}}
                             <div id="stat_perm_panel_{{ $company->id }}" class="collapse show perm-panel w-100">
                                 <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
                                     <div class="d-flex flex-wrap justify-content-center">
@@ -60,12 +67,12 @@
 
                                 <div class="bg-body-tertiary rounded p-3 mb-2">
                                     {{-- <div class="d-flex flex-wrap justify-content-center">
-                                        @if ($data['Clear Sales'])
-                                            <h2>Месяц Закрыт</h2>
-                                        @else
-                                            <h2>Сегодня</h2>
-                                        @endif
-                                    </div> --}}
+                                            @if ($data['Clear Sales'])
+                                                <h2>Месяц Закрыт</h2>
+                                            @else
+                                                <h2>Сегодня</h2>
+                                            @endif
+                                        </div> --}}
                                     <div class="col">
                                         <div
                                             class="col-md-8 my-1 m-auto border rounded p-2 d-flex justify-content-between h4">
@@ -175,10 +182,10 @@
                                                 </span>
 
                                                 <span
-                                                    class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+                                                    class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center progress-bar-span"
+                                                    data-progress="{{ $data['% от кол-во'] }}">
                                                     <b>{{ $data['% от кол-во'] }}</b> %
                                                 </span>
-
 
                                                 <span
                                                     class="col-md-5 p-2 border rounded d-flex justify-content-md-end justify-content-between">
@@ -199,7 +206,8 @@
                                                 </span>
 
                                                 <span
-                                                    class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+                                                    class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center progress-bar-span"
+                                                    data-progress="{{ $data['% от сумм'] }}">
                                                     <b>{{ $data['% от сумм'] }}</b> %
                                                 </span>
 
@@ -525,7 +533,10 @@
 
 
                             </div>
+                        @endif
 
+                        @if (in_array('report_service', $coms_perms[$company->id]))
+                            {{-- Отчёт сервис --}}
                             <div id="serv_perm_panel_{{ $company->id }}" class="collapse perm-panel w-100">
                                 <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
                                     <div class="d-flex flex-wrap justify-content-center">
@@ -653,10 +664,206 @@
 
 
                             </div>
-                        </span>
-                    </div>
+                        @endif
+
+                        @if (in_array('report_caffe', $coms_perms[$company->id]))
+                            {{-- Отчёт кафе --}}
+                            <div id="serv_perm_panel_{{ $company->id }}" class="collapse perm-panel w-100">
+                                <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        <h2>Отчёт кафе</h2>
+                                    </div>
+                                </div>
+
+                                <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        @if ($caffe_reps[$company->id]['updated_at'])
+                                            <h4>Дата загрузки <a
+                                                    href="{{ route('company.caffe.archive', [$company, $caffe_reps[$company->id]['updated_at']]) }}">отчёта</a>:
+                                            </h4>
+                                            <div class="mx-sm-1"></div>
+                                        @endif
+
+                                        <h4>{{ $caffe_reps[$company->id]['updated_at'] ?? 'Отчёта нету.' }}</h4>
+
+                                        @if ($caffe_reps[$company->id]['have'])
+                                            <div class="mx-1"></div>
+                                            <h4> | На дату: </h4>
+                                            <div class="mx-1"></div>
+
+                                            <h4>{{ $caffe_reps[$company->id]['for_date'] }}</h4>
+                                        @endif
+                                        <div class="mx-1"></div>
+
+                                        <a href="{{ route('company.caffe.archive.list', compact('company')) }}"
+                                            class="lead">Архив</a>
+                                    </div>
+                                </div>
+
+                                <div class="bg-body-tertiary rounded p-3 mb-2" style="overflow-x: auto;">
+
+
+                                    <table class="table mb-1 overflow-hidden">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" rowspan="2" style="width: 160px;"
+                                                    class="text-center"></th>
+                                                <th scope="col" colspan="3" class="text-center">Сегодня</th>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Нал</th>
+                                                <th scope="col">Без Нал</th>
+                                                <th scope="col" class="border-3 border-white">Всего</th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 160px;" class="responsive-text-vir">
+                                                    {{-- Выручка --}}</td>
+
+                                                <td class="format-full text-nowrap overflow-hidden text-end bg-success-tr">
+                                                    {{ $caffe_reps[$company->id]['profit_nal'] }}
+                                                </td>
+                                                <td class="format-full text-nowrap overflow-hidden text-end bg-success-tr">
+                                                    {{ $caffe_reps[$company->id]['profit_bez_nal'] }}
+                                                </td>
+                                                <td
+                                                    class="format-full text-nowrap overflow-hidden text-end bg-success-tr border-3 border-white">
+                                                    {{ $caffe_reps[$company->id]['profit_SUM'] }}
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="width: 160px;" class="responsive-text-ras">
+                                                    {{-- Расходы --}}</td>
+
+                                                <td class="format-full text-nowrap overflow-hidden text-end bg-danger-tr">
+                                                    {{ $caffe_reps[$company->id]['waste_nal'] }}
+                                                </td>
+                                                <td class="format-full text-nowrap overflow-hidden text-end bg-danger-tr">
+                                                    {{ $caffe_reps[$company->id]['waste_bez_nal'] }}
+                                                </td>
+                                                <td
+                                                    class="format-full text-nowrap overflow-hidden text-end bg-danger-tr border-3 border-white">
+                                                    {{ $caffe_reps[$company->id]['waste_SUM'] }}
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="width: 160px;" class="responsive-text-ost">
+                                                    {{-- Остаток --}}</td>
+
+                                                <td class="format-full text-nowrap overflow-hidden text-end">
+                                                    {{ $caffe_reps[$company->id]['remains_nal'] }}
+                                                </td>
+                                                <td class="format-full text-nowrap overflow-hidden text-end">
+                                                    {{ $caffe_reps[$company->id]['remains_bez_nal'] }}
+                                                </td>
+                                                <td
+                                                    class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
+                                                    {{ $caffe_reps[$company->id]['remains_SUM'] }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+
+                                    <table class="table mb-1 overflow-hidden">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" rowspan="2" style="width: 160px;"
+                                                    class="text-center"></th>
+                                                <th scope="col" colspan="3" class="text-center">За Месяц</th>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Нал</th>
+                                                <th scope="col">Без Нал</th>
+                                                <th scope="col" class="border-3 border-white">Всего</th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 160px;" class="responsive-text-vir">
+                                                    {{-- Выручка --}}</td>
+
+                                                <td class="format-full text-nowrap overflow-hidden text-end bg-success-tr">
+                                                    {{ $caffe_reps[$company->id]['profit_nal_sum'] }}
+                                                </td>
+                                                <td class="format-full text-nowrap overflow-hidden text-end bg-success-tr">
+                                                    {{ $caffe_reps[$company->id]['profit_bez_nal_sum'] }}
+                                                </td>
+                                                <td
+                                                    class="format-full text-nowrap overflow-hidden text-end bg-success-tr border-3 border-white">
+                                                    {{ $caffe_reps[$company->id]['profit_SUM_sum'] }}
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="width: 160px;" class="responsive-text-ras">
+                                                    {{-- Расходы --}}</td>
+
+                                                <td class="format-full text-nowrap overflow-hidden text-end bg-danger-tr">
+                                                    {{ $caffe_reps[$company->id]['waste_nal_sum'] }}
+                                                </td>
+                                                <td class="format-full text-nowrap overflow-hidden text-end bg-danger-tr">
+                                                    {{ $caffe_reps[$company->id]['waste_bez_nal_sum'] }}
+                                                </td>
+                                                <td
+                                                    class="format-full text-nowrap overflow-hidden text-end bg-danger-tr border-3 border-white">
+                                                    {{ $caffe_reps[$company->id]['waste_SUM_sum'] }}
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="width: 160px;" class="responsive-text-ost">
+                                                    {{-- Остаток --}}</td>
+
+                                                <td class="format-full text-nowrap overflow-hidden text-end">
+                                                    {{ $caffe_reps[$company->id]['remains_nal_sum'] }}
+                                                </td>
+                                                <td class="format-full text-nowrap overflow-hidden text-end">
+                                                    {{ $caffe_reps[$company->id]['remains_bez_nal_sum'] }}
+                                                </td>
+                                                <td
+                                                    class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
+                                                    {{ $caffe_reps[$company->id]['remains_SUM_sum'] }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                                <div class="bg-body-tertiary rounded p-3 mb-2">
+
+                                    <div class="my-1 m-auto p-0 d-flex justify-content-between">
+                                        <h2>Ссылки</h2>
+                                    </div>
+
+                                    @foreach ($company->fields as $field)
+                                        <div class="my-1 m-auto border rounded py-2 row h4">
+
+                                            <div class="col-6 h4 m-0">
+                                                {{ $field->title }}
+                                            </div>
+
+                                            <div class="col-6 text-end">
+                                                <a href="{{ $field->link }}">Открыть</a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+
+                                </div>
+
+
+                            </div>
+                        @endif
+                    </span>
                 </div>
-            @endif
+            </div>
         @endforeach
     @endif
 
@@ -810,8 +1017,10 @@
                                                 <span><b>{{ $dataCom['Факт Кол-во'] }}</b> </span>
                                             </span>
 
-                                            <span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
-                                                <b>{{ $dataCom['% от кол-во'] }}</b> %
+                                            <span
+                                                class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center progress-bar-span"
+                                                data-progress="{{ $dataCom['% от сумм'] }}">
+                                                <b>{{ $dataCom['% от сумм'] }}</b> %
                                             </span>
 
 
@@ -833,7 +1042,9 @@
                                                 </span>
                                             </span>
 
-                                            <span class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center">
+                                            <span
+                                                class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center progress-bar-span"
+                                                data-progress="{{ $dataCom['% от сумм'] }}">
                                                 <b>{{ $dataCom['% от сумм'] }}</b> %
                                             </span>
 
@@ -1210,6 +1421,170 @@
 
         @endif
 
+        @if (in_array('report_caffe', $data->perm))
+
+            <div class="row flex-column align-items-center">
+                <div class="w-100">
+                    <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                        <div class="d-flex flex-wrap justify-content-center">
+                            <h2>Отчёт кафе</h2>
+                        </div>
+                    </div>
+
+                    <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                        <div class="d-flex flex-wrap justify-content-center">
+                            @if ($caffe_reps[$company->id]['updated_at'])
+                                <h4>Дата загрузки отчёта:
+                                </h4>
+                                <div class="mx-sm-1"></div>
+                            @endif
+
+                            <h4>{{ $caffe_reps[$company->id]['updated_at'] ?? 'Отчёта нету.' }}</h4>
+
+                            @if ($caffe_reps[$company->id]['have'])
+                                <div class="mx-1"></div>
+                                <h4> | На дату: </h4>
+                                <div class="mx-1"></div>
+
+                                <h4>{{ $caffe_reps[$company->id]['for_date'] }}</h4>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="bg-body-tertiary rounded p-3 mb-2">
+
+
+                        <table class="table mb-1 overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th scope="col" rowspan="2" style="width: 160px;" class="text-center"></th>
+                                    <th scope="col" colspan="3" class="text-center">Сегодня</th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Нал</th>
+                                    <th scope="col">Без Нал</th>
+                                    <th scope="col" class="border-3 border-white">Всего</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 160px;" class="responsive-text-vir">{{-- Выручка --}}</td>
+
+                                    <td class="format-full text-nowrap overflow-hidden text-end bg-success">
+                                        {{ $caffe_reps[$company->id]['profit_nal'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end bg-success">
+                                        {{ $caffe_reps[$company->id]['profit_bez_nal'] }}
+                                    </td>
+                                    <td
+                                        class="format-full text-nowrap overflow-hidden text-end bg-success border-3 border-white">
+                                        {{ $caffe_reps[$company->id]['profit_SUM'] }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width: 160px;" class="responsive-text-ras">{{-- Расходы --}}</td>
+
+                                    <td class="format-full text-nowrap overflow-hidden text-end bg-danger">
+                                        {{ $caffe_reps[$company->id]['waste_nal'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end bg-danger">
+                                        {{ $caffe_reps[$company->id]['waste_bez_nal'] }}
+                                    </td>
+                                    <td
+                                        class="format-full text-nowrap overflow-hidden text-end bg-danger border-3 border-white">
+                                        {{ $caffe_reps[$company->id]['waste_SUM'] }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width: 160px;" class="responsive-text-ost">{{-- Остаток --}}</td>
+
+                                    <td class="format-full text-nowrap overflow-hidden text-end">
+                                        {{ $caffe_reps[$company->id]['remains_nal'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end">
+                                        {{ $caffe_reps[$company->id]['remains_bez_nal'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
+                                        {{ $caffe_reps[$company->id]['remains_SUM'] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                        <table class="table mb-1 overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th scope="col" rowspan="2" style="width: 160px;" class="text-center"></th>
+                                    <th scope="col" colspan="3" class="text-center">За Месяц</th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Нал</th>
+                                    <th scope="col">Без Нал</th>
+                                    <th scope="col" class="border-3 border-white">Всего</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 160px;" class="responsive-text-vir">{{-- Выручка --}}</td>
+
+                                    <td class="format-full text-nowrap overflow-hidden text-end bg-success">
+                                        {{ $caffe_reps[$company->id]['profit_nal_sum'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end bg-success">
+                                        {{ $caffe_reps[$company->id]['profit_bez_nal_sum'] }}
+                                    </td>
+                                    <td
+                                        class="format-full text-nowrap overflow-hidden text-end bg-success border-3 border-white">
+                                        {{ $caffe_reps[$company->id]['profit_SUM_sum'] }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width: 160px;" class="responsive-text-ras">{{-- Расходы --}}</td>
+
+                                    <td class="format-full text-nowrap overflow-hidden text-end bg-danger">
+                                        {{ $caffe_reps[$company->id]['waste_nal_sum'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end bg-danger">
+                                        {{ $caffe_reps[$company->id]['waste_bez_nal_sum'] }}
+                                    </td>
+                                    <td
+                                        class="format-full text-nowrap overflow-hidden text-end bg-danger border-3 border-white">
+                                        {{ $caffe_reps[$company->id]['waste_SUM_sum'] }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width: 160px;" class="responsive-text-ost">{{-- Остаток --}}</td>
+
+                                    <td class="format-full text-nowrap overflow-hidden text-end">
+                                        {{ $caffe_reps[$company->id]['remains_nal_sum'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end">
+                                        {{ $caffe_reps[$company->id]['remains_bez_nal_sum'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
+                                        {{ $caffe_reps[$company->id]['remains_SUM_sum'] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        @endif
+
     @endif
 
     @if (@Auth::user()->role !== 'user' && @Auth::user()->role !== 'admin' && config('app.debug'))
@@ -1217,5 +1592,43 @@
             <h1 class="display-1">Сайт в разработке!</h1>
         </div>
     @endif
+
+    <script>
+        function formatNumberWithSpaces(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+
+        function formatNumber(value) {
+            const suffixes = ['', 'тыс', 'млн', 'млрд', 'трлн'];
+            let suffixIndex = 0;
+            let formattedValue = value;
+
+            while (formattedValue >= 1000 && suffixIndex < suffixes.length - 1) {
+                formattedValue /= 1000;
+                suffixIndex++;
+            }
+
+            return `${formattedValue.toFixed(1)} ${suffixes[suffixIndex]}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const fullElements = document.querySelectorAll('.format-full');
+            const shortElements = document.querySelectorAll('.format-short');
+
+            fullElements.forEach(element => {
+                const sumValue = element.textContent.replace(/\s/g,
+                    ''); // Удаляем пробелы для преобразования в число
+                const formattedSumWithSpaces = formatNumberWithSpaces(sumValue);
+                element.textContent = formattedSumWithSpaces;
+            });
+
+            shortElements.forEach(element => {
+                const sumValue = element.textContent.replace(/\s/g,
+                    ''); // Удаляем пробелы для преобразования в число
+                const formattedSum = formatNumber(Number(sumValue)); // Преобразуем строку в число
+                element.textContent = formattedSum;
+            });
+        });
+    </script>
 
 @endsection

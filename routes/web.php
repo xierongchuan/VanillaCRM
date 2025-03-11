@@ -134,9 +134,15 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/company/{company}/service/archive/{date}', [ArchiveController::class, 'getServiceReportXlsx'])->name('company.service.archive');
 
+    Route::get('/company/{company}/caffe/archive', [ArchiveController::class, 'caffeArchive'])->name('company.caffe.archive.list');
+
+    Route::get('/company/{company}/caffe/archive/{date}', [ArchiveController::class, 'getCaffeReportXlsx'])->name('company.caffe.archive');
+
     Route::get('/company/{company}/archive/remove_last_report', [ArchiveController::class, 'remove_last_report'])->name('company.remove_last_report');
 
     Route::get('/company/{company}/service/remove_last_report', [ArchiveController::class, 'deleteLastServiceReport'])->name('company.service.remove_last_report');
+
+    Route::get('/company/{company}/caffe/remove_last_report', [ArchiveController::class, 'deleteLastCaffeReport'])->name('company.caffe.remove_last_report');
 
     /// StatController
 
@@ -155,9 +161,12 @@ Route::group(['middleware' => 'user'], function () {
 
     Route::post('/company/{company}/report_service', [ModController::class, 'report_service'])->name('mod.report_service');
 
+    Route::post('/company/{company}/report_caffe', [ModController::class, 'report_caffe'])->name('mod.report_caffe');
+
     Route::post('/company/{company}/report_xlsx', [ReportXlsxController::class, 'report_xlsx'])->name('mod.report_xlsx');
 
     Route::post('/company/{company}/report_xlsx_sales', [ModController::class, 'report_xlsx_sales'])->name('mod.report_xlsx_sales');
+
 });
 
 Route::get('/logout', [UserController::class, 'logout'])->name('auth.logout');

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Permissions')
+@section('title', 'Доступы')
 
 @section('content')
 
@@ -10,6 +10,10 @@
 
 	@if(in_array('report_service', $data -> perm))
 		@include('user.permissions.report_service')
+	@endif
+
+    @if(in_array('report_caffe', $data -> perm))
+		@include('user.permissions.report_caffe')
 	@endif
 
 	@if(in_array('create_worker', $data -> perm))

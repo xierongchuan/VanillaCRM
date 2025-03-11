@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ReportXlsxRule;
+use App\Models\Field;
 use App\Models\Report;
 use App\Services\ReportXlsxService;
 use Illuminate\Support\Facades\DB;
@@ -10,11 +11,13 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Cell\Hyperlink;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WXlsx;
 use Carbon\Carbon;
@@ -231,11 +234,11 @@ class ArchiveController extends Controller
         $monthsData = DB::table('reports')
             ->select(
                 DB::raw('DISTINCT DATE_FORMAT(for_date, "%Y-%m-01") as month'),
-                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.dop")) AS UNSIGNED)) +
-                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.now")) AS UNSIGNED)) +
-                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.to")) AS UNSIGNED)) +
-                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.kuz")) AS UNSIGNED)) +
-                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.store")) AS UNSIGNED)) as total_sum')
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.dop")) AS SIGNED)) +
+                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.now")) AS SIGNED)) +
+                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.to")) AS SIGNED)) +
+                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.kuz")) AS SIGNED)) +
+                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.store")) AS SIGNED)) as total_sum')
             )
             ->where('type', 'report_service')
             ->where('com_id', $company->id)
@@ -270,7 +273,187 @@ class ArchiveController extends Controller
         $latestReport = DB::table('reports')
             ->where('type', 'report_service')
             ->where('com_id', $company->id)
+            ->orderBy('for_date', 'desc')
+            ->first();
+
+        if ($latestReport) {
+            DB::table('reports')->where('id', $latestReport->id)->delete();
+            return redirect()->route('home.index')->with('success', 'Последний отчёт успешно удалён!');
+        }
+
+        return redirect()->route('home.index')->withErrors('Небыло никакого отчёта!');
+    }
+
+    public function getCaffeReportXlsx(Company $company, string $date)
+    {
+
+        $fields = Field::where('com_id', $company->id)->get();
+
+        $startDate = Carbon::parse($date)->startOfMonth();
+        $endDate = Carbon::parse($date)->endOfMonth();
+
+        $reports = DB::table('reports')
+            ->select('com_id', 'for_date', 'type', 'data')
+            ->where('for_date', '>=', $startDate)
+            ->where('for_date', '<=', $endDate)
+            ->where('type', 'report_caffe')
+            ->where('com_id', $company->id)
             ->orderBy('for_date')
+            ->get();
+
+        // Create a new spreadsheet
+        $spreadsheet = new Spreadsheet();
+
+        // Set the active sheet
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->mergeCells('A1:A2'); // Для "Даты"
+
+        // Выровнять текст по центру
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $sheet->mergeCells('B1:D1'); // Для группировки "Выручка"
+        $sheet->mergeCells('E1:G1'); // Для группировки "Расходы"
+        $sheet->mergeCells('H1:J1'); // Для группировки "Остаток"
+
+        $sheet->getColumnDimension('A')->setWidth(13);
+        $sheet->getColumnDimension('B')->setWidth(13);
+        $sheet->getColumnDimension('C')->setWidth(13);
+        $sheet->getColumnDimension('D')->setWidth(13);
+        $sheet->getColumnDimension('E')->setWidth(13);
+        $sheet->getColumnDimension('F')->setWidth(13);
+        $sheet->getColumnDimension('G')->setWidth(13);
+        $sheet->getColumnDimension('H')->setWidth(13);
+        $sheet->getColumnDimension('I')->setWidth(13);
+        $sheet->getColumnDimension('J')->setWidth(13);
+
+        $sheet->setCellValue('A1', 'Дата');
+        $sheet->setCellValue('B1', 'Выручка');
+        $sheet->setCellValue('E1', 'Расходы');
+        $sheet->setCellValue('H1', 'Остаток');
+
+        $sheet->setCellValue('B2', 'Нал');
+        $sheet->setCellValue('C2', 'Без нал');
+        $sheet->setCellValue('D2', 'Всего');
+
+        $sheet->setCellValue('E2', 'Нал');
+        $sheet->setCellValue('F2', 'Без нал');
+        $sheet->setCellValue('G2', 'Всего');
+
+        $sheet->setCellValue('H2', 'Нал');
+        $sheet->setCellValue('I2', 'Без нал');
+        $sheet->setCellValue('J2', 'Всего');
+
+        $i = 3;
+        foreach ($reports as $key => $value) {
+
+            $val = (object) json_decode($value->data);
+
+            $sheet->setCellValue('A' . $i, $value->for_date);
+
+            $sheet->setCellValue('B' . $i, $val->profit_nal);
+            $sheet->setCellValue('C' . $i, $val->profit_bez_nal);
+            $sheet->setCellValue('D' . $i, '=SUM(B' . $i . ':C' . $i . ')');
+
+            $sheet->setCellValue('E' . $i, $val->waste_nal);
+            $sheet->setCellValue('F' . $i, $val->waste_bez_nal);
+            $sheet->setCellValue('G' . $i, '=SUM(E' . $i . ':F' . $i . ')');
+
+            $sheet->setCellValue('H' . $i, $val->remains_nal);
+            $sheet->setCellValue('I' . $i, $val->remains_bez_nal);
+            $sheet->setCellValue('J' . $i, '=SUM(H' . $i . ':I' . $i . ')');
+
+
+            $i++;
+        }
+
+        $sheet->setCellValue('A34', 'Всего за мес');
+        $sheet->setCellValue('B34', '=SUM(B3:B33)');
+        $sheet->setCellValue('C34', '=SUM(C3:C33)');
+        $sheet->setCellValue('D34', '=SUM(D3:D33)');
+        $sheet->setCellValue('E34', '=SUM(E3:E33)');
+        $sheet->setCellValue('F34', '=SUM(F3:F33)');
+        $sheet->setCellValue('G34', '=SUM(G3:G33)');
+        $sheet->setCellValue('H34', '=SUM(H3:H33)');
+        $sheet->setCellValue('I34', '=SUM(I3:I33)');
+        $sheet->setCellValue('J34', '=SUM(J3:J33)');
+
+        // Ссылки
+
+        $j = 36;
+        foreach ($fields as $field) {
+
+            // Устанавливаем текст в ячейке A
+            $sheet->setCellValue("A$j", $field->title);
+
+            // Создаем гиперссылку
+            $sheet->getCell("A$j")->setHyperlink(new Hyperlink($field->link));
+
+            // Задаем цвет текста в ячейке A1
+            $sheet->getStyle("A$j")->getFont()->getColor()->setARGB(Color::COLOR_BLUE);
+
+            $j++;
+        }
+
+
+
+        $fileName = $company->name . ' Caffe Report.xlsx';
+
+        // Save the spreadsheet
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save(storage_path('app/public/reports_archive/' . $fileName), 1);
+
+        return response()->download(storage_path('app/public/reports_archive/' . $fileName));
+
+    }
+
+    public function caffeArchive(Company $company)
+    {
+        $monthsData = DB::table('reports')
+            ->select(
+                DB::raw('DISTINCT DATE_FORMAT(for_date, "%Y-%m-01") as month'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.remains_nal")) AS SIGNED)) +
+                  SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.remains_bez_nal")) AS SIGNED)) as total_sum')
+            )
+            ->where('type', 'report_caffe')
+            ->where('com_id', $company->id)
+            ->groupBy('month')
+            ->get();
+
+        $monthsDataArray = $monthsData->map(function ($item) {
+            return [
+                'date' => $item->month,
+                'total_sum' => $item->total_sum,
+            ];
+        })->toArray();
+
+        $reports = [];
+
+        foreach ($monthsDataArray as $item) {
+            $date = Carbon::parse($item['date']);
+            $formattedYear = $date->format('Y');
+            $formattedMonth = $this->getRussianMonthNameStr($date->format('m'));
+
+            $reports[$formattedYear . ' ' . $formattedMonth] = [
+                $item['date'],
+                (int) $item['total_sum'],
+            ];
+        }
+
+        $reports = array_reverse($reports);
+
+        // dd($reports);
+
+        return view('company.caffe_archive', compact('company', 'reports'));
+    }
+
+    public function deleteLastCaffeReport(Company $company)
+    {
+        $latestReport = DB::table('reports')
+            ->where('type', 'report_caffe')
+            ->where('com_id', $company->id)
+            ->orderBy('for_date', 'desc')
             ->first();
 
         if ($latestReport) {

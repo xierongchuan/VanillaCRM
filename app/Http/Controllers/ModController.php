@@ -98,6 +98,56 @@ class ModController extends Controller
 
     }
 
+    public function report_caffe(Company $company, Request $request)
+    {
+
+        $request->validate([
+            'date' => 'required',
+            'profit_nal' => 'required|numeric',
+            'profit_bez_nal' => 'required|numeric',
+            'waste_nal' => 'required|numeric',
+            'waste_bez_nal' => 'required|numeric',
+            'remains_nal' => 'required|numeric',
+            'remains_bez_nal' => 'required|numeric',
+        ]);
+
+        $data = [
+            'profit_nal' => (int)$request->profit_nal,
+            'profit_bez_nal' => (int)$request->profit_bez_nal,
+            'waste_nal' => (int)$request->waste_nal,
+            'waste_bez_nal' => (int)$request->waste_bez_nal,
+            'remains_nal' => (int)$request->remains_nal,
+            'remains_bez_nal' => (int)$request->remains_bez_nal,
+        ];
+
+        $forDate = date('Y-m-d H:i:s', strtotime($request->date));
+
+        $reportModel = Report::where([
+            'com_id' => $company->id,
+            'for_date' => $forDate,
+            'type' => 'report_caffe'
+        ])->first();
+
+        if ($reportModel) {
+            // Если запись существует, обновим ее
+            $reportModel->data = json_encode($data);
+            $reportModel->updated_at = now()->toDateTimeString();
+            $reportModel->save();
+        } else {
+            // Если запись не существует, создадим новую
+            Report::create([
+                'com_id' => $company->id,
+                'for_date' => $forDate,
+                'type' => 'report_caffe',
+                'data' => json_encode($data),
+                'created_at' => now()->toDateTimeString(),
+                'updated_at' => now()->toDateTimeString(),
+            ]);
+        }
+        return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
+
+    }
+
     public function report_xlsx_sales(Company $company)
     {
         // Получаем последний отчет report_xlsx для данной компании

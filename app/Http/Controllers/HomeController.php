@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\Field;
 use App\Models\User;
 use App\Services\ReportXlsxService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Report;
@@ -50,10 +51,14 @@ class HomeController extends Controller
         $last_repor_urls = $this->getLastReportUrls($companies);
         // Получение сервисных отчетов
         $srv_reps = $this->getServiceReports($companies);
+        // Получение кафешных отчетов
+        $caffe_reps = $this->getCaffeReports($companies);
         // Получение ежедневных отчётов
         $coms_data = $this->getComsData($companies);
         // Получение списка месячных продаж менеджеров
         $sales_data = (new ReportXlsxService())->getSalesData($companies);
+        // Получение списка доступов в компании
+        $coms_perms = $this->getComsPerms($companies);
 
         // Возврат вида 'home' с данными
         return view(
@@ -63,8 +68,10 @@ class HomeController extends Controller
                 'archiveReports',
                 'last_repor_urls',
                 'srv_reps',
+                'caffe_reps',
                 'coms_data',
-                'sales_data'
+                'sales_data',
+                'coms_perms'
             )
         );
     }
@@ -110,8 +117,34 @@ class HomeController extends Controller
         // Получение сервисного отчета
         $srv_rep = $this->getServiceReport($company->id);
 
+        // Получение кафешных отчетов
+        $caffe_reps = $this->getCaffeReports(Company::all());
+
         // Возврат вида 'home' с данными
-        return view('home', compact('company', 'data', 'srv_rep'));
+        return view('home', compact('company', 'data', 'caffe_reps', 'srv_rep'));
+    }
+
+    private function getComsPerms(Collection $companies): array
+    {
+        $coms_perms = [];
+
+        foreach ($companies as $company) {
+
+            $perms_arr = [];
+
+            $perms = DB::table('permissions')
+                ->where('com_id', $company->id)
+                ->get();
+
+            foreach ($perms as $value) {
+                $perms_arr[] = $value->value;
+            }
+
+            $coms_perms[$company->id] = $perms_arr;
+
+        }
+
+        return $coms_perms;
     }
 
     private function getArchiveReports(): array
@@ -254,13 +287,13 @@ class HomeController extends Controller
 
         // Получение данных из таблицы 'reports'
         $result_full = json_decode(DB::table('reports')
-            ->select(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.dop")) AS UNSIGNED)) as dop_sum'))
-            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.now")) AS UNSIGNED)) as now_sum'))
-            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.to")) AS UNSIGNED)) as to_sum'))
-            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.kuz")) AS UNSIGNED)) as kuz_sum'))
-            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.store")) AS UNSIGNED)) as store_sum'))
-            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.zap")) AS UNSIGNED)) as zap_sum'))
-            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.srv")) AS UNSIGNED)) as srv_sum'))
+            ->select(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.dop")) AS SIGNED)) as dop_sum'))
+            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.now")) AS SIGNED)) as now_sum'))
+            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.to")) AS SIGNED)) as to_sum'))
+            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.kuz")) AS SIGNED)) as kuz_sum'))
+            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.store")) AS SIGNED)) as store_sum'))
+            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.zap")) AS SIGNED)) as zap_sum'))
+            ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.srv")) AS SIGNED)) as srv_sum'))
             ->where('for_date', '>=', $startDate)
             ->where('for_date', '<=', $endDate)
             ->where('type', 'report_service')
@@ -338,6 +371,136 @@ class HomeController extends Controller
             'zap_sum' => 0,
             'srv_sum' => 0,
             'SUM_sum' => 0,
+            'for_date' => null,
+            'created_at' => null,
+            'updated_at' => null,
+            'have' => null
+        ];
+    }
+
+    // Метод для получения кафешных отчетов
+    private function getCaffeReports($companies)
+    {
+        $srv_reps = [];
+
+        // Обработка каждой компании
+        foreach ($companies as $company) {
+            // Получение полей компании
+            $company->fields = Field::where('com_id', $company->id)->get();
+            // Получение сервисного отчета для компании
+            $srv_reps[$company->id] = $this->getCaffeReport($company->id);
+        }
+
+        return $srv_reps;
+    }
+
+    // Метод для получения кафешного отчета для конкретной компании
+    private function getCaffeReport($companyId)
+    {
+        // Определение начальной и конечной даты текущего месяца
+        $startDate = now()->startOfMonth();
+        $endDate = now()->endOfMonth();
+
+        // Получение данных из таблицы 'reports'
+        $result_full = DB::table('reports')
+        ->select(
+            DB::raw('SUM(JSON_VALUE(data, "$.profit_nal")) as profit_nal_sum'),
+            DB::raw('SUM(JSON_VALUE(data, "$.profit_bez_nal")) as profit_bez_nal_sum'),
+            DB::raw('SUM(JSON_VALUE(data, "$.waste_nal")) as waste_nal_sum'),
+            DB::raw('SUM(JSON_VALUE(data, "$.waste_bez_nal")) as waste_bez_nal_sum'),
+            DB::raw('SUM(JSON_VALUE(data, "$.remains_nal")) as remains_nal_sum'),
+            DB::raw('SUM(JSON_VALUE(data, "$.remains_bez_nal")) as remains_bez_nal_sum')
+        )
+        ->where('for_date', '>=', $startDate)
+        ->where('for_date', '<=', $endDate)
+        ->where('type', 'report_caffe')
+        ->where('com_id', $companyId)
+        ->first();
+
+        // if($companyId == 4) dd($result_full);
+
+        // Получение последнего отчета
+        $latestReport = DB::table('reports')
+            ->where('type', 'report_caffe')
+            ->where('com_id', $companyId)
+            ->orderByDesc('for_date')
+            ->first();
+
+        // Если отчета нет, возвращаем данные по умолчанию
+        if (!$latestReport) {
+            return $this->defaultCaffeReport();
+        }
+
+        $result = json_decode($latestReport->data);
+
+        // Формирование данных для отчета
+        return [
+        // dd( [
+            'profit_nal' => (int) $result->profit_nal,
+            'profit_bez_nal' => (int) $result->profit_bez_nal,
+            'waste_nal' => (int) $result->waste_nal,
+            'waste_bez_nal' => (int) $result->waste_bez_nal,
+            'remains_nal' => (int) $result->remains_nal,
+            'remains_bez_nal' => (int) $result->remains_bez_nal,
+            'profit_SUM' => (
+                (int) $result->profit_nal +
+                (int) $result->profit_bez_nal
+            ),
+            'waste_SUM' => (
+                (int) $result->waste_nal +
+                (int) $result->waste_bez_nal
+            ),
+            'remains_SUM' => (
+                (int) $result->remains_nal +
+                (int) $result->remains_bez_nal
+            ),
+            'profit_nal_sum' => (int) $result_full->profit_nal_sum,
+            'profit_bez_nal_sum' => (int) $result_full->profit_bez_nal_sum,
+            'waste_nal_sum' => (int) $result_full->waste_nal_sum,
+            'waste_bez_nal_sum' => (int) $result_full->waste_bez_nal_sum,
+            'remains_nal_sum' => (int) $result_full->remains_nal_sum,
+            'remains_bez_nal_sum' => (int) $result_full->remains_bez_nal_sum,
+            'profit_SUM_sum' => (
+                (int) $result_full->profit_nal_sum +
+                (int) $result_full->profit_bez_nal_sum
+            ),
+            'waste_SUM_sum' => (
+                (int) $result_full->waste_nal_sum +
+                (int) $result_full->waste_bez_nal_sum
+            ),
+            'remains_SUM_sum' => (
+                (int) $result_full->remains_nal_sum +
+                (int) $result_full->remains_bez_nal_sum
+            ),
+            'for_date' => $latestReport->for_date,
+            'created_at' => $latestReport->created_at,
+            'updated_at' => $latestReport->updated_at,
+            'have' => true
+        ];
+    }
+
+    // Метод для возвращения данных по умолчанию, если отчета нет
+    private function defaultCaffeReport()
+    {
+        return [
+            'profit_nal' => 0,
+            'profit_bez_nal' => 0,
+            'waste_nal' => 0,
+            'waste_bez_nal' => 0,
+            'remains_nal' => 0,
+            'remains_bez_nal' => 0,
+            'profit_SUM' => 0,
+            'waste_SUM' => 0,
+            'remains_SUM' => 0,
+            'profit_nal_sum' => 0,
+            'profit_bez_nal_sum' => 0,
+            'waste_nal_sum' => 0,
+            'waste_bez_nal_sum' => 0,
+            'remains_nal_sum' => 0,
+            'remains_bez_nal_sum' => 0,
+            'profit_SUM_sum' => 0,
+            'waste_SUM_sum' => 0,
+            'remains_SUM_sum' => 0,
             'for_date' => null,
             'created_at' => null,
             'updated_at' => null,
