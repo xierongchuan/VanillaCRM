@@ -80,11 +80,6 @@
             "envFile": "../.env",
             "profile": true,
             "openProfile": true
-        },
-        {
-            "name": "Listen for Xdebug",
-            "type": "php",
-            "request": "launch"
         }
     ]
 }
