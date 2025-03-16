@@ -10,7 +10,7 @@ composer run dev
 npm run build
 ```
 
-Requires: 
+### Requires 
 * php8.4
 * nodejs
 * npm
