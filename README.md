@@ -10,4 +10,9 @@ composer run dev
 npm run build
 ```
 
+Requires: 
+* php8.4
+* nodejs
+* npm
+
 License: CC BY-NC-ND 4.0
