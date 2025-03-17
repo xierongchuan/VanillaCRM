@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>DEV - {{ config('app.name') }} - @yield('title')</title>
+    <title>{{ config('app.name') }} - @yield('title')</title>
     <link rel="icon" href="/icon.png" type="image/png">
 
     {{-- Import Styles --}}
@@ -96,7 +96,7 @@
             background-color: #e74354bb !important;
         }
 
-        .responsive-text-vir .responsive-text-ras .responsive-text-ost {
+        .responsive-text-vir .responsive-text-ras .responsive-text-ost .responsive-text-safe {
             white-space: nowrap;
             /* Предотвращаем перенос текста */
         }
@@ -117,6 +117,11 @@
             /* На большом экране отображается полностью */
         }
 
+        .responsive-text-safe::before {
+            content: "Сейф";
+            /* На большом экране отображается полностью */
+        }
+
         /* Мобильные экраны (ширина до 768px) */
         @media (max-width: 768px) {
             .responsive-text-vir::before {
@@ -131,6 +136,11 @@
 
             .responsive-text-ost::before {
                 content: "Ост";
+                /* На маленьком экране отображается сокращенно */
+            }
+
+            .responsive-text-safe::before {
+                content: "Сф";
                 /* На маленьком экране отображается сокращенно */
             }
 

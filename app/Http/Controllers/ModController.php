@@ -109,6 +109,8 @@ class ModController extends Controller
             'waste_bez_nal' => 'required|numeric',
             'remains_nal' => 'required|numeric',
             'remains_bez_nal' => 'required|numeric',
+            'safe_nal' => 'required|numeric',
+            'safe_bez_nal' => 'required|numeric',
         ]);
 
         $data = [
@@ -118,6 +120,8 @@ class ModController extends Controller
             'waste_bez_nal' => (int)$request->waste_bez_nal,
             'remains_nal' => (int)$request->remains_nal,
             'remains_bez_nal' => (int)$request->remains_bez_nal,
+            'safe_nal' => (int)$request->safe_nal,
+            'safe_bez_nal' => (int)$request->safe_bez_nal,
         ];
 
         $forDate = date('Y-m-d H:i:s', strtotime($request->date));

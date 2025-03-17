@@ -55,6 +55,18 @@
                 </div>
             </div>
 
+            <div class="form-group mb-2">
+                <label for="safe_nal">Сейф:</label>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" name="safe_nal" id="safe_nal" placeholder="Нал" aria-label="Нал">
+                    <input type="number" class="form-control" name="safe_bez_nal" id="safe_bez_nal" placeholder="Без Нал" aria-label="Без Нал">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Сумма:</span>
+                    <span class="input-group-text" id="safe">0.00</span>
+                </div>
+            </div>
+
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary">Создать</button>
             </div>
@@ -72,16 +84,20 @@
         var waste_bez_nal = parseFloat(document.getElementById("waste_bez_nal").value) || 0;
         var remains_nal = parseFloat(document.getElementById("remains_nal").value) || 0;
         var remains_bez_nal = parseFloat(document.getElementById("remains_bez_nal").value) || 0;
+        var safe_nal = parseFloat(document.getElementById("safe_nal").value) || 0;
+        var safe_bez_nal = parseFloat(document.getElementById("safe_bez_nal").value) || 0;
 
         var profitVal = profit_nal + profit_bez_nal;
         var wasteVal = waste_nal + waste_bez_nal;
         var remainsVal = remains_nal + remains_bez_nal;
         var remainsCalcVal = profitVal - wasteVal;
+        var safeVal = safe_nal + safe_bez_nal;
 
         // Записываем сумму в элемент "Итого"
         document.getElementById("profit").textContent = profitVal.toFixed(2);
         document.getElementById("waste").textContent = wasteVal.toFixed(2);
         document.getElementById("remains").textContent = remainsVal.toFixed(2);
         document.getElementById("remains_calc").textContent = remainsCalcVal.toFixed(2);
+        document.getElementById("safe").textContent = safeVal.toFixed(2);
     });
 </script>

@@ -406,7 +406,7 @@
 
                                         <tbody>
                                             <tr>
-                                                <td>Через банк (шт)</td>
+                                                <td>DKD</td>
                                                 <td class="text-nowrap overflow-hidden text-end">
                                                     {{ $data['5 Через банк шт'] }} </td>
                                                 <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
@@ -421,7 +421,7 @@
                                                     {{ $sums_per[0] }} %</td>
                                             </tr>
                                             <tr>
-                                                <td>Через лизинг (шт)</td>
+                                                <td>SKD</td>
                                                 <td class="text-nowrap overflow-hidden text-end">
                                                     {{ $data['5 Через лизинг шт'] }} </td>
                                                 <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
@@ -829,6 +829,37 @@
                                                 <td
                                                     class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
                                                     {{ $caffe_reps[$company->id]['remains_SUM_sum'] }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+
+                                    <table class="table mb-1 overflow-hidden">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"></th>
+                                                <th scope="col">Нал</th>
+                                                <th scope="col">Без Нал</th>
+                                                <th scope="col" class="border-3 border-white">Всего</th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+
+                                            <tr>
+                                                <td style="width: 160px;" class="responsive-text-safe">
+                                                    {{-- Сейф --}}</td>
+
+                                                <td class="format-full text-nowrap overflow-hidden text-end">
+                                                    {{ $caffe_reps[$company->id]['safe_nal'] }}
+                                                </td>
+                                                <td class="format-full text-nowrap overflow-hidden text-end">
+                                                    {{ $caffe_reps[$company->id]['safe_bez_nal'] }}
+                                                </td>
+                                                <td
+                                                    class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
+                                                    {{ $caffe_reps[$company->id]['safe_SUM'] }}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -1243,7 +1274,7 @@
 
                                     <tbody>
                                         <tr>
-                                            <td>Через банк (шт)</td>
+                                            <td>DKD</td>
                                             <td class="text-nowrap overflow-hidden text-end">
                                                 {{ $dataCom['5 Через банк шт'] }} </td>
                                             <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
@@ -1258,7 +1289,7 @@
                                                 {{ $sums_per[0] }} %</td>
                                         </tr>
                                         <tr>
-                                            <td>Через лизинг (шт)</td>
+                                            <td>SKD</td>
                                             <td class="text-nowrap overflow-hidden text-end">
                                                 {{ $dataCom['5 Через лизинг шт'] }} </td>
                                             <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
@@ -1570,6 +1601,37 @@
                                     </td>
                                     <td class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
                                         {{ $caffe_reps[$company->id]['remains_SUM_sum'] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                        <table class="table mb-1 overflow-hidden">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Нал</th>
+                                    <th scope="col">Без Нал</th>
+                                    <th scope="col" class="border-3 border-white">Всего</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td style="width: 160px;" class="responsive-text-safe">
+                                        {{-- Сейф --}}</td>
+
+                                    <td class="format-full text-nowrap overflow-hidden text-end">
+                                        {{ $caffe_reps[$company->id]['safe_nal'] }}
+                                    </td>
+                                    <td class="format-full text-nowrap overflow-hidden text-end">
+                                        {{ $caffe_reps[$company->id]['safe_bez_nal'] }}
+                                    </td>
+                                    <td
+                                        class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
+                                        {{ $caffe_reps[$company->id]['safe_SUM'] }}
                                     </td>
                                 </tr>
                             </tbody>
