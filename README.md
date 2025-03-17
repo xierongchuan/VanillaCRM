@@ -1,8 +1,17 @@
 # AndCRM
 
-### Run Dev
+### Install env
+```sh
+composer i
+npm i
+```
+
+### Run
 ```sh
 composer run dev
+```
+```sh
+docker-compose up -d
 ```
 
 ### Build Frontend
