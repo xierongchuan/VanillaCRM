@@ -1,6 +1,6 @@
 # AndCRM
 
-### Install env
+### Install Env
 ```sh
 composer i
 npm i
