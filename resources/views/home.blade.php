@@ -900,7 +900,7 @@
 
 
     @if (@Auth::user()->role === 'user')
-        @if (in_array('report_xlsx', $data->perm))
+        @if (in_array('report_xlsx', $data->perm) && !empty($data->com_data))
 
             @php
                 $dataCom = (array) json_decode($data->com_data);
