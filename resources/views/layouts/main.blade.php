@@ -294,7 +294,7 @@
 
         @if ($errors->any())
             <div class="alert alert-danger mt-3">
-                <ul>
+                <ul class="m-0 my-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
