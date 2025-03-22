@@ -16,7 +16,9 @@ services:
         image: phpmyadmin:latest
         container_name: phpmyadmin
         environment:
-            PMA_HOST: db
+            PMA_HOST: mariadb
+            PMA_USER: user
+            PMA_PASSWORD: user
             MYSQL_ROOT_PASSWORD: root
         ports:
             - "8080:80"
