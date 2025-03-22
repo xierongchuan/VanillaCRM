@@ -278,7 +278,7 @@
 
         @if (Session::has('success'))
             <div class="alert alert-success mt-3">
-                <ul>
+                <ul class="m-0 my-1">
                     <li>{{ Session::get('success') }}</li>
                 </ul>
             </div>
@@ -286,7 +286,7 @@
 
         @if (Session::has('warning'))
             <div class="alert alert-warning mt-3">
-                <ul>
+                <ul class="m-0 my-1">
                     <li>{{ Session::get('warning') }}</li>
                 </ul>
             </div>
