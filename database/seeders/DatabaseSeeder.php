@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,8 +17,9 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'login' => 'admin',
             'role' => 'admin',
-            'password' => function() {
-                print 'Введите пароль Администратора: ';
+            'password' => function () {
+                echo 'Введите пароль Администратора: ';
+
                 return Hash::make(trim(fgets(STDIN)));
             },
             'remember_token' => null,

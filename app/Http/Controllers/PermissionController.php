@@ -3,82 +3,83 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\Department;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PermissionController extends Controller
 {
-	public function create(Company $company) {
-		return view('company.permission.create', compact('company'));
-	}
+    public function create(Company $company)
+    {
+        return view('company.permission.create', compact('company'));
+    }
 
-	public function store(Request $req, Company $company) {
-		$req -> validate([
-			'name' => 'required|min:3|max:30',
-			'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/',
-			'data' => 'nullable|string'
-		]);
+    public function store(Request $req, Company $company)
+    {
+        $req->validate([
+            'name' => 'required|min:3|max:30',
+            'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/',
+            'data' => 'nullable|string',
+        ]);
 
+        if (@Permission::where('com_id', $company->id)->where('value', $req->value)->first()) {
+            return redirect()->route('company.list')->withErrors('Такое право уже существует у этой компаний');
+        }
 
-		if(@Permission::where('com_id', $company -> id)->where('value', $req -> value)->first()) {
-			return redirect() -> route('company.list') -> withErrors("Такое право уже существует у этой компаний");
-		}
+        if (Company::where('id', $company->id)->first()) {
+            $per = new Permission;
+            $per->com_id = $company->id;
+            $per->name = $req->name;
+            $per->value = $req->value;
+            $per->data = $req->data;
+            $per->save();
 
+            return redirect()->route('company.list');
+        }
 
-		if (Company::where('id', $company -> id)->first()) {
-			$per = new Permission();
-			$per -> com_id = $company -> id;
-			$per -> name = $req -> name;
-			$per -> value = $req -> value;
-			$per -> data = $req -> data;
-			$per -> save();
+        return redirect()->route('company.list')->withErrors('Компании не существует');
+    }
 
-			return redirect() -> route('company.list');
-		}
+    public function update(Company $company, Permission $permission)
+    {
+        return view('company.permission.update', compact('company', 'permission'));
+    }
 
-		return redirect() -> route('company.list') -> withErrors("Компании не существует");
-	}
+    public function modify(Company $company, Permission $permission)
+    {
+        $req = request()->validate([
+            'name' => 'required|min:3|max:30',
+            'data' => 'nullable|string',
+        ]);
 
+        if (Company::where('id', $company->id)->exists()) {
 
-	public function update(Company $company, Permission $permission) {
-		return view('company.permission.update', compact('company', 'permission'));
-	}
+            $permission->name = $req['name'];
+            $permission->data = $req['data'];
+            $permission->save();
 
-	public function modify(Company $company, Permission $permission) {
-		$req = request() -> validate([
-			'name' => 'required|min:3|max:30',
-			'data' => 'nullable|string'
-		]);
+            return redirect()->route('company.list');
+        }
 
-		if (Company::where('id', $company -> id)->exists()) {
+        return redirect()->route('company.list')->withErrors('Комании не существует');
+    }
 
-			$permission -> name = $req['name'];
-			$permission -> data = $req['data'];
-			$permission -> save();
+    public function delete(Company $company, Permission $permission)
+    {
 
-			return redirect() -> route('company.list');
-		}
+        if (! @$permission->id) {
+            return redirect()->back()->withErrors('Право не найдено');
+        }
 
-		return redirect() -> route('company.list') -> withErrors("Комании не существует");
-	}
+        if (DB::table('posts')
+            ->whereRaw('JSON_CONTAINS(permission, \'['.$permission->id.']\')')
+            ->exists()) {
+            return redirect()->back()->withErrors('Это право ещё используется.');
+        }
 
-	public function delete(Company $company, Permission $permission)
-	{
+        $permission->delete();
 
-		if (!@$permission -> id) {
-			return redirect()->back()->withErrors('Право не найдено');
-		}
+        return redirect()->back()->with('success', 'Право успешно удалено');
 
-		if(DB::table('posts')
-			->whereRaw('JSON_CONTAINS(permission, \'['.$permission -> id.']\')')
-			->exists()) {
-			return redirect()->back()->withErrors('Это право ещё используется.');
-		}
-
-		$permission->delete();
-		return redirect()->back()->with('success', 'Право успешно удалено');
-
-	}
+    }
 }

@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-				Schema::create('permissions', function (Blueprint $table) {
-						$table->id();
-						$table->unsignedBigInteger('com_id');
-						$table->string('name');
-						$table->string('value');
-						$table->text('data')->nullable();
-						$table->timestamps();
+        Schema::create('permissions', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('com_id');
+            $table->string('name');
+            $table->string('value');
+            $table->text('data')->nullable();
+            $table->timestamps();
 
-						// Добавляем внешний ключ
-						$table->foreign('com_id')->references('id')->on('companies');
-				});
+            // Добавляем внешний ключ
+            $table->foreign('com_id')->references('id')->on('companies');
+        });
     }
 
     /**

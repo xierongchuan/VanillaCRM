@@ -14,186 +14,198 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    public function sign_in()
+    {
+        return view('auth.sign_in');
+    }
 
-	public function sign_in()
-	{
-		return view('auth.sign_in');
-	}
+    public function login(Request $request)
+    {
+        $request->validate([
+            'login' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
-	public function login(Request $request)
-	{
-		$request->validate([
-			'login' => 'required|string',
-			'password' => 'required|string',
-		]);
+        $credentials = $request->only('login', 'password');
 
-		$credentials = $request->only('login', 'password');
+        if (Auth::attempt($credentials)) {
+            // Аутентификация успешна
+            return redirect()->route('home.index')->with('success', 'Вы успешно Аутентифицированы');
+        }
 
-		if (Auth::attempt($credentials)) {
-			// Аутентификация успешна
-			return redirect()->route('home.index')->with('success', 'Вы успешно Аутентифицированы');
-		}
+        // Аутентификация не удалась
+        return back()->withErrors(['login' => 'Неверные учетные данные'])->withInput($request->only('login'));
+    }
 
-		// Аутентификация не удалась
-		return back()->withErrors(['login' => 'Неверные учетные данные'])->withInput($request->only('login'));
-	}
+    public function create(Company $company)
+    {
+        $departments = Department::where('com_id', $company->id)->get();
 
-	public function create(Company $company) {
-		$departments = Department::where("com_id", $company -> id) -> get();
-		return view('company.user.create', compact('company', 'departments'));
-	}
+        return view('company.user.create', compact('company', 'departments'));
+    }
 
-	public function store(Company $company) {
+    public function store(Company $company)
+    {
 
-		$req = request() -> validate([
-			'login' => 'required|unique:users',
-//			'role' => Rule::in(['admin', 'user']),
-			'full_name' => 'required|min:3|max:30',
-			'department' => 'required|numeric|min:1',
-			'phone_number' => 'required|string|min:1|max:22',
-			'password' => 'required|min:6|max:256'
-		]);
+        $req = request()->validate([
+            'login' => 'required|unique:users',
+            //			'role' => Rule::in(['admin', 'user']),
+            'full_name' => 'required|min:3|max:30',
+            'department' => 'required|numeric|min:1',
+            'phone_number' => 'required|string|min:1|max:22',
+            'password' => 'required|min:6|max:256',
+        ]);
 
-		if(!Department::where('id', $req['department'])->exists()) {
-			return redirect()->back()->withErrors('Департамент не найден');
-		}
+        if (! Department::where('id', $req['department'])->exists()) {
+            return redirect()->back()->withErrors('Департамент не найден');
+        }
 
-		$user = new User();
-		$user -> login = $req['login'];
-		$user -> role = 'user';
-		$user -> password = Hash::make($req['password']);
-		$user -> com_id = $company -> id;
-		$user -> dep_id = $req['department'];
-		$user -> full_name = $req['full_name'];
-		$user -> phone_number = str_replace(' ', '', $req['phone_number']);
-		$user -> save();
+        $user = new User;
+        $user->login = $req['login'];
+        $user->role = 'user';
+        $user->password = Hash::make($req['password']);
+        $user->com_id = $company->id;
+        $user->dep_id = $req['department'];
+        $user->full_name = $req['full_name'];
+        $user->phone_number = str_replace(' ', '', $req['phone_number']);
+        $user->save();
 
-		return redirect() -> route('company.list');
-	}
+        return redirect()->route('company.list');
+    }
 
-	public function update(Company $company, User $user) {
-		$departments = Department::where('com_id', $user -> com_id) -> get();
-		$posts = Post::where('dep_id', $user -> dep_id) -> get();
-		return view('company.user.update', compact('company', 'user','departments', 'posts'));
-	}
+    public function update(Company $company, User $user)
+    {
+        $departments = Department::where('com_id', $user->com_id)->get();
+        $posts = Post::where('dep_id', $user->dep_id)->get();
 
-	public function modify(Company $company, User $user) {
+        return view('company.user.update', compact('company', 'user', 'departments', 'posts'));
+    }
 
-		if(isset(\request() -> password)) {
-			$req = request() -> validate([
-				'department' => 'required|numeric|min:1',
-				'post' => 'nullable|numeric|min:1',
-				'full_name' => 'required|min:3|max:30',
-				'phone_number' => 'required|string|min:1|max:22',
-				'password' => 'required|min:6|max:256'
-			]);
-		} else {
-			$req = request() -> validate([
-				'department' => 'required|numeric|min:1',
-				'post' => 'nullable|numeric|min:1',
-				'full_name' => 'required|min:3|max:30',
-				'phone_number' => 'required|string|min:1|max:22'
-			]);
-		}
+    public function modify(Company $company, User $user)
+    {
 
-		if(!Department::where('id', $req['department'])->exists()) {
-			return redirect()->back()->withErrors('Департамент не найден');
-		}
+        if (isset(\request()->password)) {
+            $req = request()->validate([
+                'department' => 'required|numeric|min:1',
+                'post' => 'nullable|numeric|min:1',
+                'full_name' => 'required|min:3|max:30',
+                'phone_number' => 'required|string|min:1|max:22',
+                'password' => 'required|min:6|max:256',
+            ]);
+        } else {
+            $req = request()->validate([
+                'department' => 'required|numeric|min:1',
+                'post' => 'nullable|numeric|min:1',
+                'full_name' => 'required|min:3|max:30',
+                'phone_number' => 'required|string|min:1|max:22',
+            ]);
+        }
 
-		if(@$req['post'] && !Post::where('id', @$req['post'])->exists()) {
-			return redirect()->back()->withErrors('Должность не найден');
-		}
+        if (! Department::where('id', $req['department'])->exists()) {
+            return redirect()->back()->withErrors('Департамент не найден');
+        }
 
-		if(!empty($req['password'])) $user -> password = Hash::make($req['password']);
-		$user -> com_id = $company -> id;
-		$user -> dep_id = $req['department'];
-		$user -> post_id = $req['post'] ?? null;
-		$user -> full_name = $req['full_name'];
-		$user -> phone_number = str_replace(' ', '', $req['phone_number']);
-		$user -> save();
+        if (@$req['post'] && ! Post::where('id', @$req['post'])->exists()) {
+            return redirect()->back()->withErrors('Должность не найден');
+        }
 
-		return redirect() -> route('company.list');
-	}
+        if (! empty($req['password'])) {
+            $user->password = Hash::make($req['password']);
+        }
+        $user->com_id = $company->id;
+        $user->dep_id = $req['department'];
+        $user->post_id = $req['post'] ?? null;
+        $user->full_name = $req['full_name'];
+        $user->phone_number = str_replace(' ', '', $req['phone_number']);
+        $user->save();
 
-	public function delete(Company $company, User $user)
-	{
-		if (!@$company -> id) {
-			return redirect()->back()->withErrors('Компания не найдена');
-		}
+        return redirect()->route('company.list');
+    }
 
-		if (!@$user -> id) {
-			return redirect()->back()->withErrors('Сотрудник не найден');
-		}
+    public function delete(Company $company, User $user)
+    {
+        if (! @$company->id) {
+            return redirect()->back()->withErrors('Компания не найдена');
+        }
 
-		$user->delete();
-		return redirect()->back()->with('success', 'Сотрудник успешно удален');
+        if (! @$user->id) {
+            return redirect()->back()->withErrors('Сотрудник не найден');
+        }
 
-	}
+        $user->delete();
 
-	public function logout()
-	{
-		Auth::logout();
+        return redirect()->back()->with('success', 'Сотрудник успешно удален');
 
-		return redirect() -> route('auth.sign_in');
-	}
+    }
 
-	/// Administrator Sector
+    public function logout()
+    {
+        Auth::logout();
 
+        return redirect()->route('auth.sign_in');
+    }
 
-	public function createAdmin() {
-		$admins = User::where("role", 'admin')->whereNot('login', 'admin') -> get();
-		return view('admin.index', compact('admins'));
-	}
+    // / Administrator Sector
 
-	public function storeAdmin(Company $company) {
+    public function createAdmin()
+    {
+        $admins = User::where('role', 'admin')->whereNot('login', 'admin')->get();
 
-		$req = request() -> validate([
-			'login' => 'required|unique:users',
-			'full_name' => 'required|min:3|max:30',
-			'password' => 'required|min:6|max:256'
-		]);
+        return view('admin.index', compact('admins'));
+    }
 
-		$user = new User();
-		$user -> login = $req['login'];
-		$user -> role = 'admin';
-		$user -> password = Hash::make($req['password']);
-		$user -> full_name = $req['full_name'];
-		$user -> save();
+    public function storeAdmin(Company $company)
+    {
 
-		return redirect() -> route('company.list');
-	}
+        $req = request()->validate([
+            'login' => 'required|unique:users',
+            'full_name' => 'required|min:3|max:30',
+            'password' => 'required|min:6|max:256',
+        ]);
 
-	public function deleteAdmin(User $admin)
-	{
-		if (!@$admin -> id) {
-			return redirect()->back()->withErrors('Администратор не найден');
-		}
+        $user = new User;
+        $user->login = $req['login'];
+        $user->role = 'admin';
+        $user->password = Hash::make($req['password']);
+        $user->full_name = $req['full_name'];
+        $user->save();
 
-		$admin->delete();
-		return redirect()->back()->with('success', 'Администратор успешно удален');
+        return redirect()->route('company.list');
+    }
 
-	}
+    public function deleteAdmin(User $admin)
+    {
+        if (! @$admin->id) {
+            return redirect()->back()->withErrors('Администратор не найден');
+        }
 
+        $admin->delete();
 
-	/// Permissions Sector
+        return redirect()->back()->with('success', 'Администратор успешно удален');
 
-	public function permission() {
+    }
 
-		$company = Company::find(Auth::user() -> com_id);
+    // / Permissions Sector
 
-		$department = Department::find(Auth::user() -> dep_id);
+    public function permission()
+    {
 
-		$post = Post::find(@Auth::user() -> post_id);
-		$permission_ids = (array)json_decode(@$post -> permission);
-		$permissions = Permission::whereIn('id', @$permission_ids) -> get();
-		$permission_vals = @$permissions -> pluck('value') -> toArray();
+        $company = Company::find(Auth::user()->com_id);
 
-		$data = (object)[
-			'company' => $company,
-			'department' => $department,
-			'post' => $post,
-			'perm' => $permission_vals,
-		];
-		return view('user.permission', compact('data'));
-	}
+        $department = Department::find(Auth::user()->dep_id);
+
+        $post = Post::find(@Auth::user()->post_id);
+        $permission_ids = (array) json_decode(@$post->permission);
+        $permissions = Permission::whereIn('id', @$permission_ids)->get();
+        $permission_vals = @$permissions->pluck('value')->toArray();
+
+        $data = (object) [
+            'company' => $company,
+            'department' => $department,
+            'post' => $post,
+            'perm' => $permission_vals,
+        ];
+
+        return view('user.permission', compact('data'));
+    }
 }

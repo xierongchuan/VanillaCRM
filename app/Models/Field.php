@@ -9,5 +9,5 @@ class Field extends Model
 {
     use HasFactory;
 
-		protected $table = 'custom_fields';
+    protected $table = 'custom_fields';
 }

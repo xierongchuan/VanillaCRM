@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {
-	use HasFactory;
+    use HasFactory;
 
-	protected $table = 'reports';
+    protected $table = 'reports';
 
     protected $fillable = [
         'com_id',
@@ -17,6 +17,6 @@ class Report extends Model
         'type',
         'data',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 }

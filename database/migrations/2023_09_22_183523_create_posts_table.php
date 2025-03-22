@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-					Schema::create('posts', function (Blueprint $table) {
-						$table->id();
-						$table->unsignedBigInteger('com_id');
-						$table->unsignedBigInteger('dep_id');
-						$table->string('name');
-						$table->text('permission')->nullable();
-						$table->timestamps();
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('com_id');
+            $table->unsignedBigInteger('dep_id');
+            $table->string('name');
+            $table->text('permission')->nullable();
+            $table->timestamps();
 
-						// Добавляем внешний ключ
-						$table->foreign('com_id')->references('id')->on('companies');
+            // Добавляем внешний ключ
+            $table->foreign('com_id')->references('id')->on('companies');
 
-						// Добавляем внешний ключ к таблице departments
-						$table->foreign('dep_id')->references('id')->on('departments');
-				});
+            // Добавляем внешний ключ к таблице departments
+            $table->foreign('dep_id')->references('id')->on('departments');
+        });
     }
 
     /**

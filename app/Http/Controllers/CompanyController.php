@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
-use App\Models\Permission;
-use App\Models\Post;
-use App\Models\User;
-use App\Models\Field;
-use Illuminate\Http\Request;
 use App\Models\Company;
+use App\Models\Department;
+use App\Models\Field;
+use App\Models\Permission;
+use App\Models\User;
 
 class CompanyController extends Controller
 {
-
     public function list()
     {
         $companies = Company::all();
@@ -24,6 +21,7 @@ class CompanyController extends Controller
             $company->permissions = Permission::where('com_id', $company->id)->get(); // Получаем права для компании
 
         }
+
         return view('company.list', ['companies' => $companies]);
     }
 
@@ -36,7 +34,7 @@ class CompanyController extends Controller
     {
         $req = request()->validate([
             'name' => 'required|string|unique:companies|min:3|max:20',
-            'data' => 'nullable|string'
+            'data' => 'nullable|string',
         ]);
 
         Company::create($req);
@@ -64,7 +62,7 @@ class CompanyController extends Controller
 
     public function delete(Company $company)
     {
-        if (!@$company->id) {
+        if (! @$company->id) {
             return redirect()->back()->withErrors('Компания не найдена');
         }
 
@@ -73,6 +71,7 @@ class CompanyController extends Controller
         }
 
         $company->delete();
+
         return redirect()->back()->with('success', 'Компания успешно удалена');
 
     }

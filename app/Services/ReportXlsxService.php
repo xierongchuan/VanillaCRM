@@ -11,11 +11,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Shared\Date as Date;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class ReportXlsxService
 {
@@ -35,7 +32,7 @@ class ReportXlsxService
         foreach ($inputData as $key => $value) {
             if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
                 $workerNumber = $matches[1];
-                $workerSold = $inputData['worker_sold_' . $workerNumber];
+                $workerSold = $inputData['worker_sold_'.$workerNumber];
                 $workers[$workerNumber] = (int) $workerSold;
             }
         }
@@ -113,7 +110,7 @@ class ReportXlsxService
     // Метод для проверки типа файла
     private function validateFileType(Request $request): void
     {
-        if ($request->file('file')->getMimeType() !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        if ($request->file('file')->getMimeType() !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
             throw new Exception('Файл должен быть типа xlsx (Excel).');
         }
     }
@@ -133,7 +130,7 @@ class ReportXlsxService
         $rule = [];
         foreach ($lines as $line) {
             if (trim($line)) {
-                list($key, $value) = array_map('trim', explode('=', $line, 2));
+                [$key, $value] = array_map('trim', explode('=', $line, 2));
                 $rule[$key] = $value;
             }
         }
@@ -163,30 +160,31 @@ class ReportXlsxService
 
                 // Обработка ячеек в колонке A для заполнения данных отчета
                 if (($cellLetter == 'A') && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS] && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]) {
-                    $date = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A' . $cellNum)->getCalculatedValue()));
+                    $date = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A'.$cellNum)->getCalculatedValue()));
                     if ($date == Carbon::createFromFormat('Y-m-d', $request->for_date)->format('d.m.Y')) {
-                        echo $cellNum . '<br>';
-                        $sheetData[ReportXlsxRule::CONTRACTS] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::PAYMENT_QUANTITY] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_QUANTITY] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::PAYMENT_SUM] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_SUM] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT] = $wsheet->getCell($rule[ReportXlsxRule::ADDITIONAL_PAYMENT] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::LEASING] = $wsheet->getCell($rule[ReportXlsxRule::LEASING] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::TOTAL] = $wsheet->getCell($rule[ReportXlsxRule::TOTAL] . $cellNum)->getCalculatedValue();
+                        echo $cellNum.'<br>';
+                        $sheetData[ReportXlsxRule::CONTRACTS] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::PAYMENT_QUANTITY] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_QUANTITY].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::PAYMENT_SUM] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_SUM].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT] = $wsheet->getCell($rule[ReportXlsxRule::ADDITIONAL_PAYMENT].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::LEASING] = $wsheet->getCell($rule[ReportXlsxRule::LEASING].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::TOTAL] = $wsheet->getCell($rule[ReportXlsxRule::TOTAL].$cellNum)->getCalculatedValue();
                     }
                 }
 
                 // Обработка ячеек в колонке E для заполнения данных отчета
                 if (($cellLetter == 'E') && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS] && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]) {
-                    $date2 = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A' . $cellNum)->getCalculatedValue()));
+                    $date2 = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A'.$cellNum)->getCalculatedValue()));
                     if ($date2 == Carbon::createFromFormat('Y-m-d', $request->for_date)->format('d.m.Y')) {
-                        $sheetData[ReportXlsxRule::CONTRACTS_2] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2] . $cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::CONTRACTS_2] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2].$cellNum)->getCalculatedValue();
                     }
                 }
             }
 
             // Прерывание цикла, если данные найдены
-            if ($sheetData[ReportXlsxRule::CONTRACTS] != '' && $sheetData[ReportXlsxRule::CONTRACTS] !== null)
+            if ($sheetData[ReportXlsxRule::CONTRACTS] != '' && $sheetData[ReportXlsxRule::CONTRACTS] !== null) {
                 break;
+            }
         }
 
         // Если данные не найдены, выбрасываем исключение
@@ -239,7 +237,7 @@ class ReportXlsxService
             $existingReport->save();
         } else {
             // Если отчет не существует, создаем новый
-            $report = new Report();
+            $report = new Report;
             $report->type = 'report_xlsx';
             $report->com_id = $company->id;
             $report->for_date = Carbon::createFromFormat('Y-m-d', $request->for_date)->format('Y-m-d');
@@ -248,17 +246,15 @@ class ReportXlsxService
         }
     }
 
-
     // Метод для сохранения файла
     private function saveFile(Request $request): string
     {
         $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
+        $fileName = time().'_'.$file->getClientOriginalName();
         $file->storeAs('public/tmp', $fileName);
 
         return $fileName;
     }
-
 
     // Метод для получения поледнего отчёта продажы менеджеров
     public function getSaleData($company): array
@@ -269,7 +265,7 @@ class ReportXlsxService
             ->orderBy('for_date', 'desc')
             ->first();
 
-        if (!$lastReport) {
+        if (! $lastReport) {
             return [];
         }
 
@@ -280,14 +276,14 @@ class ReportXlsxService
         // Получаем ID первого менеджера из данных о продажах
         $managerId = array_key_first($salesData);
 
-        if (!$managerId) {
+        if (! $managerId) {
             return [];
         }
 
         // Получаем менеджера из отчета
         $manager = User::where('id', $managerId)->first();
 
-        if (!$manager) {
+        if (! $manager) {
             return [];
         }
 
@@ -338,8 +334,9 @@ class ReportXlsxService
                     ->orderBy('for_date', 'desc')
                     ->first();
 
-                if (!$lastReport)
+                if (! $lastReport) {
                     continue;
+                }
 
                 // Извлекаем дату последнего отчета и вычисляем начало и конец месяца
                 $lastReportDate = Carbon::createFromFormat('Y-m-d', $lastReport->for_date);
@@ -355,7 +352,6 @@ class ReportXlsxService
             }
 
             $reports = $monthReports;
-
 
             foreach ($reports as $report) {
                 $monthSales[] = (array) (((array) json_decode($report->data))['Sales']);
@@ -435,7 +431,7 @@ class ReportXlsxService
 
         $sums = [];
 
-        if (!empty($monthSales)) {
+        if (! empty($monthSales)) {
             $managerId = array_key_first($monthSales[0]);
 
             // Получение менеджера из отчёта
@@ -462,7 +458,6 @@ class ReportXlsxService
         return $sums;
     }
 
-
     // Метод для получения списка годовых продаж менеджеров без суммирования результатов
     public function getSalesDataNoSum($companies): array
     {
@@ -486,8 +481,9 @@ class ReportXlsxService
                     ->orderBy('for_date', 'desc')
                     ->first();
 
-                if (!$lastReport)
+                if (! $lastReport) {
                     continue;
+                }
 
                 // Получаем все отчеты за месяц, в котором был найден последний отчет
                 $monthReports = Report::where('type', 'report_xlsx')
@@ -497,7 +493,6 @@ class ReportXlsxService
             }
 
             $reports = $monthReports;
-
 
             foreach ($reports as $report) {
                 $decodedReport = (array) json_decode($report->data);
@@ -594,5 +589,4 @@ class ReportXlsxService
 
         return $growthStatistics;
     }
-
 }

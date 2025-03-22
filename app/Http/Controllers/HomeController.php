@@ -4,18 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\Field;
 use App\Models\Permission;
 use App\Models\Post;
-use App\Models\Field;
-use App\Models\User;
+use App\Models\Report;
 use App\Services\ReportXlsxService;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -31,7 +28,8 @@ class HomeController extends Controller
                 case 'user':
                     return $this->userView();
                 default:
-                    echo "Кто ты?";
+                    echo 'Кто ты?';
+
                     return false;
             }
         } else {
@@ -56,7 +54,7 @@ class HomeController extends Controller
         // Получение ежедневных отчётов
         $coms_data = $this->getComsData($companies);
         // Получение списка месячных продаж менеджеров
-        $sales_data = (new ReportXlsxService())->getSalesData($companies);
+        $sales_data = (new ReportXlsxService)->getSalesData($companies);
         // Получение списка доступов в компании
         $coms_perms = $this->getComsPerms($companies);
 
@@ -89,7 +87,7 @@ class HomeController extends Controller
         // Получение разрешений пользователя
         if ($post !== null) {
             $permission_ids = json_decode((string) $post->permission, true);
-            if (!is_array($permission_ids)) {
+            if (! is_array($permission_ids)) {
                 $permission_ids = []; // Если результат json_decode не массив, заменяем его на пустой массив
             }
             $permissions = Permission::whereIn('id', $permission_ids)->get();
@@ -98,11 +96,10 @@ class HomeController extends Controller
             $permission_vals = [];
         }
 
-
         // Получение ежедневных отчётов
         $com_data = $this->getComsData([$company]);
         // Получение списка месячных продаж менеджеров
-        $sales_data = (new ReportXlsxService())->getSalesData([$company]);
+        $sales_data = (new ReportXlsxService)->getSalesData([$company]);
 
         // Создание объекта с данными пользователя
         $data = (object) [
@@ -111,7 +108,7 @@ class HomeController extends Controller
             'post' => $post,
             'perm' => $permission_vals,
             'com_data' => reset($com_data),
-            'sales_data' => reset($sales_data)
+            'sales_data' => reset($sales_data),
         ];
 
         // Получение сервисного отчета
@@ -153,7 +150,7 @@ class HomeController extends Controller
         $archiveReports = [];
 
         foreach ($companies as $company) {
-            $months = (new ArchiveController())->groupReportsByMonth($company);
+            $months = (new ArchiveController)->groupReportsByMonth($company);
 
             // Преобразуем ключи массива в индексы и получаем все ключи
             $monthKeys = array_keys($months);
@@ -172,7 +169,6 @@ class HomeController extends Controller
         return $archiveReports;
     }
 
-
     // Метод для получения ежедневного отчёта
     private function getComsData($companies): array
     {
@@ -183,8 +179,9 @@ class HomeController extends Controller
                 ->orderBy('for_date', 'desc')
                 ->first()['data'];
 
-            if (empty($data))
+            if (empty($data)) {
                 continue;
+            }
 
             $com_data[$company->id] = $data;
         }
@@ -196,10 +193,10 @@ class HomeController extends Controller
     private function getFilesData($folder)
     {
         // Определение пути к папке
-        $path = storage_path('app/public/' . $folder);
+        $path = storage_path('app/public/'.$folder);
 
         // Если папка не существует, возвращаем пустой массив
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             return [];
         }
 
@@ -209,7 +206,7 @@ class HomeController extends Controller
 
         // Обработка каждого файла
         foreach ($files as $file) {
-            $filePath = 'storage/' . $folder . '/' . $file->getFilename();
+            $filePath = 'storage/'.$folder.'/'.$file->getFilename();
             $file_name_data = explode('_', basename($file));
 
             // Сбор данных о файле
@@ -220,7 +217,7 @@ class HomeController extends Controller
                 'date' => $this->getRussianMonthName($file_name_data[1]),
                 'sum' => number_format((int) $file_name_data[3], 0, '', ' '),
                 'count' => number_format((int) $file_name_data[4], 0, '', ' '),
-                'fakt' => number_format(@(int) $file_name_data[5], 0, '', ' ')
+                'fakt' => number_format(@(int) $file_name_data[5], 0, '', ' '),
             ];
         }
 
@@ -249,8 +246,8 @@ class HomeController extends Controller
                 if (isset($data['File'])) {
                     // Получение имени файла из данных отчета
                     $fileName = (string) $data['File'];
-                    $filePath = storage_path('app/public/tmp/' . $fileName);
-                    $fileUrl = 'storage/app/public' . str_replace(storage_path('app/public'), '', $filePath);
+                    $filePath = storage_path('app/public/tmp/'.$fileName);
+                    $fileUrl = 'storage/app/public'.str_replace(storage_path('app/public'), '', $filePath);
 
                     // Формирование URL
                     $last_report_urls[] = asset($fileUrl);
@@ -260,7 +257,6 @@ class HomeController extends Controller
 
         return $last_report_urls;
     }
-
 
     // Метод для получения сервисных отчетов
     private function getServiceReports($companies)
@@ -308,7 +304,7 @@ class HomeController extends Controller
             ->first();
 
         // Если отчета нет, возвращаем данные по умолчанию
-        if (!$latestReport) {
+        if (! $latestReport) {
             return $this->defaultServiceReport();
         }
 
@@ -347,7 +343,7 @@ class HomeController extends Controller
             'for_date' => $latestReport->for_date,
             'created_at' => $latestReport->created_at,
             'updated_at' => $latestReport->updated_at,
-            'have' => true
+            'have' => true,
         ];
     }
 
@@ -374,7 +370,7 @@ class HomeController extends Controller
             'for_date' => null,
             'created_at' => null,
             'updated_at' => null,
-            'have' => null
+            'have' => null,
         ];
     }
 
@@ -403,19 +399,19 @@ class HomeController extends Controller
 
         // Получение данных из таблицы 'reports'
         $result_full = DB::table('reports')
-        ->select(
-            DB::raw('SUM(JSON_VALUE(data, "$.profit_nal")) as profit_nal_sum'),
-            DB::raw('SUM(JSON_VALUE(data, "$.profit_bez_nal")) as profit_bez_nal_sum'),
-            DB::raw('SUM(JSON_VALUE(data, "$.waste_nal")) as waste_nal_sum'),
-            DB::raw('SUM(JSON_VALUE(data, "$.waste_bez_nal")) as waste_bez_nal_sum'),
-            DB::raw('SUM(JSON_VALUE(data, "$.remains_nal")) as remains_nal_sum'),
-            DB::raw('SUM(JSON_VALUE(data, "$.remains_bez_nal")) as remains_bez_nal_sum')
-        )
-        ->where('for_date', '>=', $startDate)
-        ->where('for_date', '<=', $endDate)
-        ->where('type', 'report_caffe')
-        ->where('com_id', $companyId)
-        ->first();
+            ->select(
+                DB::raw('SUM(JSON_VALUE(data, "$.profit_nal")) as profit_nal_sum'),
+                DB::raw('SUM(JSON_VALUE(data, "$.profit_bez_nal")) as profit_bez_nal_sum'),
+                DB::raw('SUM(JSON_VALUE(data, "$.waste_nal")) as waste_nal_sum'),
+                DB::raw('SUM(JSON_VALUE(data, "$.waste_bez_nal")) as waste_bez_nal_sum'),
+                DB::raw('SUM(JSON_VALUE(data, "$.remains_nal")) as remains_nal_sum'),
+                DB::raw('SUM(JSON_VALUE(data, "$.remains_bez_nal")) as remains_bez_nal_sum')
+            )
+            ->where('for_date', '>=', $startDate)
+            ->where('for_date', '<=', $endDate)
+            ->where('type', 'report_caffe')
+            ->where('com_id', $companyId)
+            ->first();
 
         // if($companyId == 4) dd($result_full);
 
@@ -427,7 +423,7 @@ class HomeController extends Controller
             ->first();
 
         // Если отчета нет, возвращаем данные по умолчанию
-        if (!$latestReport) {
+        if (! $latestReport) {
             return $this->defaultCaffeReport();
         }
 
@@ -435,7 +431,7 @@ class HomeController extends Controller
 
         // Формирование данных для отчета
         return [
-        // dd( [
+            // dd( [
             'profit_nal' => (int) $result->profit_nal,
             'profit_bez_nal' => (int) $result->profit_bez_nal,
             'waste_nal' => (int) $result->waste_nal,
@@ -481,7 +477,7 @@ class HomeController extends Controller
             'for_date' => $latestReport->for_date,
             'created_at' => $latestReport->created_at,
             'updated_at' => $latestReport->updated_at,
-            'have' => true
+            'have' => true,
         ];
     }
 
@@ -510,7 +506,7 @@ class HomeController extends Controller
             'for_date' => null,
             'created_at' => null,
             'updated_at' => null,
-            'have' => null
+            'have' => null,
         ];
     }
 
@@ -532,7 +528,7 @@ class HomeController extends Controller
             9 => 'Сентябрь',
             10 => 'Октябрь',
             11 => 'Ноябрь',
-            12 => 'Декабрь'
+            12 => 'Декабрь',
         ];
 
         // Возвращение названия месяца

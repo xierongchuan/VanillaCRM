@@ -18,6 +18,7 @@ class ReportXlsxController extends Controller
     {
         try {
             $sheetData = $this->reportXlsxService->generateReport($request);
+
             // Дальнейшая обработка $sheetData
             return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
         } catch (\Exception $e) {

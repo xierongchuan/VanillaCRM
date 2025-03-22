@@ -3,21 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\Permission;
-use App\Models\User;
 use App\Models\Report;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx as Xlsx;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WXlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 class ModController extends Controller
 {
@@ -28,10 +19,10 @@ class ModController extends Controller
             'login' => 'required|unique:users',
             'full_name' => 'required|min:3|max:30',
             'phone_number' => 'required|string|min:1|max:22',
-            'password' => 'required|min:6|max:256'
+            'password' => 'required|min:6|max:256',
         ]);
 
-        $user = new User();
+        $user = new User;
         $user->login = $req['login'];
         $user->role = 'user';
         $user->password = Hash::make($req['password']);
@@ -67,7 +58,7 @@ class ModController extends Controller
             'store' => $request->store,
 
             'zap' => $request->zap,
-            'srv' => $request->srv
+            'srv' => $request->srv,
         ];
 
         $forDate = date('Y-m-d H:i:s', strtotime($request->date));
@@ -75,7 +66,7 @@ class ModController extends Controller
         $reportModel = Report::where([
             'com_id' => $company->id,
             'for_date' => $forDate,
-            'type' => 'report_service'
+            'type' => 'report_service',
         ])->first();
 
         if ($reportModel) {
@@ -94,6 +85,7 @@ class ModController extends Controller
                 'updated_at' => now()->toDateTimeString(),
             ]);
         }
+
         return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
 
     }
@@ -114,14 +106,14 @@ class ModController extends Controller
         ]);
 
         $data = [
-            'profit_nal' => (int)$request->profit_nal,
-            'profit_bez_nal' => (int)$request->profit_bez_nal,
-            'waste_nal' => (int)$request->waste_nal,
-            'waste_bez_nal' => (int)$request->waste_bez_nal,
-            'remains_nal' => (int)$request->remains_nal,
-            'remains_bez_nal' => (int)$request->remains_bez_nal,
-            'safe_nal' => (int)$request->safe_nal,
-            'safe_bez_nal' => (int)$request->safe_bez_nal,
+            'profit_nal' => (int) $request->profit_nal,
+            'profit_bez_nal' => (int) $request->profit_bez_nal,
+            'waste_nal' => (int) $request->waste_nal,
+            'waste_bez_nal' => (int) $request->waste_bez_nal,
+            'remains_nal' => (int) $request->remains_nal,
+            'remains_bez_nal' => (int) $request->remains_bez_nal,
+            'safe_nal' => (int) $request->safe_nal,
+            'safe_bez_nal' => (int) $request->safe_bez_nal,
         ];
 
         $forDate = date('Y-m-d H:i:s', strtotime($request->date));
@@ -129,7 +121,7 @@ class ModController extends Controller
         $reportModel = Report::where([
             'com_id' => $company->id,
             'for_date' => $forDate,
-            'type' => 'report_caffe'
+            'type' => 'report_caffe',
         ])->first();
 
         if ($reportModel) {
@@ -148,6 +140,7 @@ class ModController extends Controller
                 'updated_at' => now()->toDateTimeString(),
             ]);
         }
+
         return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
 
     }
@@ -160,7 +153,7 @@ class ModController extends Controller
             ->orderBy('for_date', 'desc')
             ->first();
 
-        if (!$lastReport) {
+        if (! $lastReport) {
             return redirect()->route('home.index')->with('error', 'Отчет не найден.');
         }
 
@@ -168,7 +161,7 @@ class ModController extends Controller
         $data = json_decode($lastReport->data, true);
 
         // Проверка на наличие данных о продажах
-        if (!isset($data['Sales'])) {
+        if (! isset($data['Sales'])) {
             return redirect()->route('home.index')->with('error', 'Отчет не содержит данных о продажах.');
         }
 
@@ -182,8 +175,8 @@ class ModController extends Controller
         foreach ($inputData as $key => $value) {
             if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
                 $workerNumber = $matches[1];
-                if (isset($inputData['worker_sold_' . $workerNumber])) {
-                    $workerSold = (int) $inputData['worker_sold_' . $workerNumber];
+                if (isset($inputData['worker_sold_'.$workerNumber])) {
+                    $workerSold = (int) $inputData['worker_sold_'.$workerNumber];
                     $workers[$workerNumber] = $workerSold;
                 }
             }
@@ -199,17 +192,15 @@ class ModController extends Controller
         return redirect()->route('home.index')->with('success', 'Продажи успешно изменены.');
     }
 
-
-
     private function numberToColumn($number)
     {
-        $column = "";
+        $column = '';
         while ($number > 0) {
             $remainder = ($number - 1) % 26;
-            $column = chr(65 + $remainder) . $column;
+            $column = chr(65 + $remainder).$column;
             $number = (int) (($number - $remainder) / 26);
         }
+
         return $column;
     }
-
 }

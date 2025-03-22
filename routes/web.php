@@ -1,20 +1,18 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\FieldController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ModController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReportXlsxController;
 use App\Http\Controllers\StatController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\FieldController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,13 +20,13 @@ use App\Http\Controllers\FieldController;
 |--------------------------------------------------------------------------
 */
 
-/// Home Controller
+// / Home Controller
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
-/// Theme Controller
+// / Theme Controller
 Route::get('/theme/{name}', [ThemeController::class, 'switch'])->name('theme.switch');
 
-/// UserController
+// / UserController
 
 // Маршрут для отображения формы входа
 Route::get('/sign_in', [UserController::class, 'sign_in'])->name('auth.sign_in');
@@ -36,11 +34,10 @@ Route::get('/sign_in', [UserController::class, 'sign_in'])->name('auth.sign_in')
 // Маршрут для обработки входа
 Route::post('/login', [UserController::class, 'login'])->name('auth.login');
 
-
 Route::group(['middleware' => 'admin'], function () {
     // Здесь находятся маршруты, к которым доступ разрешен только аутентифицированным пользователям
 
-    /// Company Controller
+    // / Company Controller
 
     Route::get('/company/list', [CompanyController::class, 'list'])->name('company.list');
 
@@ -54,7 +51,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/company/{company}/delete', [CompanyController::class, 'delete'])->name('company.delete');
 
-    /// Department Controller
+    // / Department Controller
     Route::get('/company/{company}/department/{department}/index', [DepartmentController::class, 'index'])->name('company.department.index');
 
     Route::get('/company/{company}/department/create', [DepartmentController::class, 'create'])->name('company.department.create');
@@ -69,8 +66,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/company/{company}/department/{department}/delete', [DepartmentController::class, 'delete'])->name('company.department.delete');
 
-
-    /// Permission Controller
+    // / Permission Controller
     Route::get('/company/{company}/permission/create', [PermissionController::class, 'create'])->name('company.permission.create');
 
     Route::post('/company/{company}/permission/store', [PermissionController::class, 'store'])->name('company.permission.store');
@@ -81,7 +77,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/company/{company}/permission/{permission}/delete', [PermissionController::class, 'delete'])->name('company.permission.delete');
 
-    /// PostController
+    // / PostController
     Route::get('/company/{company}/department/{department}/post/{post}/index', [PostController::class, 'index'])->name('company.department.post.index');
 
     Route::get('/company/{company}/department/{department}/post/create', [PostController::class, 'create'])->name('company.department.post.create');
@@ -94,7 +90,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/company/{company}/department/{department}/post/{post}/delete', [PostController::class, 'delete'])->name('company.department.post.delete');
 
-    /// Worker/User Controller
+    // / Worker/User Controller
 
     Route::get('/admin/', [UserController::class, 'createAdmin'])->name('admin.index');
 
@@ -112,8 +108,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/company/{company}/user/{user}/delete', [UserController::class, 'delete'])->name('company.user.delete');
 
-
-    /// FieldController
+    // / FieldController
 
     Route::get('/company/{company}/field/create', [FieldController::class, 'create'])->name('company.field.create');
 
@@ -125,8 +120,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/company/{company}/field/{field}/delete', [FieldController::class, 'delete'])->name('company.field.delete');
 
-
-    /// ArchiveController
+    // / ArchiveController
 
     Route::get('/company/{company}/archive', [ArchiveController::class, 'archive'])->name('company.archive');
 
@@ -144,7 +138,7 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/company/{company}/caffe/remove_last_report', [ArchiveController::class, 'deleteLastCaffeReport'])->name('company.caffe.remove_last_report');
 
-    /// StatController
+    // / StatController
 
     Route::get('/stat', [StatController::class, 'index'])->name('stat.index');
 });
@@ -154,8 +148,7 @@ Route::group(['middleware' => 'user'], function () {
 
     Route::get('/permission', [UserController::class, 'permission'])->name('user.permission');
 
-
-    /// MODs
+    // / MODs
 
     Route::post('/company/{company}/user/create_worker', [ModController::class, 'create_worker'])->name('mod.create_worker');
 
