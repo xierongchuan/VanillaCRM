@@ -16,7 +16,8 @@ class CompanyController extends Controller
 
         foreach ($companies as $company) {
             $company->departments = Department::where('com_id', $company->id)->get(); // Получаем департаменты для компании
-            $company->users = User::where('com_id', $company->id)->get(); // Получаем сотрудников для компании
+            $company->users = User::where('com_id', $company->id)->where('status', 'active')->get(); // Получаем сотрудников для компании
+            $company->deactive_users = User::where('com_id', $company->id)->where('status', 'deactive')->get(); // Получаем сотрудников для компании
             $company->fields = Field::where('com_id', $company->id)->get(); // Получаем сотрудников для компании
             $company->permissions = Permission::where('com_id', $company->id)->get(); // Получаем права для компании
 

@@ -122,6 +122,42 @@ class UserController extends Controller
         return redirect()->route('company.list');
     }
 
+    public function activate(Company $company, User $user)
+    {
+        if (! @$company->id) {
+            return redirect()->back()->withErrors('Компания не найдена');
+        }
+
+        if (! @$user->id) {
+            return redirect()->back()->withErrors('Сотрудник не найден');
+        }
+
+        $user->status = "active";
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Сотрудник успешно активирован');
+
+    }
+
+    public function deactivate(Company $company, User $user)
+    {
+        if (! @$company->id) {
+            return redirect()->back()->withErrors('Компания не найдена');
+        }
+
+        if (! @$user->id) {
+            return redirect()->back()->withErrors('Сотрудник не найден');
+        }
+
+        $user->status = "deactive";
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Сотрудник успешно деактивирован');
+
+    }
+
     public function delete(Company $company, User $user)
     {
         if (! @$company->id) {

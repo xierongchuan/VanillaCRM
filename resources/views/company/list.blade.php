@@ -43,8 +43,7 @@
                                             href="{{ route('company.department.index', compact('company', 'department')) }}"
                                             class="nav-link">{{ $department->name }}</a></div>
 
-                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group"
-                                        aria-label="Basic mixed styles example">
+                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
                                         <a href="{{ route('company.department.update', ['company' => $company, 'department' => $department]) }}"
                                             type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
                                         <a href="{{ route('company.department.delete', ['company' => $company, 'department' => $department]) }}"
@@ -69,8 +68,7 @@
                                             ({{ $permission->value }})
                                         </a></div>
 
-                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group"
-                                        aria-label="Basic mixed styles example">
+                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
                                         <a href="{{ route('company.permission.update', compact('company', 'permission')) }}"
                                             type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
                                         @if (config('app.debug'))
@@ -96,12 +94,14 @@
                                             href="{{ route('company.user.update', compact('company', 'user')) }}"
                                             class="nav-link">{{ $user->full_name }} ({{ $user->login }})</a></div>
 
-                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group"
-                                        aria-label="Basic mixed styles example">
-                                        <a href="{{ route('company.user.update', compact('company', 'user')) }}"
-                                            type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
-                                        <a href="{{ route('company.user.delete', compact('company', 'user')) }}"
-                                            type="button" data-id="{{ $user->id }}" data-name="{{ $user->name }}"
+                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
+                                        <a href="{{ route('company.user.update', compact('company', 'user')) }}" type="button"
+                                            class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+
+                                        <a href="{{ route('company.user.deactivate', compact('company', 'user')) }}" type="button"
+                                            class="btn btn-secondary"><i class="bi bi-x-octagon"></i></a>
+                                        <a href="{{ route('company.user.delete', compact('company', 'user')) }}" type="button"
+                                            data-id="{{ $user->id }}" data-name="{{ $user->name }}"
                                             class="btn btn-danger delete-user"><i class="bi bi-trash"></i></a>
                                     </div>
                                 </div>
@@ -121,12 +121,11 @@
                                             href="{{ route('company.field.update', compact('company', 'field')) }}"
                                             class="nav-link">{{ $field->title }}</a></div>
 
-                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group"
-                                        aria-label="Basic mixed styles example">
-                                        <a href="{{ route('company.field.update', compact('company', 'field')) }}"
-                                            type="button" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
-                                        <a href="{{ route('company.field.delete', compact('company', 'field')) }}"
-                                            type="button" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
+                                        <a href="{{ route('company.field.update', compact('company', 'field')) }}" type="button"
+                                            class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                        <a href="{{ route('company.field.delete', compact('company', 'field')) }}" type="button"
+                                            class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                     </div>
                                 </div>
                             </span>
@@ -134,6 +133,32 @@
 
                         <a href="{{ route('company.field.create', compact('company')) }}"
                             class="btn btn-success w-100 mt-1">Создать <i class="bi bi-link"></i></a>
+                    </div>
+
+                    <div class="p-2 border border-2 rounded mt-2">
+                        <span class="lead">Неактивные Пользователи: </span><br>
+                        @foreach ($company->deactive_users as $user)
+                            <span>
+                                <div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
+                                    <div class="col-lg-9 lead"><a style="font-size: 1.5rem;"
+                                            href="{{ route('company.user.update', compact('company', 'user')) }}"
+                                            class="nav-link">{{ $user->full_name }} ({{ $user->login }})</a></div>
+
+                                    <div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
+                                        <a href="{{ route('company.user.update', compact('company', 'user')) }}" type="button"
+                                            class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                        <a href="{{ route('company.user.activate', compact('company', 'user')) }}" type="button"
+                                            class="btn btn-info"><i class="bi bi-check-circle"></i></a>
+                                        <a href="{{ route('company.user.delete', compact('company', 'user')) }}" type="button"
+                                            data-id="{{ $user->id }}" data-name="{{ $user->name }}"
+                                            class="btn btn-danger delete-user"><i class="bi bi-trash"></i></a>
+                                    </div>
+                                </div>
+                            </span>
+                        @endforeach
+
+                        <a href="{{ route('company.user.create', compact('company')) }}"
+                            class="btn btn-success w-100 mt-1">Создать <i class="bi bi-person"></i></a>
                     </div>
                 </div>
             </div>

@@ -106,6 +106,10 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::post('/company/{company}/user/{user}/modify', [UserController::class, 'modify'])->name('company.user.modify');
 
+    Route::get('/company/{company}/user/{user}/activate', [UserController::class, 'activate'])->name('company.user.activate');
+
+    Route::get('/company/{company}/user/{user}/deactivate', [UserController::class, 'deactivate'])->name('company.user.deactivate');
+
     Route::get('/company/{company}/user/{user}/delete', [UserController::class, 'delete'])->name('company.user.delete');
 
     // / FieldController
