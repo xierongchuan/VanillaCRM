@@ -438,8 +438,8 @@ class HomeController extends Controller
             'waste_bez_nal' => (int) $result->waste_bez_nal,
             'remains_nal' => (int) $result->remains_nal,
             'remains_bez_nal' => (int) $result->remains_bez_nal,
-            'safe_nal' => (int) $result->safe_nal,
-            'safe_bez_nal' => (int) $result->safe_bez_nal,
+            'safe_nal' => (int) @$result->safe_nal,
+            'safe_bez_nal' => (int) @$result->safe_bez_nal,
             'profit_SUM' => (
                 (int) $result->profit_nal +
                 (int) $result->profit_bez_nal
@@ -453,8 +453,8 @@ class HomeController extends Controller
                 (int) $result->remains_bez_nal
             ),
             'safe_SUM' => (
-                (int) $result->safe_nal +
-                (int) $result->safe_bez_nal
+                (int) @$result->safe_nal +
+                (int) @$result->safe_bez_nal
             ),
             'profit_nal_sum' => (int) $result_full->profit_nal_sum,
             'profit_bez_nal_sum' => (int) $result_full->profit_bez_nal_sum,
