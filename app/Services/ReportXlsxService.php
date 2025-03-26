@@ -363,11 +363,6 @@ class ReportXlsxService
             $manager = User::where('id', $managerId)->first();
             // Получение сотрудников из департамента менеджера отчёта
             $workers = User::where('dep_id', $manager->dep_id)->get();
-            // Получение неактивных сотрудников
-            $inactiveWorkers = User::where('dep_id', $manager->dep_id)
-                ->where('status', 'deactive')
-                ->pluck('id') // Извлекаем только id
-                ->toArray(); // Преобразуем коллекцию в массив
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
 
@@ -377,10 +372,6 @@ class ReportXlsxService
             // Проход по всем массивам данных
             foreach ($monthSales as $dataSet) {
                 foreach ($workerIds as $id) {
-                    if (in_array($id, $inactiveWorkers)) {
-                        continue;
-                    }
-
                     if (isset($dataSet[$id])) {
                         $sums[$id] += $dataSet[$id];
                     }
