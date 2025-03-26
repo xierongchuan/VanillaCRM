@@ -362,7 +362,7 @@ class ReportXlsxService
             // Получение менеджера из отчёта
             $manager = User::where('id', $managerId)->first();
             // Получение сотрудников из департамента менеджера отчёта
-            $workers = User::where('dep_id', $manager->dep_id)->get();
+            $workers = User::where('dep_id', $manager->dep_id)->where('status', 'deactive')->get();
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
 

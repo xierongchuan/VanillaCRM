@@ -337,7 +337,7 @@
 
                                             @foreach ($sales as $id => $sale)
                                                 @php
-                                                    $worker = App\Models\User::where('id', $id)->where('status', 'deactive')->first();
+                                                    $worker = App\Models\User::where('id', $id)->first();
                                                 @endphp
 
                                                 <tr>
