@@ -10,13 +10,13 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - db_data:/var/lib/mysql
+            - vanillacrm_db:/var/lib/mysql
 
     phpmyadmin:
         image: phpmyadmin:latest
         container_name: phpmyadmin_vanillacrm
         environment:
-            PMA_HOST: mariadb
+            PMA_HOST: db
             PMA_USER: user
             PMA_PASSWORD: user
             MYSQL_ROOT_PASSWORD: root
@@ -24,4 +24,4 @@ services:
             - "8080:80"
 
 volumes:
-    db_data:
+    vanillacrm_db:
