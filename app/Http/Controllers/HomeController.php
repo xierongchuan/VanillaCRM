@@ -250,7 +250,7 @@ class HomeController extends Controller
                     $fileUrl = 'storage/app/public'.str_replace(storage_path('app/public'), '', $filePath);
 
                     // Формирование URL
-                    $last_report_urls[] = asset($fileUrl);
+                    $last_report_urls[$company->id] = asset($fileUrl);
                 }
             }
         }
