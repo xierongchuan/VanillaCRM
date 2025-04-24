@@ -21,7 +21,11 @@ class ArchiveController extends Controller
 {
     public function archive(Company $company)
     {
-        $files = File::allFiles(storage_path('app/public/archive'));
+        $archivePath = storage_path('app/public/archive');
+        if (!File::exists($archivePath)) {
+            File::makeDirectory($archivePath, 0755, true);
+        }
+        $files = File::allFiles($archivePath);
 
         // Инициализируем пустой массив для хранения URL файлов
         $files_data = [];
