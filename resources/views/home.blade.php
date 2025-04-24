@@ -406,7 +406,7 @@
 
                                         <tbody>
                                             <tr>
-                                                <td>DKD</td>
+                                                <td>DKD/Банк</td>
                                                 <td class="text-nowrap overflow-hidden text-end">
                                                     {{ $data['5 Через банк шт'] }} </td>
                                                 <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
@@ -421,7 +421,7 @@
                                                     {{ $sums_per[0] }} %</td>
                                             </tr>
                                             <tr>
-                                                <td>SKD</td>
+                                                <td>SKD/Лизинг</td>
                                                 <td class="text-nowrap overflow-hidden text-end">
                                                     {{ $data['5 Через лизинг шт'] }} </td>
                                                 <td class="text-nowrap overflow-hidden text-end" style="width:4rem;">
