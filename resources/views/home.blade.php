@@ -1050,8 +1050,8 @@
 
                                             <span
                                                 class="col-md-2 p-2 m-auto h6 border border-danger rounded text-center progress-bar-span"
-                                                data-progress="{{ $dataCom['% от сумм'] }}">
-                                                <b>{{ $dataCom['% от сумм'] }}</b> %
+                                                data-progress="{{ $dataCom['% от кол-во'] }}">
+                                                <b>{{ $dataCom['% от кол-во'] }}</b> %
                                             </span>
 
 

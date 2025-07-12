@@ -1,7 +1,7 @@
 @php
     use App\Models\User;
 
-    $workers = User::where('dep_id', \Illuminate\Support\Facades\Auth::user()->dep_id)->get();
+    $workers = User::where('dep_id', \Illuminate\Support\Facades\Auth::user()->dep_id)->where('status', "active")->get();
 
 @endphp
 
