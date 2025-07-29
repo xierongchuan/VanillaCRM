@@ -19,8 +19,6 @@
                 $data = (array) json_decode(@$coms_data[$company->id]);
             @endphp
 
-
-
             <div class="row flex-column align-items-center">
                 <div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
                     <span class="d-flex justify-content-between">
