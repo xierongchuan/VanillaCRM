@@ -6,13 +6,13 @@
 
     <div class="m-2"></div>
 
-    <div class="bg-transparent mt-2 rounded p-3 pb-2 mb-0">
-        <div class="d-flex flex-wrap justify-content-center">
-            <h2>Отчёты</h2>
-        </div>
-    </div>
-
     @if (isset($companies))
+
+        <div class="bg-transparent mt-2 rounded p-3 pb-2 mb-0">
+            <div class="d-flex flex-wrap justify-content-center">
+                <h2>Отчёты</h2>
+            </div>
+        </div>
 
         @foreach ($companies as $company)
             @php
