@@ -1,27 +1,75 @@
+version: '3.9'
+
 services:
-    db:
+
+    # MariaDB(MySQL) для основного хранения данных
+    mariadb:
         image: mariadb:latest
-        container_name: mariadb_vanillacrm
+        container_name: vanillacrm_mariadb
+        restart: on-failure:3
+        env_file:
+            - ./.env
         environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: vanillacrm
-            MYSQL_USER: user
-            MYSQL_PASSWORD: user
+            MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+            MARIADB_DATABASE: ${DB_DATABASE}
+            MARIADB_USER: ${DB_USERNAME}
+            MARIADB_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - mariadb_data:/var/lib/mysql
         ports:
             - "3306:3306"
-        volumes:
-            - vanillacrm_db:/var/lib/mysql
 
+
+    # PhpMyAdmin для управления MariaDB
     phpmyadmin:
-        image: phpmyadmin:latest
-        container_name: phpmyadmin_vanillacrm
+        image: phpmyadmin/phpmyadmin:latest
+        container_name: vanillacrm_phpmyadmin
+        restart: on-failure:3
+        env_file:
+            - ./.env
         environment:
-            PMA_HOST: db
-            PMA_USER: user
-            PMA_PASSWORD: user
-            MYSQL_ROOT_PASSWORD: root
+            PMA_HOST: mariadb
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
         ports:
             - "8080:80"
+        depends_on:
+            - mariadb
+
+
+    # PHP-FPM для VanillaCRM
+    src_vanillacrm:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        container_name: src_vanillacrm
+        restart: on-failure:3
+        env_file:
+            - ./.env
+        environment:
+            DB_HOST: ${DB_HOST}
+            DB_PORT: ${DB_PORT}
+            DB_DATABASE: ${DB_DATABASE}
+            DB_USER: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - ./:/var/www/src_vanillacrm
+            - ./.env:/var/www/src_vanillacrm/.env
+            - ./wait-for-it.sh:/wait-for-it.sh:ro
+        depends_on:
+            - mariadb
+
+    # Nginx как реверс-прокси для VanillaCRM
+    nginx:
+        image: nginx:latest
+        container_name: vanillacrm_nginx
+        restart: on-failure:3
+        ports:
+            - "8002:80"   # VanillaCRM
+        volumes:
+            - ./:/var/www/src_vanillacrm:ro
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+        depends_on:
+            - src_vanillacrm
 
 volumes:
-    vanillacrm_db:
+    mariadb_data:
