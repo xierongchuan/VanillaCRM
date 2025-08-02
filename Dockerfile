@@ -25,16 +25,17 @@ RUN pecl install redis-6.2.0 \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # 5) Установка зависимостей приложения
-WORKDIR /var/www/src_vanillacrm
+WORKDIR /var/www/vanillacrm_src
 COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-dev --no-scripts
 
 # 6) Копирование кодовой базы в контейнер
 COPY . .
 
-# 7) Права на запись для www-data
-RUN chown -R www-data:www-data storage storage/framework bootstrap/cache && \
-    chmod -R 755 storage storage/framework bootstrap/cache
+# 7) Создание нужных директорий и установка прав
+RUN mkdir -p storage/logs storage/framework/sessions bootstrap/cache \
+ && chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
 
 # 8) Документирование порта PHP-FPM
 EXPOSE 9000
