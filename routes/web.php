@@ -47,8 +47,6 @@ Route::post(
 )->name('auth.login');
 
 Route::group(['middleware' => 'admin'], function () {
-    // Здесь находятся маршруты, к которым доступ разрешен только аутентифицированным пользователям
-
     // / Company Controller
 
     Route::get(
@@ -304,8 +302,6 @@ Route::group(['middleware' => 'admin'], function () {
 });
 
 Route::group(['middleware' => 'user'], function () {
-    // Здесь находятся маршруты, доступные только работникам
-
     Route::get(
         '/permission',
         [UserController::class, 'permission']
