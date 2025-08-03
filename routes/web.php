@@ -23,148 +23,325 @@ use Illuminate\Support\Facades\Route;
 */
 
 // / Home Controller
-Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get(
+    '/',
+    [HomeController::class, 'index']
+)->name('home.index');
 
 // / Theme Controller
-Route::get('/theme/{name}', [ThemeController::class, 'switch'])->name('theme.switch');
+Route::get(
+    '/theme/{name}',
+    [ThemeController::class, 'switch']
+)->name('theme.switch');
 
 // / UserController
 
 // Маршрут для отображения формы входа
-Route::get('/sign_in', [UserController::class, 'sign_in'])->name('auth.sign_in');
+Route::get(
+    '/sign_in',
+    [UserController::class, 'sign_in']
+)->name('auth.sign_in');
 
 // Маршрут для обработки входа
-Route::post('/login', [UserController::class, 'login'])->name('auth.login');
+Route::post(
+    '/login',
+    [UserController::class, 'login']
+)->name('auth.login');
 
 Route::group(['middleware' => 'admin'], function () {
     // Здесь находятся маршруты, к которым доступ разрешен только аутентифицированным пользователям
 
     // / Company Controller
 
-    Route::get('/company/list', [CompanyController::class, 'list'])->name('company.list');
+    Route::get(
+        '/company/list',
+        [CompanyController::class, 'list']
+    )->name('company.list');
 
-    Route::get('/company/create', [CompanyController::class, 'create'])->name('company.create');
+    Route::get(
+        '/company/create',
+        [CompanyController::class, 'create']
+    )->name('company.create');
 
-    Route::post('/company/store', [CompanyController::class, 'store'])->name('company.store');
+    Route::post(
+        '/company/store',
+        [CompanyController::class, 'store']
+    )->name('company.store');
 
-    Route::get('/company/{company}/update', [CompanyController::class, 'update'])->name('company.update');
+    Route::get(
+        '/company/{company}/update',
+        [CompanyController::class, 'update']
+    )->name('company.update');
 
-    Route::post('/company/{company}/modify', [CompanyController::class, 'modify'])->name('company.modify');
+    Route::post(
+        '/company/{company}/modify',
+        [CompanyController::class, 'modify']
+    )->name('company.modify');
 
-    Route::get('/company/{company}/delete', [CompanyController::class, 'delete'])->name('company.delete');
+    Route::get(
+        '/company/{company}/delete',
+        [CompanyController::class, 'delete']
+    )->name('company.delete');
 
     // / Department Controller
-    Route::get('/company/{company}/department/{department}/index', [DepartmentController::class, 'index'])->name('company.department.index');
+    Route::get(
+        '/company/{company}/department/{department}/index',
+        [DepartmentController::class, 'index']
+    )->name('company.department.index');
 
-    Route::get('/company/{company}/department/create', [DepartmentController::class, 'create'])->name('company.department.create');
+    Route::get(
+        '/company/{company}/department/create',
+        [DepartmentController::class, 'create']
+    )->name('company.department.create');
 
-    Route::post('/company/{company}/department/store', [DepartmentController::class, 'store'])->name('company.department.store');
+    Route::post(
+        '/company/{company}/department/store',
+        [DepartmentController::class, 'store']
+    )->name('company.department.store');
 
-    Route::get('/company/{company}/department/{department}/update', [DepartmentController::class, 'update'])->name('company.department.update');
+    Route::get(
+        '/company/{company}/department/{department}/update',
+        [DepartmentController::class, 'update']
+    )->name('company.department.update');
 
-    Route::post('/company/{company}/department/{department}/modify', [DepartmentController::class, 'modify'])->name('company.department.modify');
+    Route::post(
+        '/company/{company}/department/{department}/modify',
+        [DepartmentController::class, 'modify']
+    )->name('company.department.modify');
 
-    Route::post('/company/{company}/department/{department}/posts', [DepartmentController::class, 'posts'])->name('company.department.posts');
+    Route::post(
+        '/company/{company}/department/{department}/posts',
+        [DepartmentController::class, 'posts']
+    )->name('company.department.posts');
 
-    Route::get('/company/{company}/department/{department}/delete', [DepartmentController::class, 'delete'])->name('company.department.delete');
+    Route::get(
+        '/company/{company}/department/{department}/delete',
+        [DepartmentController::class, 'delete']
+    )->name('company.department.delete');
 
     // / Permission Controller
-    Route::get('/company/{company}/permission/create', [PermissionController::class, 'create'])->name('company.permission.create');
+    Route::get(
+        '/company/{company}/permission/create',
+        [PermissionController::class, 'create']
+    )->name('company.permission.create');
 
-    Route::post('/company/{company}/permission/store', [PermissionController::class, 'store'])->name('company.permission.store');
+    Route::post(
+        '/company/{company}/permission/store',
+        [PermissionController::class, 'store']
+    )->name('company.permission.store');
 
-    Route::get('/company/{company}/permission/{permission}/update', [PermissionController::class, 'update'])->name('company.permission.update');
+    Route::get(
+        '/company/{company}/permission/{permission}/update',
+        [PermissionController::class, 'update']
+    )->name('company.permission.update');
 
-    Route::post('/company/{company}/permission/{permission}/modify', [PermissionController::class, 'modify'])->name('company.permission.modify');
+    Route::post(
+        '/company/{company}/permission/{permission}/modify',
+        [PermissionController::class, 'modify']
+    )->name('company.permission.modify');
 
-    Route::get('/company/{company}/permission/{permission}/delete', [PermissionController::class, 'delete'])->name('company.permission.delete');
+    Route::get(
+        '/company/{company}/permission/{permission}/delete',
+        [PermissionController::class, 'delete']
+    )->name('company.permission.delete');
 
     // / PostController
-    Route::get('/company/{company}/department/{department}/post/{post}/index', [PostController::class, 'index'])->name('company.department.post.index');
+    Route::get(
+        '/company/{company}/department/{department}/post/{post}/index',
+        [PostController::class, 'index']
+    )->name('company.department.post.index');
 
-    Route::get('/company/{company}/department/{department}/post/create', [PostController::class, 'create'])->name('company.department.post.create');
+    Route::get(
+        '/company/{company}/department/{department}/post/create',
+        [PostController::class, 'create']
+    )->name('company.department.post.create');
 
-    Route::post('/company/{company}/department/{department}/post/store', [PostController::class, 'store'])->name('company.department.post.store');
+    Route::post(
+        '/company/{company}/department/{department}/post/store',
+        [PostController::class, 'store']
+    )->name('company.department.post.store');
 
-    Route::get('/company/{company}/department/{department}/post/{post}/update', [PostController::class, 'update'])->name('company.department.post.update');
+    Route::get(
+        '/company/{company}/department/{department}/post/{post}/update',
+        [PostController::class, 'update']
+    )->name('company.department.post.update');
 
-    Route::post('/company/{company}/department/{department}/post/{post}/modify', [PostController::class, 'modify'])->name('company.department.post.modify');
+    Route::post(
+        '/company/{company}/department/{department}/post/{post}/modify',
+        [PostController::class, 'modify']
+    )->name('company.department.post.modify');
 
-    Route::get('/company/{company}/department/{department}/post/{post}/delete', [PostController::class, 'delete'])->name('company.department.post.delete');
+    Route::get(
+        '/company/{company}/department/{department}/post/{post}/delete',
+        [PostController::class, 'delete']
+    )->name('company.department.post.delete');
 
     // / Worker/User Controller
 
-    Route::get('/admin/', [UserController::class, 'createAdmin'])->name('admin.index');
+    Route::get(
+        '/admin/',
+        [UserController::class, 'createAdmin']
+    )->name('admin.index');
 
-    Route::post('/admin/store', [UserController::class, 'storeAdmin'])->name('admin.store');
+    Route::post(
+        '/admin/store',
+        [UserController::class, 'storeAdmin']
+    )->name('admin.store');
 
-    Route::get('/admin/{admin}/delete', [UserController::class, 'deleteAdmin'])->name('admin.delete');
+    Route::get(
+        '/admin/{admin}/delete',
+        [UserController::class, 'deleteAdmin']
+    )->name('admin.delete');
 
-    Route::get('/company/{company}/user/create', [UserController::class, 'create'])->name('company.user.create');
+    Route::get(
+        '/company/{company}/user/create',
+        [UserController::class, 'create']
+    )->name('company.user.create');
 
-    Route::post('/company/{company}/user/store', [UserController::class, 'store'])->name('company.user.store');
+    Route::post(
+        '/company/{company}/user/store',
+        [UserController::class, 'store']
+    )->name('company.user.store');
 
-    Route::get('/company/{company}/user/{user}/update', [UserController::class, 'update'])->name('company.user.update');
+    Route::get(
+        '/company/{company}/user/{user}/update',
+        [UserController::class, 'update']
+    )->name('company.user.update');
 
-    Route::post('/company/{company}/user/{user}/modify', [UserController::class, 'modify'])->name('company.user.modify');
+    Route::post(
+        '/company/{company}/user/{user}/modify',
+        [UserController::class, 'modify']
+    )->name('company.user.modify');
 
-    Route::get('/company/{company}/user/{user}/activate', [UserController::class, 'activate'])->name('company.user.activate');
+    Route::get(
+        '/company/{company}/user/{user}/activate',
+        [UserController::class, 'activate']
+    )->name('company.user.activate');
 
-    Route::get('/company/{company}/user/{user}/deactivate', [UserController::class, 'deactivate'])->name('company.user.deactivate');
+    Route::get(
+        '/company/{company}/user/{user}/deactivate',
+        [UserController::class, 'deactivate']
+    )->name('company.user.deactivate');
 
-    Route::get('/company/{company}/user/{user}/delete', [UserController::class, 'delete'])->name('company.user.delete');
+    Route::get(
+        '/company/{company}/user/{user}/delete',
+        [UserController::class, 'delete']
+    )->name('company.user.delete');
 
     // / FieldController
 
-    Route::get('/company/{company}/field/create', [FieldController::class, 'create'])->name('company.field.create');
+    Route::get(
+        '/company/{company}/field/create',
+        [FieldController::class, 'create']
+    )->name('company.field.create');
 
-    Route::post('/company/{company}/field/store', [FieldController::class, 'store'])->name('company.field.store');
+    Route::post(
+        '/company/{company}/field/store',
+        [FieldController::class, 'store']
+    )->name('company.field.store');
 
-    Route::get('/company/{company}/field/{field}/update', [FieldController::class, 'update'])->name('company.field.update');
+    Route::get(
+        '/company/{company}/field/{field}/update',
+        [FieldController::class, 'update']
+    )->name('company.field.update');
 
-    Route::post('/company/{company}/field/{field}/modify', [FieldController::class, 'modify'])->name('company.field.modify');
+    Route::post(
+        '/company/{company}/field/{field}/modify',
+        [FieldController::class, 'modify']
+    )->name('company.field.modify');
 
-    Route::get('/company/{company}/field/{field}/delete', [FieldController::class, 'delete'])->name('company.field.delete');
+    Route::get(
+        '/company/{company}/field/{field}/delete',
+        [FieldController::class, 'delete']
+    )->name('company.field.delete');
 
     // / ArchiveController
 
-    Route::get('/company/{company}/archive', [ArchiveController::class, 'archive'])->name('company.archive');
+    Route::get(
+        '/company/{company}/archive',
+        [ArchiveController::class, 'archive']
+    )->name('company.archive');
 
-    Route::get('/company/{company}/service/archive', [ArchiveController::class, 'serviceArchive'])->name('company.service.archive.list');
+    Route::get(
+        '/company/{company}/service/archive',
+        [ArchiveController::class, 'serviceArchive']
+    )->name('company.service.archive.list');
 
-    Route::get('/company/{company}/service/archive/{date}', [ArchiveController::class, 'getServiceReportXlsx'])->name('company.service.archive');
+    Route::get(
+        '/company/{company}/service/archive/{date}',
+        [ArchiveController::class, 'getServiceReportXlsx']
+    )->name('company.service.archive');
 
-    Route::get('/company/{company}/caffe/archive', [ArchiveController::class, 'caffeArchive'])->name('company.caffe.archive.list');
+    Route::get(
+        '/company/{company}/caffe/archive',
+        [ArchiveController::class, 'caffeArchive']
+    )->name('company.caffe.archive.list');
 
-    Route::get('/company/{company}/caffe/archive/{date}', [ArchiveController::class, 'getCaffeReportXlsx'])->name('company.caffe.archive');
+    Route::get(
+        '/company/{company}/caffe/archive/{date}',
+        [ArchiveController::class, 'getCaffeReportXlsx']
+    )->name('company.caffe.archive');
 
-    Route::get('/company/{company}/archive/remove_last_report', [ArchiveController::class, 'remove_last_report'])->name('company.remove_last_report');
+    Route::get(
+        '/company/{company}/archive/remove_last_report',
+        [ArchiveController::class, 'remove_last_report']
+    )->name('company.remove_last_report');
 
-    Route::get('/company/{company}/service/remove_last_report', [ArchiveController::class, 'deleteLastServiceReport'])->name('company.service.remove_last_report');
+    Route::get(
+        '/company/{company}/service/remove_last_report',
+        [ArchiveController::class, 'deleteLastServiceReport']
+    )->name('company.service.remove_last_report');
 
-    Route::get('/company/{company}/caffe/remove_last_report', [ArchiveController::class, 'deleteLastCaffeReport'])->name('company.caffe.remove_last_report');
+    Route::get(
+        '/company/{company}/caffe/remove_last_report',
+        [ArchiveController::class, 'deleteLastCaffeReport']
+    )->name('company.caffe.remove_last_report');
 
     // / StatController
 
-    Route::get('/stat', [StatController::class, 'index'])->name('stat.index');
+    Route::get(
+        '/stat',
+        [StatController::class, 'index']
+    )->name('stat.index');
 });
 
 Route::group(['middleware' => 'user'], function () {
     // Здесь находятся маршруты, доступные только работникам
 
-    Route::get('/permission', [UserController::class, 'permission'])->name('user.permission');
+    Route::get(
+        '/permission',
+        [UserController::class, 'permission']
+    )->name('user.permission');
 
     // / MODs
 
-    Route::post('/company/{company}/user/create_worker', [ModController::class, 'create_worker'])->name('mod.create_worker');
+    Route::post(
+        '/company/{company}/user/create_worker',
+        [ModController::class, 'create_worker']
+    )->name('mod.create_worker');
 
-    Route::post('/company/{company}/report_service', [ModController::class, 'report_service'])->name('mod.report_service');
+    Route::post(
+        '/company/{company}/report_service',
+        [ModController::class, 'report_service']
+    )->name('mod.report_service');
 
-    Route::post('/company/{company}/report_caffe', [ModController::class, 'report_caffe'])->name('mod.report_caffe');
+    Route::post(
+        '/company/{company}/report_caffe',
+        [ModController::class, 'report_caffe']
+    )->name('mod.report_caffe');
 
-    Route::post('/company/{company}/report_xlsx', [ReportXlsxController::class, 'report_xlsx'])->name('mod.report_xlsx');
+    Route::post(
+        '/company/{company}/report_xlsx',
+        [ReportXlsxController::class, 'report_xlsx']
+    )->name('mod.report_xlsx');
 
-    Route::post('/company/{company}/report_xlsx_sales', [ModController::class, 'report_xlsx_sales'])->name('mod.report_xlsx_sales');
+    Route::post(
+        '/company/{company}/report_xlsx_sales',
+        [ModController::class, 'report_xlsx_sales']
+    )->name('mod.report_xlsx_sales');
 });
 
-Route::get('/logout', [UserController::class, 'logout'])->name('auth.logout');
+Route::get(
+    '/logout',
+    [UserController::class, 'logout']
+)->name('auth.logout');
