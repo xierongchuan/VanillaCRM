@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DepartmentController;
@@ -163,7 +165,6 @@ Route::group(['middleware' => 'user'], function () {
     Route::post('/company/{company}/report_xlsx', [ReportXlsxController::class, 'report_xlsx'])->name('mod.report_xlsx');
 
     Route::post('/company/{company}/report_xlsx_sales', [ModController::class, 'report_xlsx_sales'])->name('mod.report_xlsx_sales');
-
 });
 
 Route::get('/logout', [UserController::class, 'logout'])->name('auth.logout');
