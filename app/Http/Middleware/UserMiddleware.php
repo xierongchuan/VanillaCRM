@@ -25,16 +25,12 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (
-            auth()->check() &&
-            auth()->user()->role === 'user' &&
-            auth()->user()->status === 'active'
-        ) {
+        $user = auth()->user();
+
+        if ($user && $user->role === 'user' && $user->status === 'active') {
             return $next($request);
         }
 
         return redirect($this->redirectTo($request));
-
-        // abort(403, 'Доступ запрещен');
     }
 }
