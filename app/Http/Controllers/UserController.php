@@ -132,7 +132,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors('Сотрудник не найден');
         }
 
-        $user->status = "active";
+        $user->status = 'active';
 
         $user->save();
 
@@ -150,7 +150,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors('Сотрудник не найден');
         }
 
-        $user->status = "deactive";
+        $user->status = 'deactive';
 
         $user->save();
 

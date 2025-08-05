@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use PhpOffice\PhpSpreadsheet\Cell\Hyperlink;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Color;
@@ -24,7 +23,7 @@ class ArchiveController extends Controller
     public function archive(Company $company)
     {
         $archivePath = storage_path('app/public/archive');
-        if (!File::exists($archivePath)) {
+        if (! File::exists($archivePath)) {
             File::makeDirectory($archivePath, 0755, true);
         }
         $files = File::allFiles($archivePath);
@@ -35,7 +34,7 @@ class ArchiveController extends Controller
         // Перебираем каждый файл и получаем его URL
         foreach ($files as $file) {
             // Получаем путь к файлу относительно public директории
-            $filePath = 'storage/app/public'.str_replace(storage_path('app/public'), '', $file);
+            $filePath = 'storage/app/public' . str_replace(storage_path('app/public'), '', $file);
             $file_name_data = explode('_', basename($file));
             if ($file_name_data[0] != $company->name) {
                 continue;
@@ -90,7 +89,7 @@ class ArchiveController extends Controller
             $reportData = json_decode($report->data, true);
 
             // Извлекаем суммы, количество и фактические значения из данных
-            $url = '/storage/app/public/tmp/'.$reportData['File'];
+            $url = '/storage/app/public/tmp/' . $reportData['File'];
             $sum = isset($reportData[ReportXlsxRule::SUM_5]) ? $reportData[ReportXlsxRule::SUM_5] : 0;
             $quantity = isset($reportData[ReportXlsxRule::TOTAL_QTY_5]) ? $reportData[ReportXlsxRule::TOTAL_QTY_5] : 0;
             $fact = isset($reportData[ReportXlsxRule::ACTUAL_QUANTITY]) ? $reportData[ReportXlsxRule::ACTUAL_QUANTITY] : 0;
@@ -129,8 +128,8 @@ class ArchiveController extends Controller
         $file = isset($data['File']) ? (string) $data['File'] : '';
 
         // Путь к файлу во временной папке и архиве
-        $file_tmp_path = storage_path('app/public/tmp/'.$file);
-        $file_path = storage_path('app/public/archive/'.$file);
+        $file_tmp_path = storage_path('app/public/tmp/' . $file);
+        $file_path = storage_path('app/public/archive/' . $file);
 
         // Проверка и удаление файла из временной папки
         if (File::exists($file_tmp_path)) {
@@ -192,15 +191,15 @@ class ArchiveController extends Controller
         foreach ($reports as $key => $value) {
             $val = (object) json_decode($value->data);
 
-            $sheet->setCellValue('A'.$i, $value->for_date);
-            $sheet->setCellValue('B'.$i, $val->dop);
-            $sheet->setCellValue('C'.$i, $val->now);
-            $sheet->setCellValue('D'.$i, $val->to);
-            $sheet->setCellValue('E'.$i, $val->kuz);
-            $sheet->setCellValue('F'.$i, $val->store);
-            $sheet->setCellValue('G'.$i, '=SUM(A'.$i.':F'.$i.')');
-            $sheet->setCellValue('H'.$i, $val->zap);
-            $sheet->setCellValue('I'.$i, $val->srv);
+            $sheet->setCellValue('A' . $i, $value->for_date);
+            $sheet->setCellValue('B' . $i, $val->dop);
+            $sheet->setCellValue('C' . $i, $val->now);
+            $sheet->setCellValue('D' . $i, $val->to);
+            $sheet->setCellValue('E' . $i, $val->kuz);
+            $sheet->setCellValue('F' . $i, $val->store);
+            $sheet->setCellValue('G' . $i, '=SUM(A' . $i . ':F' . $i . ')');
+            $sheet->setCellValue('H' . $i, $val->zap);
+            $sheet->setCellValue('I' . $i, $val->srv);
 
             $i++;
         }
@@ -215,13 +214,13 @@ class ArchiveController extends Controller
         $sheet->setCellValue('H33', '=SUM(H2:H32)');
         $sheet->setCellValue('I33', '=SUM(I2:I32)');
 
-        $fileName = $company->name.' Service Report.xlsx';
+        $fileName = $company->name . ' Service Report.xlsx';
 
         // Save the spreadsheet
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save(storage_path('app/public/reports_archive/'.$fileName), 1);
+        $writer->save(storage_path('app/public/reports_archive/' . $fileName), 1);
 
-        return response()->download(storage_path('app/public/reports_archive/'.$fileName));
+        return response()->download(storage_path('app/public/reports_archive/' . $fileName));
     }
 
     public function serviceArchive(Company $company)
@@ -254,7 +253,7 @@ class ArchiveController extends Controller
             $formattedYear = $date->format('Y');
             $formattedMonth = $this->getRussianMonthNameStr($date->format('m'));
 
-            $reports[$formattedYear.' '.$formattedMonth] = [
+            $reports[$formattedYear . ' ' . $formattedMonth] = [
                 $item['date'],
                 (int) $item['total_sum'],
             ];
@@ -344,19 +343,19 @@ class ArchiveController extends Controller
         foreach ($reports as $key => $value) {
             $val = (object) json_decode($value->data);
 
-            $sheet->setCellValue('A'.$i, $value->for_date);
+            $sheet->setCellValue('A' . $i, $value->for_date);
 
-            $sheet->setCellValue('B'.$i, $val->profit_nal);
-            $sheet->setCellValue('C'.$i, $val->profit_bez_nal);
-            $sheet->setCellValue('D'.$i, '=SUM(B'.$i.':C'.$i.')');
+            $sheet->setCellValue('B' . $i, $val->profit_nal);
+            $sheet->setCellValue('C' . $i, $val->profit_bez_nal);
+            $sheet->setCellValue('D' . $i, '=SUM(B' . $i . ':C' . $i . ')');
 
-            $sheet->setCellValue('E'.$i, $val->waste_nal);
-            $sheet->setCellValue('F'.$i, $val->waste_bez_nal);
-            $sheet->setCellValue('G'.$i, '=SUM(E'.$i.':F'.$i.')');
+            $sheet->setCellValue('E' . $i, $val->waste_nal);
+            $sheet->setCellValue('F' . $i, $val->waste_bez_nal);
+            $sheet->setCellValue('G' . $i, '=SUM(E' . $i . ':F' . $i . ')');
 
-            $sheet->setCellValue('H'.$i, $val->remains_nal);
-            $sheet->setCellValue('I'.$i, $val->remains_bez_nal);
-            $sheet->setCellValue('J'.$i, '=SUM(H'.$i.':I'.$i.')');
+            $sheet->setCellValue('H' . $i, $val->remains_nal);
+            $sheet->setCellValue('I' . $i, $val->remains_bez_nal);
+            $sheet->setCellValue('J' . $i, '=SUM(H' . $i . ':I' . $i . ')');
 
             $i++;
         }
@@ -388,13 +387,13 @@ class ArchiveController extends Controller
             $j++;
         }
 
-        $fileName = $company->name.' Caffe Report.xlsx';
+        $fileName = $company->name . ' Caffe Report.xlsx';
 
         // Save the spreadsheet
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save(storage_path('app/public/reports_archive/'.$fileName), 1);
+        $writer->save(storage_path('app/public/reports_archive/' . $fileName), 1);
 
-        return response()->download(storage_path('app/public/reports_archive/'.$fileName));
+        return response()->download(storage_path('app/public/reports_archive/' . $fileName));
     }
 
     public function caffeArchive(Company $company)
@@ -424,7 +423,7 @@ class ArchiveController extends Controller
             $formattedYear = $date->format('Y');
             $formattedMonth = $this->getRussianMonthNameStr($date->format('m'));
 
-            $reports[$formattedYear.' '.$formattedMonth] = [
+            $reports[$formattedYear . ' ' . $formattedMonth] = [
                 $item['date'],
                 (int) $item['total_sum'],
             ];

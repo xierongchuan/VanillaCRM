@@ -32,7 +32,7 @@ class ReportXlsxService
         foreach ($inputData as $key => $value) {
             if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
                 $workerNumber = $matches[1];
-                $workerSold = $inputData['worker_sold_' . $workerNumber];
+                $workerSold = $inputData['worker_sold_'.$workerNumber];
                 $workers[$workerNumber] = (int) $workerSold;
             }
         }
@@ -160,23 +160,23 @@ class ReportXlsxService
 
                 // Обработка ячеек в колонке A для заполнения данных отчета
                 if (($cellLetter == 'A') && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS] && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]) {
-                    $date = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A' . $cellNum)->getCalculatedValue()));
+                    $date = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A'.$cellNum)->getCalculatedValue()));
                     if ($date == Carbon::createFromFormat('Y-m-d', $request->for_date)->format('d.m.Y')) {
-                        echo $cellNum . '<br>';
-                        $sheetData[ReportXlsxRule::CONTRACTS] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::PAYMENT_QUANTITY] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_QUANTITY] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::PAYMENT_SUM] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_SUM] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT] = $wsheet->getCell($rule[ReportXlsxRule::ADDITIONAL_PAYMENT] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::LEASING] = $wsheet->getCell($rule[ReportXlsxRule::LEASING] . $cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::TOTAL] = $wsheet->getCell($rule[ReportXlsxRule::TOTAL] . $cellNum)->getCalculatedValue();
+                        echo $cellNum.'<br>';
+                        $sheetData[ReportXlsxRule::CONTRACTS] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::PAYMENT_QUANTITY] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_QUANTITY].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::PAYMENT_SUM] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_SUM].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT] = $wsheet->getCell($rule[ReportXlsxRule::ADDITIONAL_PAYMENT].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::LEASING] = $wsheet->getCell($rule[ReportXlsxRule::LEASING].$cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::TOTAL] = $wsheet->getCell($rule[ReportXlsxRule::TOTAL].$cellNum)->getCalculatedValue();
                     }
                 }
 
                 // Обработка ячеек в колонке E для заполнения данных отчета
                 if (($cellLetter == 'E') && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS] && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]) {
-                    $date2 = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A' . $cellNum)->getCalculatedValue()));
+                    $date2 = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A'.$cellNum)->getCalculatedValue()));
                     if ($date2 == Carbon::createFromFormat('Y-m-d', $request->for_date)->format('d.m.Y')) {
-                        $sheetData[ReportXlsxRule::CONTRACTS_2] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2] . $cellNum)->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::CONTRACTS_2] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2].$cellNum)->getCalculatedValue();
                     }
                 }
             }
@@ -250,7 +250,7 @@ class ReportXlsxService
     private function saveFile(Request $request): string
     {
         $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
+        $fileName = time().'_'.$file->getClientOriginalName();
         $file->storeAs('public/tmp', $fileName);
 
         return $fileName;
@@ -265,7 +265,7 @@ class ReportXlsxService
             ->orderBy('for_date', 'desc')
             ->first();
 
-        if (!$lastReport) {
+        if (! $lastReport) {
             return [];
         }
 
@@ -276,14 +276,14 @@ class ReportXlsxService
         // Получаем ID первого менеджера из данных о продажах
         $managerId = array_key_first($salesData);
 
-        if (!$managerId) {
+        if (! $managerId) {
             return [];
         }
 
         // Получаем менеджера из отчета
         $manager = User::where('id', $managerId)->first();
 
-        if (!$manager) {
+        if (! $manager) {
             return [];
         }
 
@@ -334,7 +334,7 @@ class ReportXlsxService
                     ->orderBy('for_date', 'desc')
                     ->first();
 
-                if (!$lastReport) {
+                if (! $lastReport) {
                     continue;
                 }
 
@@ -431,7 +431,7 @@ class ReportXlsxService
 
         $sums = [];
 
-        if (!empty($monthSales)) {
+        if (! empty($monthSales)) {
             $managerId = array_key_first($monthSales[0]);
 
             // Получение менеджера из отчёта
@@ -481,7 +481,7 @@ class ReportXlsxService
                     ->orderBy('for_date', 'desc')
                     ->first();
 
-                if (!$lastReport) {
+                if (! $lastReport) {
                     continue;
                 }
 
