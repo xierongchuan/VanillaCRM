@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Enums\ReportXlsxRule;
@@ -32,7 +34,6 @@ class ArchiveController extends Controller
 
         // Перебираем каждый файл и получаем его URL
         foreach ($files as $file) {
-
             // Получаем путь к файлу относительно public директории
             $filePath = 'storage/app/public'.str_replace(storage_path('app/public'), '', $file);
             $file_name_data = explode('_', basename($file));
@@ -97,7 +98,7 @@ class ArchiveController extends Controller
             // Добавляем отчет и извлеченные данные в соответствующий месяц
             $groupedReports[$month][] = [
                 'report' => $report,
-                'sales' => (new ReportXlsxService)->getSalesDataDate($company, $month),
+                'sales' => (new ReportXlsxService())->getSalesDataDate($company, $month),
                 'url' => $url,
                 'sum' => $sum,
                 'quantity' => $quantity,
@@ -149,7 +150,6 @@ class ArchiveController extends Controller
 
     public function getServiceReportXlsx(Company $company, string $date)
     {
-
         $startDate = Carbon::parse($date)->startOfMonth();
         $endDate = Carbon::parse($date)->endOfMonth();
 
@@ -163,7 +163,7 @@ class ArchiveController extends Controller
             ->get();
 
         // Create a new spreadsheet
-        $spreadsheet = new Spreadsheet;
+        $spreadsheet = new Spreadsheet();
 
         // Set the active sheet
         $sheet = $spreadsheet->getActiveSheet();
@@ -190,7 +190,6 @@ class ArchiveController extends Controller
 
         $i = 2;
         foreach ($reports as $key => $value) {
-
             $val = (object) json_decode($value->data);
 
             $sheet->setCellValue('A'.$i, $value->for_date);
@@ -223,7 +222,6 @@ class ArchiveController extends Controller
         $writer->save(storage_path('app/public/reports_archive/'.$fileName), 1);
 
         return response()->download(storage_path('app/public/reports_archive/'.$fileName));
-
     }
 
     public function serviceArchive(Company $company)
@@ -284,7 +282,6 @@ class ArchiveController extends Controller
 
     public function getCaffeReportXlsx(Company $company, string $date)
     {
-
         $fields = Field::where('com_id', $company->id)->get();
 
         $startDate = Carbon::parse($date)->startOfMonth();
@@ -300,7 +297,7 @@ class ArchiveController extends Controller
             ->get();
 
         // Create a new spreadsheet
-        $spreadsheet = new Spreadsheet;
+        $spreadsheet = new Spreadsheet();
 
         // Set the active sheet
         $sheet = $spreadsheet->getActiveSheet();
@@ -345,7 +342,6 @@ class ArchiveController extends Controller
 
         $i = 3;
         foreach ($reports as $key => $value) {
-
             $val = (object) json_decode($value->data);
 
             $sheet->setCellValue('A'.$i, $value->for_date);
@@ -380,7 +376,6 @@ class ArchiveController extends Controller
 
         $j = 36;
         foreach ($fields as $field) {
-
             // Устанавливаем текст в ячейке A
             $sheet->setCellValue("A$j", $field->title);
 
@@ -400,7 +395,6 @@ class ArchiveController extends Controller
         $writer->save(storage_path('app/public/reports_archive/'.$fileName), 1);
 
         return response()->download(storage_path('app/public/reports_archive/'.$fileName));
-
     }
 
     public function caffeArchive(Company $company)
