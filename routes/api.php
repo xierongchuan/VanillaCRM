@@ -13,7 +13,7 @@ Route::post('/session/create', [SessionController::class, 'create']);
 // Защищённые маршруты только для админов
 Route::middleware([
         'auth:sanctum',      // проверка токена Sanctum
-        'admin.token',       // наш middleware, сверяющий role === 'admin'
+        'admin.token',       // middleware, сверяющий role === 'admin'
         'throttle:100,1'     // лимит запросов
     ])
     ->prefix('v1')
