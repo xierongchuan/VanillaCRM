@@ -31,7 +31,5 @@ class AdminMiddleware
         }
 
         return redirect($this->redirectTo($request));
-
-        // abort(403, 'Доступ запрещен');
     }
 }
