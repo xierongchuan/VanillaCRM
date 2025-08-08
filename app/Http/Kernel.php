@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\EnsureTokenIsFromAdmin;
+use Illuminate\Auth\Middleware\Authenticate;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 class Kernel extends HttpKernel
 {
     /**
      * The application's global HTTP middleware stack.
-     *
-     * These middleware are run during every request to your application.
      *
      * @var array<int, class-string|string>
      */
@@ -39,8 +42,8 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -48,22 +51,30 @@ class Kernel extends HttpKernel
     /**
      * The application's middleware aliases.
      *
-     * Aliases may be used instead of class names to conveniently assign middleware to routes and groups.
-     *
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
-        'admin' => \App\Http\Middleware\AdminMiddleware::class,
-        'admin.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        // **Добавили класс аутентификации для guard’а**
+        'auth'          => Authenticate::class,
+
+        // Sanctum для SPA/API запросов
+        'auth:sanctum'  => EnsureFrontendRequestsAreStateful::class,
+
+        // Наш собственный middleware для проверки роли admin
+        'admin.token'   => EnsureTokenIsFromAdmin::class,
+
+        // Базовая аутентификация и сессия
+        'admin.basic'   => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'admin.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
-        'user' => \App\Http\Middleware\UserMiddleware::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-        'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
-        'signed' => \App\Http\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        // Прочие стандартные
+        'cache.headers'      => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can'                => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'              => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm'   => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'precognitive'       => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+        'signed'             => \App\Http\Middleware\ValidateSignature::class,
+        'throttle'           => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified'           => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
 }

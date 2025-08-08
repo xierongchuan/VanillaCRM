@@ -2,13 +2,22 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\SessionController;
+use App\Http\Controllers\Api\V1\UserApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-| API Routes
-*/
+// Создание сессии (логин)
+Route::post('/session/create', [SessionController::class, 'create']);
 
-Route::middleware('admin:sanctum')->get('/admin', function (Request $request) {
-    return $request->user();
-});
+// Защищённые маршруты только для админов
+Route::middleware([
+        'auth:sanctum',      // проверка токена Sanctum
+        'admin.token',       // наш middleware, сверяющий role === 'admin'
+        'throttle:100,1'     // лимит запросов
+    ])
+    ->prefix('v1')
+    ->group(function () {
+        Route::get('/user', [UserApiController::class, 'index']);
+        Route::get('/user/{id}', [UserApiController::class, 'show']);
+    });

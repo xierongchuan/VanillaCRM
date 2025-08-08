@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "VanillaCRM",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

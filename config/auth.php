@@ -1,7 +1,8 @@
 <?php
 
-return [
+declare(strict_types=1);
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -38,6 +39,10 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'api' => [
+            'driver'   => 'sanctum',
             'provider' => 'users',
         ],
     ],
@@ -111,5 +116,4 @@ return [
     */
 
     'password_timeout' => 10800,
-
 ];
