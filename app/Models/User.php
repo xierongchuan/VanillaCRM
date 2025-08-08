@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -10,18 +12,11 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    //    protected $fillable = [
-    //        'login',
-    //				'role',
-    //        'password',
-    //    ];
+    protected $with = ['company', 'department', 'post'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,4 +36,22 @@ class User extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    // компания (com_id → companies.id)
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'com_id');
+    }
+
+    // отдел (dep_id → departments.id)
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'dep_id');
+    }
+
+    // должность (post_id → posts.id)
+    public function post()
+    {
+        return $this->belongsTo(Post::class, 'post_id');
+    }
 }
