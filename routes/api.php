@@ -13,11 +13,16 @@ Route::post(
     [SessionController::class, 'start']
 )->middleware('throttle:1,1440');
 
+// Проверка работоспособности API
+Route::get('/up', function () {
+    return response()->json(['success' => true], 200);
+})->middleware('throttle:900,1');
+
 // Защищённые маршруты только для админов
 Route::middleware([
         'auth:sanctum',      // проверка токена Sanctum
         'admin.token',       // middleware, сверяющий role === 'admin'
-        'throttle:100,1'     // лимит запросов
+        'throttle:300,1'     // лимит запросов
     ])
     ->prefix('v1')
     ->group(function () {
