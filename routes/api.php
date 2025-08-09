@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Создание сессии (логин)
-Route::post('/session/start', [SessionController::class, 'start']);
+Route::post(
+    '/session/start',
+    [SessionController::class, 'start']
+)->middleware('throttle:1,1440');
 
 // Защищённые маршруты только для админов
 Route::middleware([
