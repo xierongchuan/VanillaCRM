@@ -24,7 +24,6 @@ Route::middleware([
         'admin.token',       // middleware, сверяющий role === 'admin'
         'throttle:300,1'     // лимит запросов
     ])
-    ->prefix('v1')
     ->group(function () {
         Route::get('/user', [UserApiController::class, 'index']);
         Route::get('/user/{id}', [UserApiController::class, 'show']);
