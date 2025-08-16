@@ -60,6 +60,10 @@ class Kernel extends HttpKernel
         // Sanctum для SPA/API запросов
         'auth:sanctum'  => EnsureFrontendRequestsAreStateful::class,
 
+        // Middleware для Администраторов
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        'admin.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+
         // Наш собственный middleware для проверки роли admin
         'admin.token'   => EnsureTokenIsFromAdmin::class,
 
