@@ -11,7 +11,7 @@ use App\Models\User;
 
 class SessionController extends Controller
 {
-    public function start(Request $req)
+    public function store(Request $req)
     {
         $req->validate([
             'login'    => 'required',
