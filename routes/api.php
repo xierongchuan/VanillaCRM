@@ -25,6 +25,6 @@ Route::middleware([
         'throttle:300,1'     // лимит запросов
     ])
     ->group(function () {
-        Route::get('/user', [UserApiController::class, 'index']);
-        Route::get('/user/{id}', [UserApiController::class, 'show']);
+        Route::get('/users', [UserApiController::class, 'index']);
+        Route::get('/users/{id}', [UserApiController::class, 'show']);
     });
