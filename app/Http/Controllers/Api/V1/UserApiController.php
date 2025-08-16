@@ -29,4 +29,16 @@ class UserApiController extends Controller
 
         return new UserResource($user);
     }
+
+    public function status($id)
+    {
+        $user = User::find($id);
+
+        // Если пользователь не найден или поле active = false → возвращаем is_active = false
+        $isActive = $user && ($user->status == 'active');
+
+        return response()->json([
+            'is_active' => (bool) $isActive,
+        ]);
+    }
 }

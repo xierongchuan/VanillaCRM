@@ -1,0 +1,16 @@
+meta {
+  name: Get User Status
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{HOST_URL}}/api/users/5/status
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{SESSION_TOKEN}}
+  Accept: application/json
+}

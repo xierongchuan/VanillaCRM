@@ -33,4 +33,5 @@ Route::middleware([
     ->group(function () {
         Route::get('/users', [UserApiController::class, 'index']);
         Route::get('/users/{id}', [UserApiController::class, 'show']);
+        Route::get('/users/{id}/status', [UserApiController::class, 'status']);
     });
