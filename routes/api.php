@@ -13,6 +13,12 @@ Route::post(
     [SessionController::class, 'store']
 )->middleware('throttle:1,1440');
 
+// Закрытие сессии (логаут)
+Route::delete(
+    '/session',
+    [SessionController::class, 'destroy']
+)->middleware(['auth:sanctum', 'throttle:1,1440']);
+
 // Проверка работоспособности API
 Route::get('/up', function () {
     return response()->json(['success' => true], 200);

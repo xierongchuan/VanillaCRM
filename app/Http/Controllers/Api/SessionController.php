@@ -31,4 +31,11 @@ class SessionController extends Controller
 
         return response()->json(['token' => $token]);
     }
+
+    public function destroy(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Сессия завершена']);
+    }
 }
