@@ -7,10 +7,10 @@ use App\Http\Controllers\Api\V1\UserApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Создание сессии (логин)
+// Открытие сессии (логин)
 Route::post(
-    '/sessions/start',
-    [SessionController::class, 'start']
+    '/session',
+    [SessionController::class, 'store']
 )->middleware('throttle:1,1440');
 
 // Проверка работоспособности API
