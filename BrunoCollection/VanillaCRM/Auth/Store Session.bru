@@ -1,11 +1,11 @@
 meta {
-  name: Start Session
+  name: Store Session
   type: http
   seq: 1
 }
 
 post {
-  url: {{HOST_URL}}/api/sessions/start
+  url: {{HOST_URL}}/api/sessions
   body: json
   auth: inherit
 }
