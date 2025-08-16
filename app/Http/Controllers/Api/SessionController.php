@@ -14,8 +14,8 @@ class SessionController extends Controller
     public function store(Request $req)
     {
         $req->validate([
-            'login'    => 'required',
-            'password' => 'required',
+            'login'    => 'required|min:4|max:255',
+            'password' => 'required|min:6|max:255',
         ]);
 
         $user = User::where('login', $req->login)->first();
