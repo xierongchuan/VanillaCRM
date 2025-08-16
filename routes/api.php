@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 // Создание сессии (логин)
 Route::post(
-    '/session/start',
+    '/sessions/start',
     [SessionController::class, 'start']
 )->middleware('throttle:1,1440');
 
