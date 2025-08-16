@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Route;
 Route::post(
     '/session',
     [SessionController::class, 'store']
-)->middleware('throttle:1,1440');
+)->middleware('throttle:5,1440');
 
 // Закрытие сессии (логаут)
 Route::delete(
     '/session',
     [SessionController::class, 'destroy']
-)->middleware(['auth:sanctum', 'throttle:1,1440']);
+)->middleware(['auth:sanctum', 'throttle:5,1440']);
 
 // Проверка работоспособности API
 Route::get('/up', function () {
