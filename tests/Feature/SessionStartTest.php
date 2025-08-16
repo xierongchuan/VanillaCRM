@@ -41,7 +41,7 @@ class SessionStartTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_logs_in_with_correct_credentials()
     {
-        $response = $this->postJson('/api/sessions', [
+        $response = $this->postJson('/api/session', [
             'login'    => 'admin',
             'password' => 'password123',
         ]);
@@ -53,7 +53,7 @@ class SessionStartTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_fails_with_incorrect_credentials()
     {
-        $response = $this->postJson('/api/sessions', [
+        $response = $this->postJson('/api/session', [
             'login'    => 'admin',
             'password' => 'wrongpassword',
         ]);
@@ -65,7 +65,7 @@ class SessionStartTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_fails_for_non_admin_users()
     {
-        $response = $this->postJson('/api/sessions', [
+        $response = $this->postJson('/api/session', [
             'login'    => 'user',
             'password' => 'password123',
         ]);
@@ -78,13 +78,13 @@ class SessionStartTest extends TestCase
     public function it_blocks_after_throttle_limit()
     {
         // Первый запрос — успешный
-        $this->postJson('/api/sessions', [
+        $this->postJson('/api/session', [
             'login'    => 'admin',
             'password' => 'password123',
         ])->assertStatus(200);
 
         // Второй запрос — должен вернуть 429
-        $response = $this->postJson('/api/sessions', [
+        $response = $this->postJson('/api/session', [
             'login'    => 'admin',
             'password' => 'password123',
         ]);
