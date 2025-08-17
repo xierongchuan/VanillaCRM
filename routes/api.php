@@ -22,13 +22,13 @@ Route::delete(
 // Проверка работоспособности API
 Route::get('/up', function () {
     return response()->json(['success' => true], 200);
-})->middleware('throttle:900,1');
+})->middleware('throttle:100,1');
 
 // Защищённые маршруты только для админов
 Route::middleware([
         'auth:sanctum',      // проверка токена Sanctum
         'admin.token',       // middleware, сверяющий role === 'admin'
-        'throttle:300,1'     // лимит запросов
+        'throttle:150,1'     // лимит запросов
     ])
     ->group(function () {
         Route::get('/users', [UserApiController::class, 'index']);
