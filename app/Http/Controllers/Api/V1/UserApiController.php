@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserApiController extends Controller
 {
@@ -19,7 +20,7 @@ class UserApiController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id);
+        $user = DB::selectOne('SELECT * FROM users WHERE id = ? LIMIT 1', [$id]);
 
         if (! $user) {
             return response()->json([
@@ -32,7 +33,7 @@ class UserApiController extends Controller
 
     public function status($id)
     {
-        $user = User::find($id);
+        $user = DB::selectOne('SELECT * FROM users WHERE id = ? LIMIT 1', [$id]);
 
         // Если пользователь не найден или поле active = false → возвращаем is_active = false
         $isActive = $user && ($user->status == 'active');
