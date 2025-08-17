@@ -77,13 +77,15 @@ class SessionStartTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_blocks_after_throttle_limit()
     {
-        // Первый запрос — успешный
-        $this->postJson('/api/session', [
-            'login'    => 'admin',
-            'password' => 'password123',
-        ])->assertStatus(200);
+        // Первые пять запросов — успешный
+        foreach (range(1, 5) as $i) {
+            $this->postJson('/api/session', [
+                'login'    => 'admin',
+                'password' => 'password123',
+            ])->assertStatus(200);
+        }
 
-        // Второй запрос — должен вернуть 429
+        // Шестрой запрос — должен вернуть 429
         $response = $this->postJson('/api/session', [
             'login'    => 'admin',
             'password' => 'password123',
