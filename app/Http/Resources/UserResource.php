@@ -19,6 +19,9 @@ class UserResource extends JsonResource
         return [
             'id'           => $this->id,
             'login'        => $this->login,
+            // TODO: заменить заглушку на реальные данные
+            'role'         => 'user',
+            // 'role'         => $this->bot_role,
             'status'       => $this->status,
             'full_name'    => $this->full_name,
             'phone_number' => $this->phone_number,
