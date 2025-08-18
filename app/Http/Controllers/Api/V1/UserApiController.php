@@ -11,9 +11,35 @@ use Illuminate\Http\Request;
 
 class UserApiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $perPage = (int) $request->query('per_page', 15);
+        $phone = (string) $request->query('phone', '');
+
+        // Если передан phone -> делаем поиск по нормализованному номеру (только цифры)
+        if ($phone !== '') {
+            $normalized = $this->normalizePhone($phone);
+
+            // Если после нормализации пусто — возвращаем пустую страницу
+            if ($normalized === '') {
+                return UserResource::collection(collect([]));
+            }
+
+            // Для Postgres используем regexp_replace(phone, '\D', '', 'g') чтобы убрать не-цифры в БД
+            // и ищем partial совпадение (LIKE %normalized%)
+            $query = User::query()
+                ->whereRaw(
+                    "regexp_replace(phone, '\\D', '', 'g') LIKE ?",
+                    ["%{$normalized}%"]
+                );
+
+            $users = $query->orderByDesc('created_at')->paginate($perPage);
+
+            return UserResource::collection($users);
+        }
+
+        // Без фильтра — стандартная пагинация
+        $users = User::orderByDesc('created_at')->paginate($perPage);
         return UserResource::collection($users);
     }
 
@@ -40,5 +66,14 @@ class UserApiController extends Controller
         return response()->json([
             'is_active' => (bool) $isActive,
         ]);
+    }
+
+    /**
+     * Нормализует телефон: убирает все не-цифры.
+     * Возвращает строку из цифр или пустую строку.
+     */
+    private function normalizePhone(string $phone): string
+    {
+        return preg_replace('/\D+/', '', $phone) ?? '';
     }
 }
