@@ -25,14 +25,26 @@ class UserApiController extends Controller
                 return UserResource::collection(collect([]));
             }
 
-            // Для Postgres используем regexp_replace(phone, '\D', '', 'g') чтобы убрать не-цифры в БД
-            // и ищем partial совпадение (LIKE %normalized%)
-            $query = User::query()
-                ->whereRaw(
-                    "regexp_replace(phone, '\\D', '', 'g') LIKE ?",
+            // Определяем драйвер БД
+            $driver = config('database.default');
+
+            $query = User::query();
+
+            if ($driver === 'pgsql') {
+                // Postgres: regexp_replace with 'g' flag
+                $query->whereRaw("regexp_replace(phone_number, '\\\\D', '', 'g') LIKE ?", ["%{$normalized}%"]);
+            } elseif ($driver === 'mysql') {
+                // MySQL 8+: REGEXP_REPLACE(subject, pattern, replace)
+                // Обратите внимание, в MySQL нет последнего флага 'g'
+                // Используем '[^0-9]' чтобы удалить всё, кроме цифр
+                $query->whereRaw("REGEXP_REPLACE(phone_number, '[^0-9]', '') LIKE ?", ["%{$normalized}%"]);
+            } else {
+                // Fallback: попробуем грубую замену (не идеальна для всех форматов)
+                $query->whereRaw(
+                    "REPLACE(REPLACE(REPLACE(phone_number, ' ', ''), '+', ''), '-', '') LIKE ?",
                     ["%{$normalized}%"]
                 );
-
+            }
             $users = $query->orderByDesc('created_at')->paginate($perPage);
 
             return UserResource::collection($users);
