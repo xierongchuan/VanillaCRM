@@ -13,7 +13,7 @@ class UserApiController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = (int) $request->query('per_page', 15);
+        $perPage = (int) $request->query('per_page', '15');
         $phone = (string) $request->query('phone', '');
 
         // Если передан phone -> делаем поиск по нормализованному номеру (только цифры)
