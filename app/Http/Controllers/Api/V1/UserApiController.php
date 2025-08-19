@@ -31,15 +31,10 @@ class UserApiController extends Controller
             $query = User::query();
 
             if ($driver === 'pgsql') {
-                // Postgres: regexp_replace with 'g' flag
                 $query->whereRaw("regexp_replace(phone_number, '\\\\D', '', 'g') LIKE ?", ["%{$normalized}%"]);
             } elseif ($driver === 'mysql') {
-                // MySQL 8+: REGEXP_REPLACE(subject, pattern, replace)
-                // Обратите внимание, в MySQL нет последнего флага 'g'
-                // Используем '[^0-9]' чтобы удалить всё, кроме цифр
                 $query->whereRaw("REGEXP_REPLACE(phone_number, '[^0-9]', '') LIKE ?", ["%{$normalized}%"]);
             } else {
-                // Fallback: попробуем грубую замену (не идеальна для всех форматов)
                 $query->whereRaw(
                     "REPLACE(REPLACE(REPLACE(phone_number, ' ', ''), '+', ''), '-', '') LIKE ?",
                     ["%{$normalized}%"]
