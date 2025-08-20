@@ -84,22 +84,23 @@ class UserController extends Controller
 
     public function modify(Company $company, User $user)
     {
-        if (isset(\request()->password)) {
-            $req = request()->validate([
-                'department' => 'required|numeric|min:1',
-                'post' => 'nullable|numeric|min:1',
-                'full_name' => 'required|min:3|max:30',
-                'phone_number' => 'required|string|min:1|max:22',
-                'password' => 'required|min:6|max:256',
-            ]);
-        } else {
-            $req = request()->validate([
-                'department' => 'required|numeric|min:1',
-                'post' => 'nullable|numeric|min:1',
-                'full_name' => 'required|min:3|max:30',
-                'phone_number' => 'required|string|min:1|max:22',
-            ]);
+        $rules = [
+            'department' => 'required|numeric|min:1',
+            'post' => 'nullable|numeric|min:1',
+            'full_name' => 'required|min:3|max:30',
+            'phone_number' => 'required|string|min:1|max:22',
+            'in_bot_role' => [
+                'required',
+                'string',
+                'in:user,accountant,director'
+            ],
+        ];
+
+        if (request()->has('password')) {
+            $rules['password'] = 'required|min:6|max:256';
         }
+
+        $req = request()->validate($rules);
 
         if (! Department::where('id', $req['department'])->exists()) {
             return redirect()->back()->withErrors('Департамент не найден');
@@ -112,11 +113,13 @@ class UserController extends Controller
         if (! empty($req['password'])) {
             $user->password = Hash::make($req['password']);
         }
+
         $user->com_id = $company->id;
         $user->dep_id = $req['department'];
         $user->post_id = $req['post'] ?? null;
         $user->full_name = $req['full_name'];
         $user->phone_number = str_replace(' ', '', $req['phone_number']);
+        $user->in_bot_role = $req['in_bot_role'];
         $user->save();
 
         return redirect()->route('company.list');
