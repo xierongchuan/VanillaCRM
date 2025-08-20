@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Company;
@@ -46,7 +48,6 @@ class UserController extends Controller
 
     public function store(Company $company)
     {
-
         $req = request()->validate([
             'login' => 'required|unique:users',
             //			'role' => Rule::in(['admin', 'user']),
@@ -60,7 +61,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors('Департамент не найден');
         }
 
-        $user = new User;
+        $user = new User();
         $user->login = $req['login'];
         $user->role = 'user';
         $user->password = Hash::make($req['password']);
@@ -83,7 +84,6 @@ class UserController extends Controller
 
     public function modify(Company $company, User $user)
     {
-
         if (isset(\request()->password)) {
             $req = request()->validate([
                 'department' => 'required|numeric|min:1',
@@ -137,7 +137,6 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Сотрудник успешно активирован');
-
     }
 
     public function deactivate(Company $company, User $user)
@@ -155,7 +154,6 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Сотрудник успешно деактивирован');
-
     }
 
     public function delete(Company $company, User $user)
@@ -171,7 +169,6 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->back()->with('success', 'Сотрудник успешно удален');
-
     }
 
     public function logout()
@@ -192,14 +189,13 @@ class UserController extends Controller
 
     public function storeAdmin(Company $company)
     {
-
         $req = request()->validate([
             'login' => 'required|unique:users',
             'full_name' => 'required|min:3|max:30',
             'password' => 'required|min:6|max:256',
         ]);
 
-        $user = new User;
+        $user = new User();
         $user->login = $req['login'];
         $user->role = 'admin';
         $user->password = Hash::make($req['password']);
@@ -218,14 +214,12 @@ class UserController extends Controller
         $admin->delete();
 
         return redirect()->back()->with('success', 'Администратор успешно удален');
-
     }
 
     // / Permissions Sector
 
     public function permission()
     {
-
         $company = Company::find(Auth::user()->com_id);
 
         $department = Department::find(Auth::user()->dep_id);
