@@ -50,11 +50,15 @@ class UserController extends Controller
     {
         $req = request()->validate([
             'login' => 'required|unique:users',
-            //			'role' => Rule::in(['admin', 'user']),
             'full_name' => 'required|min:3|max:30',
             'department' => 'required|numeric|min:1',
             'phone_number' => 'required|string|min:1|max:22',
             'password' => 'required|min:6|max:256',
+            'in_bot_role' => [
+                'required',
+                'string',
+                'in:user,accountant,director'
+            ],
         ]);
 
         if (! Department::where('id', $req['department'])->exists()) {
@@ -69,6 +73,7 @@ class UserController extends Controller
         $user->dep_id = $req['department'];
         $user->full_name = $req['full_name'];
         $user->phone_number = str_replace(' ', '', $req['phone_number']);
+        $user->in_bot_role = $req['in_bot_role'];
         $user->save();
 
         return redirect()->route('company.list');
@@ -96,7 +101,7 @@ class UserController extends Controller
             ],
         ];
 
-        if (request()->has('password')) {
+        if (isset(request()->password)) {
             $rules['password'] = 'required|min:6|max:256';
         }
 

@@ -33,19 +33,19 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Role:</label>
                     <div class="btn-group d-flex flex-wrap gap-2" role="group" aria-label="Role selection">
-                        <input type="radio" class="btn-check" name="in_bot_role" id="role_user" value="User"
+                        <input type="radio" class="btn-check" name="in_bot_role" id="role_user" value="user"
                             autocomplete="off" required {{ $user->in_bot_role == 'user' ? 'checked' : '' }}>
                         <label class="btn btn-lg btn-outline-primary rounded-3 flex-fill py-3" for="role_user">
                             <i class="bi-person me-2"></i>User
                         </label>
 
-                        <input type="radio" class="btn-check" name="in_bot_role" id="role_accountant" value="Accountant"
+                        <input type="radio" class="btn-check" name="in_bot_role" id="role_accountant" value="accountant"
                             autocomplete="off" {{ $user->in_bot_role == 'accountant' ? 'checked' : '' }}>
                         <label class="btn btn-lg btn-outline-secondary rounded-3 flex-fill py-3" for="role_accountant">
                             <i class="bi-calculator me-2"></i>Accountant
                         </label>
 
-                        <input type="radio" class="btn-check" name="in_bot_role" id="role_director" value="Director"
+                        <input type="radio" class="btn-check" name="in_bot_role" id="role_director" value="director"
                             autocomplete="off" {{ $user->in_bot_role == 'director' ? 'checked' : '' }}>
                         <label class="btn btn-lg btn-outline-success rounded-3 flex-fill py-3" for="role_director">
                             <i class="bi-graph-up me-2"></i>Director
