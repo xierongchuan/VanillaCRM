@@ -65,6 +65,18 @@ class UserController extends Controller
             return redirect()->back()->withErrors('Департамент не найден');
         }
 
+        if ($req['in_bot_role'] == 'director') {
+            $isAlreadyHaveDirector = User::where("com_id", $company->id)
+            ->where('in_bot_role', 'director')->first();
+            return redirect()->back()->withErrors('Уже есть в компании Директор');
+        }
+
+        if ($req['in_bot_role'] == 'accountant') {
+            $isAlreadyHaveAccountant = User::where("com_id", $company->id)
+            ->where('in_bot_role', 'accountant')->first();
+            return redirect()->back()->withErrors('Уже есть в компании Бухгалтер');
+        }
+
         $user = new User();
         $user->login = $req['login'];
         $user->role = 'user';
@@ -113,6 +125,18 @@ class UserController extends Controller
 
         if (@$req['post'] && ! Post::where('id', @$req['post'])->exists()) {
             return redirect()->back()->withErrors('Должность не найден');
+        }
+
+        if ($req['in_bot_role'] == 'director') {
+            $isAlreadyHaveDirector = User::where("com_id", $company->id)
+            ->where('in_bot_role', 'director')->first();
+            return redirect()->back()->withErrors('Уже есть в компании Директор');
+        }
+
+        if ($req['in_bot_role'] == 'accountant') {
+            $isAlreadyHaveAccountant = User::where("com_id", $company->id)
+            ->where('in_bot_role', 'accountant')->first();
+            return redirect()->back()->withErrors('Уже есть в компании Бухгалтер');
         }
 
         if (! empty($req['password'])) {
