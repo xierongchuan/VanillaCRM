@@ -66,15 +66,19 @@ class UserController extends Controller
         }
 
         if ($req['in_bot_role'] == 'director') {
-            $isAlreadyHaveDirector = User::where("com_id", $company->id)
-            ->where('in_bot_role', 'director')->first();
-            return redirect()->back()->withErrors('Уже есть в компании Директор');
+            $isAlreadyHaveDirector = !empty(User::where("com_id", $company->id)
+            ->where('in_bot_role', 'director')->first());
+            if ($isAlreadyHaveDirector) {
+                return redirect()->back()->withErrors('Уже есть в компании Директор');
+            }
         }
 
         if ($req['in_bot_role'] == 'accountant') {
-            $isAlreadyHaveAccountant = User::where("com_id", $company->id)
-            ->where('in_bot_role', 'accountant')->first();
-            return redirect()->back()->withErrors('Уже есть в компании Бухгалтер');
+            $isAlreadyHaveAccountant = !empty(User::where("com_id", $company->id)
+            ->where('in_bot_role', 'accountant')->first());
+            if ($isAlreadyHaveAccountant) {
+                return redirect()->back()->withErrors('Уже есть в компании Бухгалтер');
+            }
         }
 
         $user = new User();
@@ -128,15 +132,19 @@ class UserController extends Controller
         }
 
         if ($req['in_bot_role'] == 'director') {
-            $isAlreadyHaveDirector = User::where("com_id", $company->id)
-            ->where('in_bot_role', 'director')->first();
-            return redirect()->back()->withErrors('Уже есть в компании Директор');
+            $isAlreadyHaveDirector = !empty(User::where("com_id", $company->id)
+            ->where('in_bot_role', 'director')->first());
+            if ($isAlreadyHaveDirector) {
+                return redirect()->back()->withErrors('Уже есть в компании Директор');
+            }
         }
 
         if ($req['in_bot_role'] == 'accountant') {
-            $isAlreadyHaveAccountant = User::where("com_id", $company->id)
-            ->where('in_bot_role', 'accountant')->first();
-            return redirect()->back()->withErrors('Уже есть в компании Бухгалтер');
+            $isAlreadyHaveAccountant = !empty(User::where("com_id", $company->id)
+            ->where('in_bot_role', 'accountant')->first());
+            if ($isAlreadyHaveAccountant) {
+                return redirect()->back()->withErrors('Уже есть в компании Бухгалтер');
+            }
         }
 
         if (! empty($req['password'])) {
