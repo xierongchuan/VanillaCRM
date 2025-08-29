@@ -68,7 +68,6 @@ class Kernel extends HttpKernel
         'admin.token'   => EnsureTokenIsFromAdmin::class,
 
         // Базовая аутентификация и сессия
-        'admin.basic'   => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'admin.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
 
         // Прочие стандартные
