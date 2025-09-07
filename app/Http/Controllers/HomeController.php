@@ -282,7 +282,7 @@ class HomeController extends Controller
         $endDate = now()->endOfMonth();
 
         // Получение данных из таблицы 'reports'
-        $result_full = json_decode(DB::table('reports')
+        $result_full = json_decode((string) DB::table('reports')
             ->select(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.dop")) AS SIGNED)) as dop_sum'))
             ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.now")) AS SIGNED)) as now_sum'))
             ->addSelect(DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.to")) AS SIGNED)) as to_sum'))
