@@ -85,7 +85,10 @@ test('admin can create department', function () {
         'name' => 'Test Company 2',
     ]);
 
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.department.store', ['company' => $company->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.department.store',
+        ['company' => $company->id]
+    ), [
         'name' => 'New Department',
     ]);
 
@@ -97,7 +100,10 @@ test('admin can create department', function () {
 });
 
 test('admin can update department', function () {
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.department.modify', ['company' => $this->company->id, 'department' => $this->department->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.department.modify',
+        ['company' => $this->company->id, 'department' => $this->department->id]
+    ), [
         'name' => 'Updated Dept Name', // Укороченное имя
     ]);
 
@@ -115,7 +121,10 @@ test('admin can delete department', function () {
         'name' => 'Test Department 2',
     ]);
 
-    $response = $this->actingAs($this->admin, 'web')->get(route('company.department.delete', ['company' => $this->company->id, 'department' => $department->id]));
+    $response = $this->actingAs($this->admin, 'web')->get(route(
+        'company.department.delete',
+        ['company' => $this->company->id, 'department' => $department->id]
+    ));
 
     $response->assertRedirect();
     $this->assertDatabaseMissing('departments', [
@@ -130,12 +139,18 @@ test('admin can create post', function () {
         'name' => 'Test Department 2',
     ]);
 
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.department.post.store', ['company' => $this->company->id, 'department' => $department->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.department.post.store',
+        ['company' => $this->company->id, 'department' => $department->id]
+    ), [
         'name' => 'New Post',
         'permission' => [], // Добавлено поле permission
     ]);
 
-    $response->assertRedirect(route('company.department.index', ['company' => $this->company->id, 'department' => $department->id]));
+    $response->assertRedirect(route(
+        'company.department.index',
+        ['company' => $this->company->id, 'department' => $department->id]
+    ));
     $this->assertDatabaseHas('posts', [
         'dep_id' => $department->id,
         'name' => 'New Post',
@@ -143,12 +158,18 @@ test('admin can create post', function () {
 });
 
 test('admin can update post', function () {
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.department.post.modify', ['company' => $this->company->id, 'department' => $this->department->id, 'post' => $this->post->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.department.post.modify',
+        ['company' => $this->company->id, 'department' => $this->department->id, 'post' => $this->post->id]
+    ), [
         'name' => 'Updated Post Name',
         'permission' => [], // Добавлено поле permission
     ]);
 
-    $response->assertRedirect(route('company.department.index', ['company' => $this->company->id, 'department' => $this->department->id]));
+    $response->assertRedirect(route(
+        'company.department.index',
+        ['company' => $this->company->id, 'department' => $this->department->id]
+    ));
     $this->assertDatabaseHas('posts', [
         'id' => $this->post->id,
         'name' => 'Updated Post Name',
@@ -163,7 +184,10 @@ test('admin can delete post', function () {
         'name' => 'Test Post 2',
     ]);
 
-    $response = $this->actingAs($this->admin, 'web')->get(route('company.department.post.delete', ['company' => $this->company->id, 'department' => $this->department->id, 'post' => $post->id]));
+    $response = $this->actingAs($this->admin, 'web')->get(route(
+        'company.department.post.delete',
+        ['company' => $this->company->id, 'department' => $this->department->id, 'post' => $post->id]
+    ));
 
     $response->assertRedirect();
     $this->assertDatabaseMissing('posts', [

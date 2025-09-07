@@ -43,7 +43,10 @@ beforeEach(function () {
 });
 
 test('admin can create permission', function () {
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.permission.store', ['company' => $this->company->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.permission.store',
+        ['company' => $this->company->id]
+    ), [
         'name' => 'New Permission',
         'value' => 'new_permission', // Исправлено: подчеркивание вместо точки
     ]);
@@ -59,7 +62,10 @@ test('admin can create permission', function () {
 });
 
 test('admin can update permission', function () {
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.permission.modify', ['company' => $this->company->id, 'permission' => $this->permission->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.permission.modify',
+        ['company' => $this->company->id, 'permission' => $this->permission->id]
+    ), [
         'name' => 'Updated Permission',
     ]);
 
@@ -80,7 +86,10 @@ test('admin can delete permission', function () {
         'permission' => json_encode([]), // Пустой массив пермиссий
     ]);
 
-    $response = $this->actingAs($this->admin, 'web')->get(route('company.permission.delete', ['company' => $this->company->id, 'permission' => $this->permission->id]));
+    $response = $this->actingAs($this->admin, 'web')->get(route(
+        'company.permission.delete',
+        ['company' => $this->company->id, 'permission' => $this->permission->id]
+    ));
 
     $response->assertRedirect();
     $this->assertDatabaseMissing('permissions', [

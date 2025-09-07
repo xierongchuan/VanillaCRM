@@ -306,7 +306,7 @@ class ReportXlsxService
 
         if ($existingReport) {
             // Если отчет существует, обновляем его данные
-            $existingReport->data = json_encode($sheetData, true);
+            $existingReport->data = json_encode($sheetData, JSON_UNESCAPED_UNICODE);
             $existingReport->save();
         } else {
             // Если отчет не существует, создаем новый
@@ -314,7 +314,7 @@ class ReportXlsxService
             $report->type = 'report_xlsx';
             $report->com_id = $company->id;
             $report->for_date = Carbon::createFromFormat('Y-m-d', $request->for_date)->format('Y-m-d');
-            $report->data = json_encode($sheetData, true);
+            $report->data = json_encode($sheetData, JSON_UNESCAPED_UNICODE);
             $report->save();
         }
     }

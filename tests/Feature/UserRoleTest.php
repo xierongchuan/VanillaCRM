@@ -73,7 +73,10 @@ test('inactive user cannot access user routes', function () {
 });
 
 test('user with director role can be created', function () {
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.user.store', ['company' => $this->company->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.user.store',
+        ['company' => $this->company->id]
+    ), [
         'login' => 'director',
         'full_name' => 'Director User',
         'department' => $this->department->id,
@@ -101,7 +104,10 @@ test('only one director can exist per company', function () {
     ]);
 
     // Try to create another director
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.user.store', ['company' => $this->company->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.user.store',
+        ['company' => $this->company->id]
+    ), [
         'login' => 'director2',
         'full_name' => 'Second Director',
         'department' => $this->department->id,
@@ -115,7 +121,10 @@ test('only one director can exist per company', function () {
 });
 
 test('user with accountant role can be created', function () {
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.user.store', ['company' => $this->company->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.user.store',
+        ['company' => $this->company->id]
+    ), [
         'login' => 'accountant',
         'full_name' => 'Accountant User',
         'department' => $this->department->id,
@@ -143,7 +152,10 @@ test('only one accountant can exist per company', function () {
     ]);
 
     // Try to create another accountant
-    $response = $this->actingAs($this->admin, 'web')->post(route('company.user.store', ['company' => $this->company->id]), [
+    $response = $this->actingAs($this->admin, 'web')->post(route(
+        'company.user.store',
+        ['company' => $this->company->id]
+    ), [
         'login' => 'accountant2',
         'full_name' => 'Second Accountant',
         'department' => $this->department->id,
