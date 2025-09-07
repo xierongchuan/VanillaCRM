@@ -19,6 +19,15 @@ class User extends Authenticatable
     protected $with = ['company', 'department', 'post'];
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'status',
+    ];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>

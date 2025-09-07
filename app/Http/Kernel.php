@@ -54,7 +54,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
-        // **Добавили класс аутентификации для guard’а**
+        // **Добавили класс аутентификации для guard'а**
         'auth'          => Authenticate::class,
 
         // Sanctum для SPA/API запросов
@@ -69,6 +69,9 @@ class Kernel extends HttpKernel
 
         // Базовая аутентификация и сессия
         'admin.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+
+        // Middleware для обычных пользователей
+        'user' => \App\Http\Middleware\UserMiddleware::class,
 
         // Прочие стандартные
         'cache.headers'      => \Illuminate\Http\Middleware\SetCacheHeaders::class,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\ReportXlsxRule;
@@ -32,7 +34,7 @@ class ReportXlsxService
         foreach ($inputData as $key => $value) {
             if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
                 $workerNumber = $matches[1];
-                $workerSold = $inputData['worker_sold_'.$workerNumber];
+                $workerSold = $inputData['worker_sold_' . $workerNumber];
                 $workers[$workerNumber] = (int) $workerSold;
             }
         }
@@ -110,7 +112,8 @@ class ReportXlsxService
     // Метод для проверки типа файла
     private function validateFileType(Request $request): void
     {
-        if ($request->file('file')->getMimeType() !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        if ($request->file('file')->getMimeType() !== $mimeType) {
             throw new Exception('Файл должен быть типа xlsx (Excel).');
         }
     }
@@ -140,15 +143,19 @@ class ReportXlsxService
     }
 
     // Метод для заполнения данных листа Excel
-    private function fillSheetData(array &$sheetData, array $rule, Request $request, Company $company, string $fileName): void
-    {
+    private function fillSheetData(
+        array &$sheetData,
+        array $rule,
+        Request $request,
+        Company $company,
+        string $fileName
+    ): void {
         // Загрузка файла Excel
         $sheet = IOFactory::load($request->file('file'));
         $wsheet = $sheet->getActiveSheet();
 
         // Перебор строк листа
         foreach ($wsheet->getRowIterator() as $row) {
-
             $cellIterate = $row->getCellIterator();
             $cellIterate->setIterateOnlyExistingCells(true);
 
@@ -159,24 +166,49 @@ class ReportXlsxService
                 $cellNum = preg_replace('/[A-z]/', '', $cellAddress);
 
                 // Обработка ячеек в колонке A для заполнения данных отчета
-                if (($cellLetter == 'A') && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS] && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]) {
-                    $date = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A'.$cellNum)->getCalculatedValue()));
+                if (
+                    ($cellLetter == 'A')
+                    && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS]
+                    && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]
+                ) {
+                    $date = date(
+                        'd.m.Y',
+                        Date::excelToTimestamp((int) $wsheet->getCell('A' . $cellNum)->getCalculatedValue())
+                    );
                     if ($date == Carbon::createFromFormat('Y-m-d', $request->for_date)->format('d.m.Y')) {
-                        echo $cellNum.'<br>';
-                        $sheetData[ReportXlsxRule::CONTRACTS] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS].$cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::PAYMENT_QUANTITY] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_QUANTITY].$cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::PAYMENT_SUM] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_SUM].$cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT] = $wsheet->getCell($rule[ReportXlsxRule::ADDITIONAL_PAYMENT].$cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::LEASING] = $wsheet->getCell($rule[ReportXlsxRule::LEASING].$cellNum)->getCalculatedValue();
-                        $sheetData[ReportXlsxRule::TOTAL] = $wsheet->getCell($rule[ReportXlsxRule::TOTAL].$cellNum)->getCalculatedValue();
+                        echo $cellNum . '<br>';
+                        $sheetData[ReportXlsxRule::CONTRACTS] = $wsheet->getCell(
+                            $rule[ReportXlsxRule::CONTRACTS] . $cellNum
+                        )->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::PAYMENT_QUANTITY] = $wsheet->getCell(
+                            $rule[ReportXlsxRule::PAYMENT_QUANTITY] . $cellNum
+                        )->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::PAYMENT_SUM] = $wsheet->getCell(
+                            $rule[ReportXlsxRule::PAYMENT_SUM] . $cellNum
+                        )->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT] = $wsheet->getCell(
+                            $rule[ReportXlsxRule::ADDITIONAL_PAYMENT] . $cellNum
+                        )->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::LEASING] = $wsheet->getCell(
+                            $rule[ReportXlsxRule::LEASING] . $cellNum
+                        )->getCalculatedValue();
+                        $sheetData[ReportXlsxRule::TOTAL] = $wsheet->getCell(
+                            $rule[ReportXlsxRule::TOTAL] . $cellNum
+                        )->getCalculatedValue();
                     }
                 }
 
                 // Обработка ячеек в колонке E для заполнения данных отчета
-                if (($cellLetter == 'E') && (int) $cell->getRow() >= (int) $rule[ReportXlsxRule::START_OF_REPORTS] && (int) $cell->getRow() <= (int) $rule[ReportXlsxRule::END_OF_REPORTS]) {
-                    $date2 = date('d.m.Y', Date::excelToTimestamp((int) $wsheet->getCell('A'.$cellNum)->getCalculatedValue()));
+                $startOfReports = (int) $rule[ReportXlsxRule::START_OF_REPORTS];
+                $endOfReports = (int) $rule[ReportXlsxRule::END_OF_REPORTS];
+                $cellRow = (int) $cell->getRow();
+                if (($cellLetter == 'E') && $cellRow >= $startOfReports && $cellRow <= $endOfReports) {
+                    $cellValue = (int) $wsheet->getCell('A' . $cellNum)->getCalculatedValue();
+                    $date2 = date('d.m.Y', Date::excelToTimestamp($cellValue));
                     if ($date2 == Carbon::createFromFormat('Y-m-d', $request->for_date)->format('d.m.Y')) {
-                        $sheetData[ReportXlsxRule::CONTRACTS_2] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2].$cellNum)->getCalculatedValue();
+                        $cellCoordinate = $rule[ReportXlsxRule::CONTRACTS_2] . $cellNum;
+                        $cell = $wsheet->getCell($cellCoordinate);
+                        $sheetData[ReportXlsxRule::CONTRACTS_2] = $cell->getCalculatedValue();
                     }
                 }
             }
@@ -196,16 +228,32 @@ class ReportXlsxService
         $sheetData['Дата'] = $request->for_date;
         $sheetData['File'] = $fileName;
 
-        $sheetData[ReportXlsxRule::PLAN_QUANTITY] = $wsheet->getCell($rule[ReportXlsxRule::PLAN_QUANTITY])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::PLAN_SUM] = $wsheet->getCell($rule[ReportXlsxRule::PLAN_SUM])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::ACTUAL_QUANTITY] = $wsheet->getCell($rule[ReportXlsxRule::ACTUAL_QUANTITY])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::ACTUAL_SUM] = $wsheet->getCell($rule[ReportXlsxRule::ACTUAL_SUM])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::CONTRACTS_2] = $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::PERCENT_OF_QUANTITY] = round(($wsheet->getCell($rule[ReportXlsxRule::PERCENT_OF_QUANTITY])->getCalculatedValue() * 100), 2);
+        $planQuantityCell = $rule[ReportXlsxRule::PLAN_QUANTITY];
+        $sheetData[ReportXlsxRule::PLAN_QUANTITY] = $wsheet->getCell($planQuantityCell)->getCalculatedValue();
+
+        $planSumCell = $rule[ReportXlsxRule::PLAN_SUM];
+        $sheetData[ReportXlsxRule::PLAN_SUM] = $wsheet->getCell($planSumCell)->getCalculatedValue();
+
+        $actualQuantityCell = $rule[ReportXlsxRule::ACTUAL_QUANTITY];
+        $sheetData[ReportXlsxRule::ACTUAL_QUANTITY] = $wsheet->getCell($actualQuantityCell)->getCalculatedValue();
+
+        $actualSumCell = $rule[ReportXlsxRule::ACTUAL_SUM];
+        $sheetData[ReportXlsxRule::ACTUAL_SUM] = $wsheet->getCell($actualSumCell)->getCalculatedValue();
+
+        $contracts2Cell = $rule[ReportXlsxRule::CONTRACTS_2];
+        $sheetData[ReportXlsxRule::CONTRACTS_2] = $wsheet->getCell($contracts2Cell)->getCalculatedValue();
+
+        $percentOfQuantityCell = $rule[ReportXlsxRule::PERCENT_OF_QUANTITY];
+        $percentValue = $wsheet->getCell($percentOfQuantityCell)->getCalculatedValue();
+        $sheetData[ReportXlsxRule::PERCENT_OF_QUANTITY] = round(($percentValue * 100), 2);
 
         // Вычисление коэффициента конверсии
-        $num1 = (int) $wsheet->getCell($rule[ReportXlsxRule::ACTUAL_QUANTITY])->getCalculatedValue();
-        $num2 = (int) $wsheet->getCell($rule[ReportXlsxRule::CONTRACTS_2])->getCalculatedValue();
+        $actualQuantityCell = $rule[ReportXlsxRule::ACTUAL_QUANTITY];
+        $num1 = (int) $wsheet->getCell($actualQuantityCell)->getCalculatedValue();
+
+        $contracts2Cell = $rule[ReportXlsxRule::CONTRACTS_2];
+        $num2 = (int) $wsheet->getCell($contracts2Cell)->getCalculatedValue();
+
         $result = 0;
         if ($num1 != 0 && $num2 != 0) {
             $result = $num1 / ($num2 / 100);
@@ -213,17 +261,42 @@ class ReportXlsxService
         $sheetData[ReportXlsxRule::CONVERSION_2] = round($result, 2);
 
         // Заполнение оставшихся данных отчета
-        $sheetData[ReportXlsxRule::PERCENT_OF_SUM] = round(($wsheet->getCell($rule[ReportXlsxRule::PERCENT_OF_SUM])->getCalculatedValue()), 2);
-        $sheetData[ReportXlsxRule::PAYMENT_3] = $wsheet->getCell($rule[ReportXlsxRule::PAYMENT_3])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT_3] = $wsheet->getCell($rule[ReportXlsxRule::ADDITIONAL_PAYMENT_3])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::LEASING_3] = $wsheet->getCell($rule[ReportXlsxRule::LEASING_3])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::BALANCE_3] = $wsheet->getCell($rule[ReportXlsxRule::BALANCE_3])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::THROUGH_BANK_QTY_5] = $wsheet->getCell($rule[ReportXlsxRule::THROUGH_BANK_QTY_5])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::THROUGH_BANK_SUM_5] = $wsheet->getCell($rule[ReportXlsxRule::THROUGH_BANK_SUM_5])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::THROUGH_LEASING_QTY_5] = $wsheet->getCell($rule[ReportXlsxRule::THROUGH_LEASING_QTY_5])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::THROUGH_LEASING_SUM_5] = $wsheet->getCell($rule[ReportXlsxRule::THROUGH_LEASING_SUM_5])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::TOTAL_QTY_5] = $wsheet->getCell($rule[ReportXlsxRule::TOTAL_QTY_5])->getCalculatedValue();
-        $sheetData[ReportXlsxRule::SUM_5] = $wsheet->getCell($rule[ReportXlsxRule::SUM_5])->getCalculatedValue();
+        $percentOfSumCell = $rule[ReportXlsxRule::PERCENT_OF_SUM];
+        $percentOfSumValue = $wsheet->getCell($percentOfSumCell)->getCalculatedValue();
+        $sheetData[ReportXlsxRule::PERCENT_OF_SUM] = round(($percentOfSumValue), 2);
+
+        $payment3Cell = $rule[ReportXlsxRule::PAYMENT_3];
+        $sheetData[ReportXlsxRule::PAYMENT_3] = $wsheet->getCell($payment3Cell)->getCalculatedValue();
+
+        $additionalPayment3Cell = $rule[ReportXlsxRule::ADDITIONAL_PAYMENT_3];
+        $cell = $wsheet->getCell($additionalPayment3Cell);
+        $sheetData[ReportXlsxRule::ADDITIONAL_PAYMENT_3] = $cell->getCalculatedValue();
+
+        $leasing3Cell = $rule[ReportXlsxRule::LEASING_3];
+        $sheetData[ReportXlsxRule::LEASING_3] = $wsheet->getCell($leasing3Cell)->getCalculatedValue();
+
+        $balance3Cell = $rule[ReportXlsxRule::BALANCE_3];
+        $sheetData[ReportXlsxRule::BALANCE_3] = $wsheet->getCell($balance3Cell)->getCalculatedValue();
+
+        $throughBankQty5Cell = $rule[ReportXlsxRule::THROUGH_BANK_QTY_5];
+        $sheetData[ReportXlsxRule::THROUGH_BANK_QTY_5] = $wsheet->getCell($throughBankQty5Cell)->getCalculatedValue();
+
+        $throughBankSum5Cell = $rule[ReportXlsxRule::THROUGH_BANK_SUM_5];
+        $sheetData[ReportXlsxRule::THROUGH_BANK_SUM_5] = $wsheet->getCell($throughBankSum5Cell)->getCalculatedValue();
+
+        $throughLeasingQty5Cell = $rule[ReportXlsxRule::THROUGH_LEASING_QTY_5];
+        $cell = $wsheet->getCell($throughLeasingQty5Cell);
+        $sheetData[ReportXlsxRule::THROUGH_LEASING_QTY_5] = $cell->getCalculatedValue();
+
+        $throughLeasingSum5Cell = $rule[ReportXlsxRule::THROUGH_LEASING_SUM_5];
+        $cell = $wsheet->getCell($throughLeasingSum5Cell);
+        $sheetData[ReportXlsxRule::THROUGH_LEASING_SUM_5] = $cell->getCalculatedValue();
+
+        $totalQty5Cell = $rule[ReportXlsxRule::TOTAL_QTY_5];
+        $sheetData[ReportXlsxRule::TOTAL_QTY_5] = $wsheet->getCell($totalQty5Cell)->getCalculatedValue();
+
+        $sum5Cell = $rule[ReportXlsxRule::SUM_5];
+        $sheetData[ReportXlsxRule::SUM_5] = $wsheet->getCell($sum5Cell)->getCalculatedValue();
 
         // Проверка наличия существующего отчета
         $existingReport = Report::where('type', 'report_xlsx')
@@ -237,7 +310,7 @@ class ReportXlsxService
             $existingReport->save();
         } else {
             // Если отчет не существует, создаем новый
-            $report = new Report;
+            $report = new Report();
             $report->type = 'report_xlsx';
             $report->com_id = $company->id;
             $report->for_date = Carbon::createFromFormat('Y-m-d', $request->for_date)->format('Y-m-d');
@@ -250,7 +323,7 @@ class ReportXlsxService
     private function saveFile(Request $request): string
     {
         $file = $request->file('file');
-        $fileName = time().'_'.$file->getClientOriginalName();
+        $fileName = time() . '_' . $file->getClientOriginalName();
         $file->storeAs('public/tmp', $fileName);
 
         return $fileName;
@@ -379,7 +452,6 @@ class ReportXlsxService
             }
 
             $sales_data[$company->id] = $sums;
-
         }
 
         return $sales_data;
@@ -452,7 +524,6 @@ class ReportXlsxService
                     }
                 }
             }
-
         }
 
         return $sums;
@@ -518,7 +589,6 @@ class ReportXlsxService
                     }
                 }
             }
-
         }
 
         return $sales_data;
@@ -550,7 +620,6 @@ class ReportXlsxService
 
                 // Собираем данные, исключая продажи
                 $statistics[$report->for_date] = [
-
                     // 1
                     'contracts' => $reportData[ReportXlsxRule::CONTRACTS],
                     'payment_quantity' => $reportData[ReportXlsxRule::PAYMENT_QUANTITY],

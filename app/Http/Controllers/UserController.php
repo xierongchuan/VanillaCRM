@@ -267,9 +267,12 @@ class UserController extends Controller
         $department = Department::find(Auth::user()->dep_id);
 
         $post = Post::find(@Auth::user()->post_id);
-        $permission_ids = (array) json_decode(@$post->permission);
-        $permissions = Permission::whereIn('id', @$permission_ids)->get();
-        $permission_vals = @$permissions->pluck('value')->toArray();
+        $permission_ids = [];
+        if (!empty($post->permission)) {
+            $permission_ids = (array) json_decode($post->permission);
+        }
+        $permissions = Permission::whereIn('id', $permission_ids)->get();
+        $permission_vals = $permissions->pluck('value')->toArray();
 
         $data = (object) [
             'company' => $company,

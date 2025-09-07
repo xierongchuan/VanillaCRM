@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Company;
@@ -54,7 +56,7 @@ class HomeController extends Controller
         // Получение ежедневных отчётов
         $coms_data = $this->getComsData($companies);
         // Получение списка месячных продаж менеджеров
-        $sales_data = (new ReportXlsxService)->getSalesData($companies);
+        $sales_data = (new ReportXlsxService())->getSalesData($companies);
         // Получение списка доступов в компании
         $coms_perms = $this->getComsPerms($companies);
 
@@ -99,7 +101,7 @@ class HomeController extends Controller
         // Получение ежедневных отчётов
         $com_data = $this->getComsData([$company]);
         // Получение списка месячных продаж менеджеров
-        $sales_data = (new ReportXlsxService)->getSalesData([$company]);
+        $sales_data = (new ReportXlsxService())->getSalesData([$company]);
 
         // Создание объекта с данными пользователя
         $data = (object) [
@@ -126,7 +128,6 @@ class HomeController extends Controller
         $coms_perms = [];
 
         foreach ($companies as $company) {
-
             $perms_arr = [];
 
             $perms = DB::table('permissions')
@@ -138,7 +139,6 @@ class HomeController extends Controller
             }
 
             $coms_perms[$company->id] = $perms_arr;
-
         }
 
         return $coms_perms;
@@ -150,7 +150,7 @@ class HomeController extends Controller
         $archiveReports = [];
 
         foreach ($companies as $company) {
-            $months = (new ArchiveController)->groupReportsByMonth($company);
+            $months = (new ArchiveController())->groupReportsByMonth($company);
 
             // Преобразуем ключи массива в индексы и получаем все ключи
             $monthKeys = array_keys($months);
@@ -193,7 +193,7 @@ class HomeController extends Controller
     private function getFilesData($folder)
     {
         // Определение пути к папке
-        $path = storage_path('app/public/'.$folder);
+        $path = storage_path('app/public/' . $folder);
 
         // Если папка не существует, возвращаем пустой массив
         if (! File::exists($path)) {
@@ -206,7 +206,7 @@ class HomeController extends Controller
 
         // Обработка каждого файла
         foreach ($files as $file) {
-            $filePath = 'storage/'.$folder.'/'.$file->getFilename();
+            $filePath = 'storage/' . $folder . '/' . $file->getFilename();
             $file_name_data = explode('_', basename($file));
 
             // Сбор данных о файле
@@ -246,8 +246,8 @@ class HomeController extends Controller
                 if (isset($data['File'])) {
                     // Получение имени файла из данных отчета
                     $fileName = (string) $data['File'];
-                    $filePath = storage_path('app/public/tmp/'.$fileName);
-                    $fileUrl = 'storage/app/public'.str_replace(storage_path('app/public'), '', $filePath);
+                    $filePath = storage_path('app/public/tmp/' . $fileName);
+                    $fileUrl = 'storage/app/public' . str_replace(storage_path('app/public'), '', $filePath);
 
                     // Формирование URL
                     $last_report_urls[$company->id] = asset($fileUrl);

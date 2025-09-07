@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -18,8 +20,7 @@ class CompanyFactory extends Factory
     {
         return [
             'name' => $this->faker->company,
-            'data' => $this->faker->paragraph(1),
+            // Удалено поле 'data', так как оно больше не существует в таблице
         ];
-
     }
 }
