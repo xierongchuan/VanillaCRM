@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Company;
@@ -13,7 +15,6 @@ class ModController extends Controller
 {
     public function create_worker(Company $company)
     {
-
         $req = request()->validate([
             'login' => 'required|unique:users',
             'full_name' => 'required|min:3|max:30',
@@ -21,7 +22,7 @@ class ModController extends Controller
             'password' => 'required|min:6|max:256',
         ]);
 
-        $user = new User;
+        $user = new User();
         $user->login = $req['login'];
         $user->role = 'user';
         $user->password = Hash::make($req['password']);
@@ -36,7 +37,6 @@ class ModController extends Controller
 
     public function report_service(Company $company, Request $request)
     {
-
         $request->validate([
             'date' => 'required',
             'dop' => 'required|numeric',
@@ -86,12 +86,10 @@ class ModController extends Controller
         }
 
         return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
-
     }
 
     public function report_caffe(Company $company, Request $request)
     {
-
         $request->validate([
             'date' => 'required',
             'profit_nal' => 'required|numeric',
@@ -141,7 +139,6 @@ class ModController extends Controller
         }
 
         return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
-
     }
 
     public function report_xlsx_sales(Company $company)
