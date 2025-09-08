@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ModController extends Controller
 {
-    public function create_worker(Company $company)
+    public function createWorker(Company $company)
     {
         $req = request()->validate([
             'login' => 'required|unique:users',
@@ -35,7 +35,7 @@ class ModController extends Controller
         return redirect()->route('user.permission');
     }
 
-    public function report_service(Company $company, Request $request)
+    public function reportService(Company $company, Request $request)
     {
         $request->validate([
             'date' => 'required',
@@ -88,7 +88,7 @@ class ModController extends Controller
         return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
     }
 
-    public function report_caffe(Company $company, Request $request)
+    public function reportCaffe(Company $company, Request $request)
     {
         $request->validate([
             'date' => 'required',
@@ -141,7 +141,7 @@ class ModController extends Controller
         return redirect()->route('home.index')->with('success', 'Отчёт успешно загружен.');
     }
 
-    public function report_xlsx_sales(Company $company)
+    public function reportXlsxSales(Company $company)
     {
         // Получаем последний отчет report_xlsx для данной компании
         $lastReport = Report::where('com_id', $company->id)
@@ -171,8 +171,8 @@ class ModController extends Controller
         foreach ($inputData as $key => $value) {
             if (preg_match('/^worker_name_(\d+)$/', $key, $matches)) {
                 $workerNumber = $matches[1];
-                if (isset($inputData['worker_sold_'.$workerNumber])) {
-                    $workerSold = (int) $inputData['worker_sold_'.$workerNumber];
+                if (isset($inputData['worker_sold_' . $workerNumber])) {
+                    $workerSold = (int) $inputData['worker_sold_' . $workerNumber];
                     $workers[$workerNumber] = $workerSold;
                 }
             }
@@ -193,7 +193,7 @@ class ModController extends Controller
         $column = '';
         while ($number > 0) {
             $remainder = ($number - 1) % 26;
-            $column = chr(65 + $remainder).$column;
+            $column = chr(65 + $remainder) . $column;
             $number = (int) (($number - $remainder) / 26);
         }
 

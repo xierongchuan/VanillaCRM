@@ -221,15 +221,15 @@ Route::group(['middleware' => 'user'], function () {
     // MOD routes
     Route::post(
         '/company/{company}/user/create_worker',
-        [ModController::class, 'create_worker']
+        [ModController::class, 'createWorker']
     )->name('mod.create_worker');
     Route::post(
         '/company/{company}/report_service',
-        [ModController::class, 'report_service']
+        [ModController::class, 'reportService']
     )->name('mod.report_service');
     Route::post(
         '/company/{company}/report_caffe',
-        [ModController::class, 'report_caffe']
+        [ModController::class, 'reportCaffe']
     )->name('mod.report_caffe');
     Route::post(
         '/company/{company}/report_xlsx',
@@ -237,6 +237,6 @@ Route::group(['middleware' => 'user'], function () {
     )->name('mod.report_xlsx');
     Route::post(
         '/company/{company}/report_xlsx_sales',
-        [ModController::class, 'report_xlsx_sales']
+        [ModController::class, 'reportXlsxSales']
     )->name('mod.report_xlsx_sales');
 });
