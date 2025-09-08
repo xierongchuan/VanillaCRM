@@ -120,48 +120,48 @@ test('only one director can exist per company', function () {
     $response->assertSessionHasErrors();
 });
 
-test('user with accountant role can be created', function () {
+test('user with cashier role can be created', function () {
     $response = $this->actingAs($this->admin, 'web')->post(route(
         'company.user.store',
         ['company' => $this->company->id]
     ), [
-        'login' => 'accountant',
-        'full_name' => 'Accountant User',
+        'login' => 'cashier',
+        'full_name' => 'Cashier User',
         'department' => $this->department->id,
         'phone_number' => '+1234567890',
         'password' => 'password123',
-        'in_bot_role' => 'accountant',
+        'in_bot_role' => 'cashier',
     ]);
 
     $response->assertRedirect(route('company.list'));
     $this->assertDatabaseHas('users', [
-        'login' => 'accountant',
-        'in_bot_role' => 'accountant',
+        'login' => 'cashier',
+        'in_bot_role' => 'cashier',
     ]);
 });
 
-test('only one accountant can exist per company', function () {
-    // Create an accountant user
-    $accountant = User::factory()->create([
+test('only one cashier can exist per company', function () {
+    // Create an cashier user
+    $cashier = User::factory()->create([
         'role' => 'user',
         'com_id' => $this->company->id,
         'dep_id' => $this->department->id,
-        'login' => 'accountant1',
+        'login' => 'cashier1',
         'password' => bcrypt('password123'),
-        'in_bot_role' => 'accountant',
+        'in_bot_role' => 'cashier',
     ]);
 
-    // Try to create another accountant
+    // Try to create another cashier
     $response = $this->actingAs($this->admin, 'web')->post(route(
         'company.user.store',
         ['company' => $this->company->id]
     ), [
-        'login' => 'accountant2',
-        'full_name' => 'Second Accountant',
+        'login' => 'cashier2',
+        'full_name' => 'Second Cashier',
         'department' => $this->department->id,
         'phone_number' => '+1234567891',
         'password' => 'password123',
-        'in_bot_role' => 'accountant',
+        'in_bot_role' => 'cashier',
     ]);
 
     $response->assertRedirect();

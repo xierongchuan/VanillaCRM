@@ -34,10 +34,10 @@
                             <i class="bi-person me-2"></i>User
                         </label>
 
-                        <input type="radio" class="btn-check" name="in_bot_role" id="role_accountant" value="accountant"
+                        <input type="radio" class="btn-check" name="in_bot_role" id="role_cashier" value="cashier"
                             autocomplete="off">
-                        <label class="btn btn-lg btn-outline-secondary rounded-3 flex-fill py-3" for="role_accountant">
-                            <i class="bi-calculator me-2"></i>Accountant
+                        <label class="btn btn-lg btn-outline-secondary rounded-3 flex-fill py-3" for="role_cashier">
+                            <i class="bi-calculator me-2"></i>Cashier
                         </label>
 
                         <input type="radio" class="btn-check" name="in_bot_role" id="role_director" value="director"

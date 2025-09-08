@@ -57,7 +57,7 @@ class UserController extends Controller
             'in_bot_role' => [
                 'required',
                 'string',
-                'in:user,accountant,director'
+                'in:user,cashier,director'
             ],
         ]);
 
@@ -73,10 +73,10 @@ class UserController extends Controller
             }
         }
 
-        if ($req['in_bot_role'] == 'accountant') {
-            $isAlreadyHaveAccountant = !empty(User::where("com_id", $company->id)
-            ->where('in_bot_role', 'accountant')->first());
-            if ($isAlreadyHaveAccountant) {
+        if ($req['in_bot_role'] == 'cashier') {
+            $isAlreadyHaveCashier = !empty(User::where("com_id", $company->id)
+            ->where('in_bot_role', 'cashier')->first());
+            if ($isAlreadyHaveCashier) {
                 return redirect()->back()->withErrors('Уже есть в компании Бухгалтер');
             }
         }
@@ -113,7 +113,7 @@ class UserController extends Controller
             'in_bot_role' => [
                 'required',
                 'string',
-                'in:user,accountant,director'
+                'in:user,cashier,director'
             ],
         ];
 
@@ -140,10 +140,10 @@ class UserController extends Controller
                 }
             }
 
-            if ($req['in_bot_role'] == 'accountant') {
-                $isAlreadyHaveAccountant = !empty(User::where("com_id", $company->id)
-                ->where('in_bot_role', 'accountant')->first());
-                if ($isAlreadyHaveAccountant) {
+            if ($req['in_bot_role'] == 'cashier') {
+                $isAlreadyHaveCashier = !empty(User::where("com_id", $company->id)
+                ->where('in_bot_role', 'cashier')->first());
+                if ($isAlreadyHaveCashier) {
                     return redirect()->back()->withErrors('Уже есть в компании Бухгалтер');
                 }
             }

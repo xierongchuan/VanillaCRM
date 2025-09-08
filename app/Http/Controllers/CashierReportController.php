@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class AccountantReportController extends Controller
+class CashierReportController extends Controller
 {
     //
 }
