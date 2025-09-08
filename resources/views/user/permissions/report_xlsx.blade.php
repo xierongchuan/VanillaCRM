@@ -1,8 +1,11 @@
 @php
-    use App\Models\User;
+    use App\Services\PermissionService;
 
-    $workers = User::where('dep_id', \Illuminate\Support\Facades\Auth::user()->dep_id)->where('status', "active")->get();
-
+    $permissionService = new PermissionService();
+    $workers = $permissionService->getUsersWithPermission(
+        'sales_consultant',
+        \Illuminate\Support\Facades\Auth::user()->dep_id,
+    );
 @endphp
 
 <div class="row flex-column align-items-center">
