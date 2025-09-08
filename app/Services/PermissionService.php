@@ -16,7 +16,7 @@ class PermissionService
      * @param string $permissionValue
      * @return bool
      */
-    public function postHasPermission(Post $post, string $permissionValue): bool
+    public static function postHasPermission(Post $post, string $permissionValue): bool
     {
         // Получаем разрешение по его значению
         $permission = Permission::where('value', $permissionValue)->first();
@@ -39,7 +39,7 @@ class PermissionService
      * @param int $departmentId
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getUsersWithPermission(string $permissionValue, int $departmentId)
+    public static function getUsersWithPermission(string $permissionValue, int $departmentId)
     {
         // Получаем разрешение по его значению
         $permission = Permission::where('value', $permissionValue)->first();

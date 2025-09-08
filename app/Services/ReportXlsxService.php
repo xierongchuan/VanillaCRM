@@ -151,7 +151,7 @@ class ReportXlsxService
         string $fileName
     ): void {
         // Загрузка файла Excel
-        $sheet = IOFactory::load($request->file('file'));
+        $sheet = IOFactory::load((string) $request->file('file'));
         $wsheet = $sheet->getActiveSheet();
 
         // Перебор строк листа
@@ -435,7 +435,10 @@ class ReportXlsxService
             // Получение менеджера из отчёта
             $manager = User::where('id', $managerId)->first();
             // Получение сотрудников из департамента менеджера отчёта
-            $workers = User::where('dep_id', $manager->dep_id)->where('status', 'active')->get();
+            $workers = PermissionService::getUsersWithPermission(
+                'sales_consultant',
+                $manager->dep_id,
+            );
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
 

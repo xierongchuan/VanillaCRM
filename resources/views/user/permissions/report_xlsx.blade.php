@@ -1,8 +1,7 @@
 @php
     use App\Services\PermissionService;
 
-    $permissionService = new PermissionService();
-    $workers = $permissionService->getUsersWithPermission(
+    $workers = PermissionService::getUsersWithPermission(
         'sales_consultant',
         \Illuminate\Support\Facades\Auth::user()->dep_id,
     );
