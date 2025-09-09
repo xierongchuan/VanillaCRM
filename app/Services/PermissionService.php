@@ -51,7 +51,7 @@ class PermissionService
         // Получаем пользователей с активным статусом из указанного отдела,
         // у которых должность имеет указанное разрешение
         return \App\Models\User::where('status', 'active')
-            // ->where('dep_id', $departmentId)
+            ->where('dep_id', $departmentId)
             ->whereHas('post', function ($query) use ($permission) {
                 $query->whereRaw("JSON_SEARCH(permission, 'one', ?) IS NOT NULL", [$permission->id]);
             })
