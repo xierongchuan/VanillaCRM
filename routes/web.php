@@ -14,6 +14,7 @@ use App\Http\Controllers\ReportXlsxController;
 use App\Http\Controllers\StatController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CashierReportController; // Added this import
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -239,4 +240,10 @@ Route::group(['middleware' => 'user'], function () {
         '/company/{company}/report_xlsx_sales',
         [ModController::class, 'reportXlsxSales']
     )->name('mod.report_xlsx_sales');
+
+    // Cashier report route
+    Route::post(
+        '/company/{company}/report_cashier',
+        [CashierReportController::class, 'report']
+    )->name('mod.report_cashier');
 });
