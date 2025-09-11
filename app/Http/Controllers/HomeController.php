@@ -51,6 +51,8 @@ class HomeController extends Controller
         $last_repor_urls = $this->getLastReportUrls($companies);
         // Получение сервисных отчетов
         $srv_reps = $this->getServiceReports($companies);
+        // Получение отчётов кассира
+        $cashier_reps = $this->getCashierReports($companies);
         // Получение кафешных отчетов
         $caffe_reps = $this->getCaffeReports($companies);
         // Получение ежедневных отчётов
@@ -68,6 +70,7 @@ class HomeController extends Controller
                 'archiveReports',
                 'last_repor_urls',
                 'srv_reps',
+                'cashier_reps',
                 'caffe_reps',
                 'coms_data',
                 'sales_data',
@@ -116,11 +119,14 @@ class HomeController extends Controller
         // Получение сервисного отчета
         $srv_rep = $this->getServiceReport($company->id);
 
+        // Получение отчета кассира
+        $cashier_rep = $this->getCashierReport($company->id);
+
         // Получение кафешных отчетов
         $caffe_reps = $this->getCaffeReports(Company::all());
 
         // Возврат вида 'home' с данными
-        return view('home', compact('company', 'data', 'caffe_reps', 'srv_rep'));
+        return view('home', compact('company', 'data', 'caffe_reps', 'srv_rep', 'cashier_rep'));
     }
 
     private function getComsPerms(Collection $companies): array
@@ -167,6 +173,112 @@ class HomeController extends Controller
         }
 
         return $archiveReports;
+    }
+
+    // Метод для получения отчётов кассира
+    private function getCashierReports(Collection $companies): array
+    {
+        $cashier_reps = [];
+
+        // Обработка каждой компании
+        foreach ($companies as $company) {
+            // Получение полей компании
+            $company->fields = Field::where('com_id', $company->id)->get();
+            // Получение отчета кассира для компании
+            $cashier_reps[$company->id] = $this->getCashierReport($company->id);
+        }
+
+        return $cashier_reps;
+    }
+
+    // Метод для получения данных отчета кассира для конкретной компании
+    private function getCashierReport($companyId)
+    {
+        // Определение начальной и конечной даты текущего месяца
+        $startDate = now()->startOfMonth();
+        $endDate = now()->endOfMonth();
+
+        // Получение сумм значений за текущий месяц
+        $monthlySums = DB::table('reports')
+            ->select(
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.oborot_plus")) AS SIGNED)) as oborot_plus_sum'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.oborot_minus")) AS SIGNED)) as oborot_minus_sum'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.saldo")) AS SIGNED)) as saldo_sum'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.nalichka")) AS SIGNED)) as nalichka_sum'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.rs")) AS SIGNED)) as rs_sum'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.plastic")) AS SIGNED)) as plastic_sum'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.skidki")) AS SIGNED)) as skidki_sum')
+            )
+            ->where('for_date', '>=', $startDate)
+            ->where('for_date', '<=', $endDate)
+            ->where('type', 'report_cashier')
+            ->where('com_id', $companyId)
+            ->first();
+
+        // Получение последнего отчета
+        $latestReport = DB::table('reports')
+            ->where('type', 'report_cashier')
+            ->where('com_id', $companyId)
+            ->orderByDesc('for_date')
+            ->first();
+
+        // Если отчета нет, возвращаем данные по умолчанию
+        if (! $latestReport) {
+            return $this->defaultCashierReport();
+        }
+
+        $result = json_decode($latestReport->data);
+
+        // Формирование данных для отчета
+        return [
+            'link' => $result->link ?? '',
+            'oborot_plus' => $result->oborot_plus ?? 0,
+            'oborot_minus' => $result->oborot_minus ?? 0,
+            'saldo' => $result->saldo ?? 0,
+            'nalichka' => $result->nalichka ?? 0,
+            'rs' => $result->rs ?? 0,
+            'plastic' => $result->plastic ?? 0,
+            'skidki' => $result->skidki ?? 0,
+            // Суммы за месяц
+            'oborot_plus_sum' => $monthlySums->oborot_plus_sum ?? 0,
+            'oborot_minus_sum' => $monthlySums->oborot_minus_sum ?? 0,
+            'saldo_sum' => $monthlySums->saldo_sum ?? 0,
+            'nalichka_sum' => $monthlySums->nalichka_sum ?? 0,
+            'rs_sum' => $monthlySums->rs_sum ?? 0,
+            'plastic_sum' => $monthlySums->plastic_sum ?? 0,
+            'skidki_sum' => $monthlySums->skidki_sum ?? 0,
+            'for_date' => $latestReport->for_date,
+            'created_at' => $latestReport->created_at,
+            'updated_at' => $latestReport->updated_at,
+            'have' => true,
+        ];
+    }
+
+    // Метод для возвращения данных по умолчанию, если отчета нет
+    private function defaultCashierReport()
+    {
+        return [
+            'link' => '',
+            'oborot_plus' => 0,
+            'oborot_minus' => 0,
+            'saldo' => 0,
+            'nalichka' => 0,
+            'rs' => 0,
+            'plastic' => 0,
+            'skidki' => 0,
+            // Суммы за месяц (по умолчанию 0)
+            'oborot_plus_sum' => 0,
+            'oborot_minus_sum' => 0,
+            'saldo_sum' => 0,
+            'nalichka_sum' => 0,
+            'rs_sum' => 0,
+            'plastic_sum' => 0,
+            'skidki_sum' => 0,
+            'for_date' => null,
+            'created_at' => null,
+            'updated_at' => null,
+            'have' => null,
+        ];
     }
 
     // Метод для получения ежедневного отчёта

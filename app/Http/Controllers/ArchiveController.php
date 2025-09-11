@@ -108,7 +108,7 @@ class ArchiveController extends Controller
         return $groupedReports;
     }
 
-    public function remove_last_report(Company $company)
+    public function removeLastReport(Company $company)
     {
         // Получение последнего отчета report_xlsx для данной компании
         $lastReport = Report::where('com_id', $company->id)
@@ -440,6 +440,159 @@ class ArchiveController extends Controller
     {
         $latestReport = DB::table('reports')
             ->where('type', 'report_caffe')
+            ->where('com_id', $company->id)
+            ->orderBy('for_date', 'desc')
+            ->first();
+
+        if ($latestReport) {
+            DB::table('reports')->where('id', $latestReport->id)->delete();
+
+            return redirect()->route('home.index')->with('success', 'Последний отчёт успешно удалён!');
+        }
+
+        return redirect()->route('home.index')->withErrors('Небыло никакого отчёта!');
+    }
+
+    // Cashier archive method
+    public function cashierArchive(Company $company)
+    {
+        $monthsData = DB::table('reports')
+            ->select(
+                DB::raw('DISTINCT DATE_FORMAT(for_date, "%Y-%m-01") as month'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.oborot_plus")) AS SIGNED)) as total_sum')
+            )
+            ->where('type', 'report_cashier')
+            ->where('com_id', $company->id)
+            ->groupBy('month')
+            ->get();
+
+        $monthsDataArray = $monthsData->map(function ($item) {
+            return [
+                'date' => $item->month,
+                'total_sum' => $item->total_sum,
+            ];
+        })->toArray();
+
+        $reports = [];
+
+        foreach ($monthsDataArray as $item) {
+            $date = Carbon::parse($item['date']);
+            $formattedYear = $date->format('Y');
+            $formattedMonth = $this->getRussianMonthNameStr($date->format('m'));
+
+            $reports[$formattedYear . ' ' . $formattedMonth] = [
+                $item['date'],
+                (int) $item['total_sum'],
+            ];
+        }
+
+        return view('company.cashier_archive', compact('company', 'reports'));
+    }
+
+    public function getCashierReportXlsx(Company $company, string $date)
+    {
+        $fields = Field::where('com_id', $company->id)->get();
+
+        $startDate = Carbon::parse($date)->startOfMonth();
+        $endDate = Carbon::parse($date)->endOfMonth();
+
+        $reports = DB::table('reports')
+            ->select('com_id', 'for_date', 'type', 'data')
+            ->where('for_date', '>=', $startDate)
+            ->where('for_date', '<=', $endDate)
+            ->where('type', 'report_cashier')
+            ->where('com_id', $company->id)
+            ->orderBy('for_date')
+            ->get();
+
+        // Create a new spreadsheet
+        $spreadsheet = new Spreadsheet();
+
+        // Set the active sheet
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getColumnDimension('A')->setWidth(13);
+        $sheet->getColumnDimension('B')->setWidth(13);
+        $sheet->getColumnDimension('C')->setWidth(13);
+        $sheet->getColumnDimension('D')->setWidth(13);
+        $sheet->getColumnDimension('E')->setWidth(13);
+        $sheet->getColumnDimension('F')->setWidth(13);
+        $sheet->getColumnDimension('G')->setWidth(13);
+        $sheet->getColumnDimension('H')->setWidth(13);
+        $sheet->getColumnDimension('I')->setWidth(13);
+        $sheet->getColumnDimension('J')->setWidth(13);
+
+        $sheet->setCellValue('A1', 'Дата');
+        $sheet->setCellValue('B1', 'Оборот Плюс');
+        $sheet->setCellValue('C1', 'Оборот Минус');
+        $sheet->setCellValue('D1', 'Сальдо');
+        $sheet->setCellValue('E1', 'Наличка');
+        $sheet->setCellValue('F1', 'Р/С');
+        $sheet->setCellValue('G1', 'Пластик');
+        $sheet->setCellValue('H1', 'Скидки');
+        $sheet->setCellValue('I1', 'Ссылка на отчёт');
+
+        $i = 2;
+        foreach ($reports as $key => $value) {
+            $val = (object) json_decode($value->data);
+
+            $sheet->setCellValue('A' . $i, $value->for_date);
+            $sheet->setCellValue('B' . $i, $val->oborot_plus ?? 0);
+            $sheet->setCellValue('C' . $i, $val->oborot_minus ?? 0);
+            $sheet->setCellValue('D' . $i, $val->saldo ?? 0);
+            $sheet->setCellValue('E' . $i, $val->nalichka ?? 0);
+            $sheet->setCellValue('F' . $i, $val->rs ?? 0);
+            $sheet->setCellValue('G' . $i, $val->plastic ?? 0);
+            $sheet->setCellValue('H' . $i, $val->skidki ?? 0);
+
+            // Add hyperlink to report if link exists
+            if (!empty($val->link)) {
+                $sheet->getCell('I' . $i)->setValue('Открыть отчёт');
+                $sheet->getCell('I' . $i)->setHyperlink(new Hyperlink($val->link));
+                $sheet->getStyle('I' . $i)->getFont()->getColor()->setARGB(Color::COLOR_BLUE);
+                $sheet->getStyle('I' . $i)->getFont()->setUnderline(true);
+            }
+
+            $i++;
+        }
+
+        $sheet->setCellValue('A33', 'Всего за мес');
+        $sheet->setCellValue('B33', '=SUM(B2:B32)');
+        $sheet->setCellValue('C33', '=SUM(C2:C32)');
+        $sheet->setCellValue('D33', '=SUM(D2:D32)');
+        $sheet->setCellValue('E33', '=SUM(E2:E32)');
+        $sheet->setCellValue('F33', '=SUM(F2:F32)');
+        $sheet->setCellValue('G33', '=SUM(G2:G32)');
+        $sheet->setCellValue('H33', '=SUM(H2:H32)');
+
+        // Add links
+        $j = 35;
+        foreach ($fields as $field) {
+            // Set text in cell
+            $sheet->setCellValue("A$j", $field->title);
+
+            // Create hyperlink
+            $sheet->getCell("A$j")->setHyperlink(new Hyperlink($field->link));
+
+            // Set text color
+            $sheet->getStyle("A$j")->getFont()->getColor()->setARGB(Color::COLOR_BLUE);
+
+            $j++;
+        }
+
+        $fileName = $company->name . ' Cashier Report.xlsx';
+
+        // Save the spreadsheet
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save(storage_path('app/public/reports_archive/' . $fileName), 1);
+
+        return response()->download(storage_path('app/public/reports_archive/' . $fileName));
+    }
+
+    public function deleteLastCashierReport(Company $company)
+    {
+        $latestReport = DB::table('reports')
+            ->where('type', 'report_cashier')
             ->where('com_id', $company->id)
             ->orderBy('for_date', 'desc')
             ->first();

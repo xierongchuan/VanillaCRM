@@ -199,8 +199,16 @@ Route::group(['middleware' => 'admin'], function () {
         [ArchiveController::class, 'getCaffeReportXlsx']
     )->name('company.caffe.archive');
     Route::get(
+        '/company/{company}/cashier/archive',
+        [ArchiveController::class, 'cashierArchive']
+    )->name('company.cashier.archive.list');
+    Route::get(
+        '/company/{company}/cashier/archive/{date}',
+        [ArchiveController::class, 'getCashierReportXlsx']
+    )->name('company.cashier.archive');
+    Route::get(
         '/company/{company}/archive/remove_last_report',
-        [ArchiveController::class, 'remove_last_report']
+        [ArchiveController::class, 'removeLastReport']
     )->name('company.remove_last_report');
     Route::get(
         '/company/{company}/service/remove_last_report',
@@ -210,6 +218,10 @@ Route::group(['middleware' => 'admin'], function () {
         '/company/{company}/caffe/remove_last_report',
         [ArchiveController::class, 'deleteLastCaffeReport']
     )->name('company.caffe.remove_last_report');
+    Route::get(
+        '/company/{company}/cashier/remove_last_report',
+        [ArchiveController::class, 'deleteLastCashierReport']
+    )->name('company.cashier.remove_last_report');
 
     // Statistics
     Route::get('/stat', [StatController::class, 'index'])->name('stat.index');

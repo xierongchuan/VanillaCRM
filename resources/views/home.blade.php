@@ -890,6 +890,129 @@
 
                             </div>
                         @endif
+
+                        @if (in_array('report_cashier', $coms_perms[$company->id]))
+                            {{-- Отчёт кассир --}}
+                            <div id="cashier_perm_panel_{{ $company->id }}" class="collapse perm-panel w-100">
+                                <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        <h2>Отчёт Кассир</h2>
+                                    </div>
+                                </div>
+
+                                <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        @if (isset($cashier_reps[$company->id]['updated_at']) && $cashier_reps[$company->id]['updated_at'])
+                                            <h4>Дата загрузки отчёта:
+                                            </h4>
+                                            <div class="mx-sm-1"></div>
+                                        @endif
+
+                                        <h4>{{ $cashier_reps[$company->id]['updated_at'] ?? 'Отчёта нету.' }}</h4>
+
+                                        @if (isset($cashier_reps[$company->id]['have']) && $cashier_reps[$company->id]['have'])
+                                            <div class="mx-1"></div>
+                                            <h4> | На дату: </h4>
+                                            <div class="mx-1"></div>
+
+                                            <h4>{{ $cashier_reps[$company->id]['for_date'] }}</h4>
+                                        @endif
+                                        <div class="mx-1"></div>
+
+                                        <a href="{{ route('company.cashier.archive.list', compact('company')) }}"
+                                            class="lead">Архив</a>
+                                    </div>
+                                </div>
+
+                                <div class="bg-body-tertiary rounded p-3 mb-2">
+                                    <table class="table mb-1 overflow-hidden">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Параметр</th>
+                                                <th scope="col">Значение</th>
+                                                <th scope="col">Сумма за месяц</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Ссылка на отчёт</td>
+                                                <td colspan="2">
+                                                    @if (!empty($cashier_reps[$company->id]['link']))
+                                                        <a href="{{ $cashier_reps[$company->id]['link'] }}"
+                                                            target="_blank">Открыть отчёт</a>
+                                                    @else
+                                                        Нет ссылки
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Оборот Плюс</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['oborot_plus'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['oborot_plus_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Оборот Минус</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['oborot_minus'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['oborot_minus_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Сальдо</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['saldo'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['saldo_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Наличка</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['nalichka'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['nalichka_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Р/С</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['rs'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['rs_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Пластик</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['plastic'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['plastic_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Скидки</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['skidki'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format($cashier_reps[$company->id]['skidki_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        @endif
                     </span>
                 </div>
             </div>
@@ -1627,8 +1750,7 @@
                                     <td class="format-full text-nowrap overflow-hidden text-end">
                                         {{ $caffe_reps[$company->id]['safe_bez_nal'] }}
                                     </td>
-                                    <td
-                                        class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
+                                    <td class="format-full text-nowrap overflow-hidden text-end border-3 border-white">
                                         {{ $caffe_reps[$company->id]['safe_SUM'] }}
                                     </td>
                                 </tr>
@@ -1640,6 +1762,129 @@
                     </div>
 
 
+                </div>
+            </div>
+
+        @endif
+
+        @if (in_array('report_cashier', $data->perm))
+
+            <div class="row flex-column align-items-center">
+                <div class="col-lg-9 bg-body-secondary rounded my-2 p-2">
+                    <div class="w-100">
+                        <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
+                            <div class="d-flex flex-wrap justify-content-center">
+                                <h2>Отчёт Кассир</h2>
+                            </div>
+                        </div>
+
+                        <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                            <div class="d-flex flex-wrap justify-content-center">
+                                @if ($cashier_rep['updated_at'])
+                                    <h4>Дата загрузки отчёта:
+                                    </h4>
+                                    <div class="mx-sm-1"></div>
+                                @endif
+
+                                <h4>{{ $cashier_rep['updated_at'] ?? 'Отчёта нету.' }}</h4>
+
+                                @if ($cashier_rep['have'])
+                                    <div class="mx-1"></div>
+                                    <h4> | На дату: </h4>
+                                    <div class="mx-1"></div>
+
+                                    <h4>{{ $cashier_rep['for_date'] }}</h4>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="bg-body-tertiary rounded p-3 mb-2">
+                            <table class="table mb-1 overflow-hidden">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Параметр</th>
+                                        <th scope="col">Значение</th>
+                                        <th scope="col">Сумма за месяц</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ссылка на отчёт</td>
+                                        <td colspan="2">
+                                            @if (!empty($cashier_rep['link']))
+                                                <a href="{{ $cashier_rep['link'] }}" target="_blank">Открыть отчёт</a>
+                                            @else
+                                                Нет ссылки
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Оборот Плюс</td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['oborot_plus'], 0, '', ' ') }}
+                                        </td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['oborot_plus_sum'], 0, '', ' ') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Оборот Минус</td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['oborot_minus'], 0, '', ' ') }}
+                                        </td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['oborot_minus_sum'], 0, '', ' ') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Сальдо</td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['saldo'], 0, '', ' ') }}
+                                        </td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['saldo_sum'], 0, '', ' ') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Наличка</td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['nalichka'], 0, '', ' ') }}
+                                        </td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['nalichka_sum'], 0, '', ' ') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Р/С</td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['rs'], 0, '', ' ') }}
+                                        </td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['rs_sum'], 0, '', ' ') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Пластик</td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['plastic'], 0, '', ' ') }}
+                                        </td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['plastic_sum'], 0, '', ' ') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Скидки</td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['skidki'], 0, '', ' ') }}
+                                        </td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format($cashier_rep['skidki_sum'], 0, '', ' ') }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
