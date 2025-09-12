@@ -903,7 +903,8 @@
                                 <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
                                     <div class="d-flex flex-wrap justify-content-center">
                                         @if (isset($cashier_reps[$company->id]['updated_at']) && $cashier_reps[$company->id]['updated_at'])
-                                            <h4>Дата загрузки отчёта:
+                                            <h4>Дата загрузки <a
+                                                    href="{{ route('company.cashier.archive', [$company, $cashier_reps[$company->id]['updated_at']]) }}">отчёта</a>:
                                             </h4>
                                             <div class="mx-sm-1"></div>
                                         @endif
