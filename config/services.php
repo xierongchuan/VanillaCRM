@@ -1,7 +1,8 @@
 <?php
 
-return [
+declare(strict_types=1);
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -31,4 +32,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'vanillaflow' => [
+        'api_url' => env('VANILLAFLOW_API_URL', 'http://localhost:8003/api/v1'),
+        'api_token' => env('VANILLAFLOW_API_TOKEN'),
+    ],
 ];

@@ -14,6 +14,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Run the expense request seeder
+        $this->call(ExpenseRequestSeeder::class);
+        
         User::factory()->create([
             'login' => 'admin',
             'role' => 'admin',

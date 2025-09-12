@@ -15,6 +15,7 @@ use App\Http\Controllers\StatController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CashierReportController; // Added this import
+use App\Http\Controllers\ExpenseRequestController; // Added this import
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -222,6 +223,31 @@ Route::group(['middleware' => 'admin'], function () {
         '/company/{company}/cashier/remove_last_report',
         [ArchiveController::class, 'deleteLastCashierReport']
     )->name('company.cashier.remove_last_report');
+
+    // Expense requests dashboard
+    Route::get('/company/{company}/expense-requests', [ExpenseRequestController::class, 'index'])
+        ->name('company.expense.requests');
+
+    Route::post('/company/{company}/expense-requests/token', [ExpenseRequestController::class, 'saveToken'])
+        ->name('company.expense.saveToken');
+
+    Route::get('/company/{company}/expenses/pending', [ExpenseRequestController::class, 'getPendingRequests'])
+        ->name('company.expenses.pending');
+
+    Route::get('/company/{company}/expenses/approved', [ExpenseRequestController::class, 'getApprovedRequests'])
+        ->name('company.expenses.approved');
+
+    Route::get('/company/{company}/expenses/declined', [ExpenseRequestController::class, 'getDeclinedRequests'])
+        ->name('company.expenses.declined');
+
+    Route::get('/company/{company}/expenses/issued', [ExpenseRequestController::class, 'getIssuedRequests'])
+        ->name('company.expenses.issued');
+
+    Route::get('/company/{company}/expenses/{requestId}', [ExpenseRequestController::class, 'getRequestDetails'])
+        ->name('company.expenses.details');
+
+    Route::get('/company/{company}/expenses/export/{status}', [ExpenseRequestController::class, 'exportExpenses'])
+        ->name('company.expenses.export');
 
     // Statistics
     Route::get('/stat', [StatController::class, 'index'])->name('stat.index');
