@@ -5,8 +5,6 @@
     <div class="container-fluid">
         <h1 class="text-center my-3">Панель Заявок на Расходы</h1>
 
-        <!-- Removed company selection and token input -->
-
         <!-- Tabs navigation -->
         <ul class="nav nav-tabs" id="expenseTabs" role="tablist">
             <li class="nav-item" role="presentation">
