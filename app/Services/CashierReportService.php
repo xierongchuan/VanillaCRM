@@ -21,7 +21,7 @@ class CashierReportService
     {
         $request->validate([
             'date' => 'required',
-            'link' => 'required|url',
+            'file' => 'required|file|max:51200',
             'oborot_plus' => 'nullable|numeric',
             'oborot_minus' => 'nullable|numeric',
             'saldo' => 'nullable|numeric',
@@ -31,8 +31,11 @@ class CashierReportService
             'skidki' => 'nullable|numeric',
         ]);
 
+        // Save the uploaded file
+        $fileName = $this->saveFile($request);
+
         $data = [
-            'link' => $request->link,
+            'file' => $fileName,
             'oborot_plus' => $request->oborot_plus ? (int) $request->oborot_plus : null,
             'oborot_minus' => $request->oborot_minus ? (int) $request->oborot_minus : null,
             'saldo' => $request->saldo ? (int) $request->saldo : null,
@@ -68,5 +71,20 @@ class CashierReportService
         }
 
         return $reportModel;
+    }
+
+    /**
+     * Save the uploaded file to storage
+     *
+     * @param Request $request
+     * @return string
+     */
+    private function saveFile(Request $request): string
+    {
+        $file = $request->file('file');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->storeAs('public/cashier_reports', $fileName);
+
+        return $fileName;
     }
 }

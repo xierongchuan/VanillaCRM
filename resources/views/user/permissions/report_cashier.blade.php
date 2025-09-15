@@ -18,10 +18,11 @@
             </div>
 
             <div class="form-group mb-2">
-                <label for="link">Ссылка на отчёт: </label>
-                <input type="text" class="form-control" name="link" placeholder="https://example.com" required>
+                <label for="file">Файл отчёта: </label>
+                <input type="file" class="form-control" name="file" required>
             </div>
 
+  
             <div class="form-group mb-2">
                 <label for="oborot_nal">Оборот:</label>
                 <div class="input-group mb-1">
