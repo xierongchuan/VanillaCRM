@@ -228,9 +228,6 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/company/{company}/expense-requests', [ExpenseRequestController::class, 'index'])
         ->name('company.expense.requests');
 
-    Route::post('/company/{company}/expense-requests/token', [ExpenseRequestController::class, 'saveToken'])
-        ->name('company.expense.saveToken');
-
     Route::get('/company/{company}/expenses/pending', [ExpenseRequestController::class, 'getPendingRequests'])
         ->name('company.expenses.pending');
 

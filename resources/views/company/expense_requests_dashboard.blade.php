@@ -516,7 +516,7 @@
                 if (amount === undefined || amount === null) return 'N/A';
                 return new Intl.NumberFormat('ru-RU', {
                     style: 'currency',
-                    currency: 'RUB',
+                    currency: 'UZS',
                     minimumFractionDigits: 2
                 }).format(amount);
             }
