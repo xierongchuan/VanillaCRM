@@ -1012,6 +1012,13 @@
                                         </tbody>
                                     </table>
                                 </div>
+
+                                <div class="bg-body-tertiary mt-2 rounded p-3 mb-2">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        <a href="{{ route('company.expense.requests', compact('company')) }}"
+                                            class="btn btn-primary">История запросов</a>
+                                    </div>
+                                </div>
                             </div>
                         @endif
                     </span>
