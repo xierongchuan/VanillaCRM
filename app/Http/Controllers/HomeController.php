@@ -358,11 +358,9 @@ class HomeController extends Controller
                 if (isset($data['File'])) {
                     // Получение имени файла из данных отчета
                     $fileName = (string) $data['File'];
-                    $filePath = storage_path('app/public/tmp/' . $fileName);
-                    $fileUrl = 'storage/app/public' . str_replace(storage_path('app/public'), '', $filePath);
 
                     // Формирование URL
-                    $last_report_urls[$company->id] = asset($fileUrl);
+                    $last_report_urls[$company->id] = asset('storage/tmp/' . $fileName);
                 }
             }
         }
