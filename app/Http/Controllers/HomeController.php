@@ -231,7 +231,7 @@ class HomeController extends Controller
 
         // Формирование данных для отчета
         return [
-            'link' => $result->link ?? '',
+            'link' => asset('storage/cashier_reports/' . $result->file) ?? '',
             'oborot_plus' => $result->oborot_plus ?? 0,
             'oborot_minus' => $result->oborot_minus ?? 0,
             'saldo' => $result->saldo ?? 0,
