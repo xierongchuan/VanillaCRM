@@ -952,11 +952,12 @@
 
                                                 <td class="text-end">
                                                     <div
-                                                        class="d-flex gap-3 justify-content-end flex-column flex-md-row align-items-end">
+                                                        class="d-flex justify-content-end flex-column flex-md-row align-items-end gap-1 gap-md-3">
                                                         <div class="text-nowrap text-success">
                                                             {{ number_format($cashier_reps[$company->id]['oborot_plus'], 0, '', ' ') }}
                                                         </div>
-                                                        <div class="text-nowrap">|</div>
+                                                        <div class="text-nowrap d-none d-md-block">|</div>
+
                                                         <div class="text-nowrap text-danger">
                                                             {{ number_format($cashier_reps[$company->id]['oborot_minus'], 0, '', ' ') }}
                                                         </div>
@@ -965,18 +966,18 @@
 
                                                 <td class="text-end">
                                                     <div
-                                                        class="d-flex gap-3 justify-content-end flex-column flex-md-row align-items-end">
+                                                        class="d-flex justify-content-end flex-column flex-md-row align-items-end gap-1 gap-md-3">
                                                         <div class="text-nowrap text-success">
                                                             {{ number_format($cashier_reps[$company->id]['oborot_plus_sum'], 0, '', ' ') }}
                                                         </div>
-                                                        <div class="text-nowrap">|</div>
+                                                        <div class="text-nowrap d-none d-md-block">|</div>
+
                                                         <div class="text-nowrap text-danger">
                                                             {{ number_format($cashier_reps[$company->id]['oborot_minus_sum'], 0, '', ' ') }}
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
-
 
                                             <tr>
                                                 <td>Сальдо</td>
@@ -1841,21 +1842,33 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Оборот Плюс</td>
-                                        <td class="text-nowrap overflow-hidden text-end">
-                                            {{ number_format($cashier_rep['oborot_plus'], 0, '', ' ') }}
+                                        <td>Оборот</td>
+
+                                        <td class="text-end">
+                                            <div
+                                                class="d-flex justify-content-end flex-column flex-md-row align-items-end gap-1 gap-md-3">
+                                                <div class="text-nowrap text-success">
+                                                    {{ number_format($cashier_rep['oborot_plus'], 0, '', ' ') }}
+                                                </div>
+                                                <div class="text-nowrap d-none d-md-block">|</div>
+                                                <div class="text-nowrap text-danger">
+                                                    {{ number_format($cashier_rep['oborot_minus'], 0, '', ' ') }}
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td class="text-nowrap overflow-hidden text-end">
-                                            {{ number_format($cashier_rep['oborot_plus_sum'], 0, '', ' ') }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Оборот Минус</td>
-                                        <td class="text-nowrap overflow-hidden text-end">
-                                            {{ number_format($cashier_rep['oborot_minus'], 0, '', ' ') }}
-                                        </td>
-                                        <td class="text-nowrap overflow-hidden text-end">
-                                            {{ number_format($cashier_rep['oborot_minus_sum'], 0, '', ' ') }}
+
+                                        <td class="text-end">
+                                            <div
+                                                class="d-flex justify-content-end flex-column flex-md-row align-items-end gap-1 gap-md-3">
+                                                <div class="text-nowrap text-success">
+                                                    {{ number_format($cashier_rep['oborot_plus_sum'], 0, '', ' ') }}
+                                                </div>
+                                                <div class="text-nowrap d-none d-md-block">|</div>
+
+                                                <div class="text-nowrap text-danger">
+                                                    {{ number_format($cashier_rep['oborot_minus_sum'], 0, '', ' ') }}
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
