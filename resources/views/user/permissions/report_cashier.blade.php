@@ -22,7 +22,7 @@
                 <input type="file" class="form-control" name="file" required>
             </div>
 
-  
+
             <div class="form-group mb-2">
                 <label for="oborot_nal">Оборот:</label>
                 <div class="input-group mb-1">
@@ -33,10 +33,13 @@
                 </div>
             </div>
 
+            <!-- Вывод суммы -->
             <div class="form-group mb-2">
-                <label for="saldo">Сальдо:</label>
-                <input type="number" class="form-control" name="saldo" id="saldo" placeholder="Сальдо">
+                <label for="total2">Сальдо:</label>
+                <p id="total2" class="form-control-static">0.00</p>
             </div>
+
+            <hr>
 
             <div class="form-group mb-2">
                 <label for="nalichka">Наличка:</label>
@@ -58,9 +61,50 @@
                 <input type="number" class="form-control" name="skidki" id="skidki" placeholder="Скидки">
             </div>
 
+            <!-- Вывод суммы -->
+            <div class="form-group mb-2">
+                <label for="total">Итого:</label>
+                <p id="total" class="form-control-static">0.00</p>
+            </div>
+
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary">Создать</button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    // Обработчик изменения значений в инпутах
+    document.addEventListener("input", function() {
+        var oborot_plus = parseFloat(document.getElementById("oborot_plus").value) || 0;
+        var oborot_minus = parseFloat(document.getElementById("oborot_minus").value) || 0;
+
+        // Считаем сумму
+        var totalValue2 = oborot_plus - oborot_minus;
+
+        // Записываем сумму в элемент "Итого"
+        document.getElementById("total2").textContent = totalValue2
+            .toLocaleString("ru-RU", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+
+        // Получаем значения из инпутов
+        var nalichka = parseFloat(document.getElementById("nalichka").value) || 0;
+        var rs = parseFloat(document.getElementById("rs").value) || 0;
+        var plastic = parseFloat(document.getElementById("plastic").value) || 0;
+        var skidki = parseFloat(document.getElementById("skidki").value) || 0;
+
+        // Считаем сумму
+        var totalValue = nalichka + rs + plastic + skidki;
+
+        // Записываем сумму в элемент "Итого"
+        document.getElementById("total").textContent = totalValue
+            .toLocaleString("ru-RU", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });;
+    });
+</script>
