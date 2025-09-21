@@ -14,8 +14,8 @@ use App\Http\Controllers\ReportXlsxController;
 use App\Http\Controllers\StatController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\CashierReportController; // Added this import
-use App\Http\Controllers\ExpenseRequestController; // Added this import
+use App\Http\Controllers\CashierReportController;
+use App\Http\Controllers\ExpenseRequestController;
 use Illuminate\Support\Facades\Route;
 
 /*
