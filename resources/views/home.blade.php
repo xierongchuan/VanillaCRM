@@ -926,14 +926,12 @@
                                 </div>
 
                                 <div class="bg-body-tertiary rounded p-3 mb-2">
-                                    <table class="table mb-1 overflow-hidden">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Параметр</th>
-                                                <th scope="col">Значение</th>
-                                                <th scope="col">Сумма за месяц</th>
-                                            </tr>
-                                        </thead>
+                                    <table class="table mb-3 overflow-hidden">
+                                        <tr>
+                                            <th scope="col" style="width: 33.33%;">Параметр</th>
+                                            <th scope="col" style="width: 33.33%;">Значение</th>
+                                            <th scope="col" style="width: 33.33%;">Сумма за месяц</th>
+                                        </tr>
                                         <tbody>
                                             <tr>
                                                 <td>Ссылка на отчёт</td>
@@ -988,6 +986,16 @@
                                                     {{ number_format($cashier_reps[$company->id]['saldo_sum'], 0, '', ' ') }}
                                                 </td>
                                             </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table mb-1 overflow-hidden">
+                                        <colgroup>
+                                            <col style="width: 33.33%;">
+                                            <col style="width: 33.33%;">
+                                            <col style="width: 33.33%;">
+                                        </colgroup>
+                                        <tbody>
                                             <tr>
                                                 <td>Наличка</td>
                                                 <td class="text-nowrap overflow-hidden text-end">
@@ -1822,12 +1830,12 @@
                         </div>
 
                         <div class="bg-body-tertiary rounded p-3 mb-2">
-                            <table class="table mb-1 overflow-hidden">
+                            <table class="table mb-3 overflow-hidden">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Параметр</th>
-                                        <th scope="col">Значение</th>
-                                        <th scope="col">Сумма за месяц</th>
+                                        <th scope="col" style="width: 33.33%;">Параметр</th>
+                                        <th scope="col" style="width: 33.33%;">Значение</th>
+                                        <th scope="col" style="width: 33.33%;">Сумма за месяц</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1880,6 +1888,16 @@
                                             {{ number_format($cashier_rep['saldo_sum'], 0, '', ' ') }}
                                         </td>
                                     </tr>
+                                </tbody>
+                            </table>
+
+                            <table class="table mb-1 overflow-hidden">
+                                <colgroup>
+                                    <col style="width: 33.33%;">
+                                    <col style="width: 33.33%;">
+                                    <col style="width: 33.33%;">
+                                </colgroup>
+                                <tbody>
                                     <tr>
                                         <td>Наличка</td>
                                         <td class="text-nowrap overflow-hidden text-end">
