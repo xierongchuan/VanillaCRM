@@ -91,8 +91,10 @@ class ArchiveController extends Controller
             // Извлекаем суммы, количество и фактические значения из данных
             $url = '/storage/app/public/tmp/' . $reportData['File'];
             $sum = isset($reportData[ReportXlsxRule::SUM_5]) ? $reportData[ReportXlsxRule::SUM_5] : 0;
-            $quantity = isset($reportData[ReportXlsxRule::TOTAL_QTY_5]) ? $reportData[ReportXlsxRule::TOTAL_QTY_5] : 0;
-            $fact = isset($reportData[ReportXlsxRule::ACTUAL_QUANTITY]) ? $reportData[ReportXlsxRule::ACTUAL_QUANTITY] : 0;
+            $quantity
+                = isset($reportData[ReportXlsxRule::TOTAL_QTY_5]) ? $reportData[ReportXlsxRule::TOTAL_QTY_5] : 0;
+            $fact
+                = isset($reportData[ReportXlsxRule::ACTUAL_QUANTITY]) ? $reportData[ReportXlsxRule::ACTUAL_QUANTITY] : 0;
 
             // Добавляем отчет и извлеченные данные в соответствующий месяц
             $groupedReports[$month][] = [
