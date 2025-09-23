@@ -68,12 +68,31 @@ services:
     container_name: vanillacrm_nginx
     restart: on-failure:3
     ports:
-      - "80:80"   # VanillaCRM
+      - "80:80"
+      - "443:443"
     volumes:
       - ./:/var/www/vanillacrm_src:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     depends_on:
       - vanillacrm_src
+  
+  # Certbot для VanillaCRM
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    restart: unless-stopped
+    # command: certonly --webroot --webroot-path=/var/www/certbot --email yusupov-office@mail.ru --agree-tos --no-eff-email -d andcrm.ru
+    command: 
+      - /bin/sh
+      - -c
+      - "trap exit TERM INT; certbot renew && nginx -s reload; while :; do sleep 3600 & wait $${!}; done"
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - nginx
 
 volumes:
   mariadb_data:
