@@ -18,6 +18,16 @@ docker-compose up -d --build
 ```sh
 npm run build
 ```
+### Generate SSL
+```sh
+mkdir -p certbot/conf certbot/www
+
+docker-compose up -d nginx
+
+docker-compose run --rm certbot
+
+docker-compose down
+```
 
 ### Requires 
 * php8.4
