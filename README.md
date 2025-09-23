@@ -2,7 +2,7 @@
 
 ### Install Env
 ```sh
-composer i
+composer install --optimize-autoloader --no-dev --no-scripts
 npm i
 ```
 
@@ -11,7 +11,7 @@ npm i
 composer run dev
 ```
 ```sh
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 ### Build Frontend

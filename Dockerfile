@@ -10,38 +10,50 @@ RUN apt-get update -y \
   default-libmysqlclient-dev mariadb-client \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 2) PHP-расширения: MySQL (MariaDB), GD и т.д.
+# 2.1) Установка LTS-версии Node.js вместо latest (рекомендуется для Laravel)
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+  && apt-get install -y nodejs \
+  && npm install -g vite@latest \
+  && npm install -g laravel-vite-plugin@latest
+
+# 2.2) Исправление проблем с Vite и Node.js 24
+RUN npm install -g npm@latest \
+  && npm config set fund false \
+  && npm config set audit false \
+  && npm cache clean --force
+
+# 3) PHP-расширения: MySQL (MariaDB), GD и т.д.
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
   && docker-php-ext-install -j$(nproc) \
   mbstring exif pcntl bcmath zip \
   pdo_mysql gd \
   && docker-php-ext-install mysqli
 
-# 3) Redis через PECL
+# 4) Redis через PECL
 RUN pecl install redis-6.2.0 \
   && docker-php-ext-enable redis
 
-# 4) Composer
+# 5) Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 5) Установка зависимостей приложения
+# 6) Установка зависимостей приложения
 WORKDIR /var/www/vanillacrm_src
 COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-dev --no-scripts
 
-# 6) Копирование кодовой базы в контейнер
+# 7) Копирование кодовой базы в контейнер
 COPY . .
 
-# 7) Создание нужных директорий и установка прав
+# 8) Создание нужных директорий и установка прав
 RUN mkdir -p storage/logs storage/framework/sessions bootstrap/cache \
   && chown -R www-data:www-data storage bootstrap/cache \
   && chmod -R 775 storage bootstrap/cache
 
-# 8) Линковка директорий
+# 9) Линковка директорий
 RUN php artisan storage:link
 
-# 9) Документирование порта PHP-FPM
+# 10) Документирование порта PHP-FPM
 EXPOSE 9000
 
-# 10) Ждём запуска MariaDB и выполняем миграции, затем старт PHP-FPM
+# 11) Ждём запуска MariaDB и выполняем миграции, затем старт PHP-FPM
 CMD ["bash", "-lc", "/wait-for-it.sh mariadb:3306 --timeout=30 --strict -- php artisan migrate && exec php-fpm"]
