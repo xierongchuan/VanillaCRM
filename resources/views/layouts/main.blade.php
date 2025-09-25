@@ -41,12 +41,58 @@
         }
 
         .bg-body-test {
-            background: repeating-linear-gradient(45deg,
-                    rgb(109, 109, 0),
-                    rgb(109, 109, 0) 10px,
-                    black 10px,
-                    black 20px);
-        }
+  /* цвета можно подменить */
+  --accent: #6d6d00;
+  --dark: #000;
+
+  position: relative;      /* нужно для абсолютных псевдоэлементов */
+  color: #ffffff;
+  font-weight: 700;
+  /* text-align: center; */
+
+  /* основной повторяющийся рисунок (как у тебя, но с чуть более ровными стопами) */
+  background: repeating-linear-gradient(45deg,
+    var(--accent) 0 12px,
+    var(--dark) 12px 24px);
+  
+  /* тень не меняет размер элемента — можно оставить для глубины */
+  box-shadow: 0 6px 16px rgba(0,0,0,0.32);
+}
+
+/* мягкое смягчение полос — не увеличивает элемент, не использует масштаб */
+.bg-body-test::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg,
+    var(--accent) 0 12px,
+    var(--dark) 12px 24px);
+  filter: blur(3px) saturate(0.95);
+  opacity: 0.9;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* затемняющий оверлей для гарантии контраста текста */
+.bg-body-test::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(0,0,0,0.12),
+    rgba(0,0,0,0.44));
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* контент поверх фоновых слоёв — не меняет размеров контейнера */
+.bg-body-test > * {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+  line-height: 1.05;
+}
+
 
         /* Custom column sizes */
         .col-1-5 {
