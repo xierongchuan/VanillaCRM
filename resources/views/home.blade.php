@@ -300,7 +300,12 @@
                                 <div class="bg-body-tertiary rounded p-3 mb-2">
 
                                     @php
-                                        $sales = $sales_data[$company->id];
+                                        $sales = @$sales_data[$company->id];
+                                        
+                                        if (!$sales) {
+                                            $sales = [];
+                                        }
+                                        
                                         $totalSum = array_sum($sales);
 
                                         $percentages = [];
@@ -333,7 +338,7 @@
                                         </thead>
                                         <tbody>
 
-                                            @foreach ($sales as $id => $sale)
+                                            @foreach (@$sales as $id => $sale)
                                                 @php
                                                     $worker = App\Models\User::where('id', $id)->first();
                                                 @endphp
