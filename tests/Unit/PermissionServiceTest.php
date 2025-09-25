@@ -111,7 +111,7 @@ class PermissionServiceTest extends TestCase
 
     public function testGetUsersWithPermissionReturnsCorrectUsers()
     {
-        $users = $this->permissionService->getUsersWithPermission('sales_consultant', $this->department->id);
+        $users = $this->permissionService->getUsersWithPermission('sales_consultant', $this->company->id);
 
         $this->assertCount(1, $users);
         $this->assertEquals($this->salesUser->id, $users->first()->id);
@@ -120,19 +120,18 @@ class PermissionServiceTest extends TestCase
     public function testGetUsersWithPermissionReturnsEmptyCollectionWhenNoUsersHavePermission()
     {
         // Create a department with no users having the manager permission
-        $otherDepartment = Department::factory()->create([
-            'com_id' => $this->company->id,
+        $otherCompany = Company::factory()->create([
             'name' => 'Other Department',
         ]);
 
-        $users = $this->permissionService->getUsersWithPermission('manager', $otherDepartment->id);
+        $users = $this->permissionService->getUsersWithPermission('manager', $otherCompany->id);
 
         $this->assertCount(0, $users);
     }
 
     public function testGetUsersWithPermissionReturnsEmptyCollectionWhenPermissionDoesNotExist()
     {
-        $users = $this->permissionService->getUsersWithPermission('nonexistent_permission', $this->department->id);
+        $users = $this->permissionService->getUsersWithPermission('nonexistent_permission', $this->company->id);
 
         $this->assertCount(0, $users);
     }
@@ -149,7 +148,7 @@ class PermissionServiceTest extends TestCase
             'status' => 'inactive',
         ]);
 
-        $users = $this->permissionService->getUsersWithPermission('sales_consultant', $this->department->id);
+        $users = $this->permissionService->getUsersWithPermission('sales_consultant', $this->company->id);
 
         $this->assertCount(1, $users);
         $this->assertEquals($this->salesUser->id, $users->first()->id);

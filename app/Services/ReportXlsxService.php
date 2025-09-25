@@ -440,7 +440,7 @@ class ReportXlsxService
             // Получение сотрудников из департамента менеджера отчёта
             $workers = PermissionService::getUsersWithPermission(
                 'sales_consultant',
-                $manager->dep_id,
+                $manager->com_id,
             );
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
@@ -583,7 +583,7 @@ class ReportXlsxService
             // Получение сотрудников из департамента менеджера отчёта
             $workers = PermissionService::getUsersWithPermission(
                 'sales_consultant',
-                $manager->dep_id,
+                $manager->com_id,
             );
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
