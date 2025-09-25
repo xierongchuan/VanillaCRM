@@ -434,6 +434,9 @@ class ReportXlsxService
 
             // Получение менеджера из отчёта
             $manager = User::where('id', $managerId)->first();
+            if (! $manager) {
+              continue;
+            }
             // Получение сотрудников из департамента менеджера отчёта
             $workers = PermissionService::getUsersWithPermission(
                 'sales_consultant',
@@ -512,7 +515,7 @@ class ReportXlsxService
             // Получение менеджера из отчёта
             $manager = User::where('id', $managerId)->first();
             // Получение сотрудников из департамента менеджера отчёта
-            $workers = User::where('dep_id', $manager->dep_id)->get();
+            $workers = User::where('dep_id', @$manager->dep_id)->get();
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
 
