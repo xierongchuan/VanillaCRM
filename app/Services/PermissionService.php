@@ -42,7 +42,9 @@ class PermissionService
     public static function getUsersWithPermission(string $permissionValue, int $companyId)
     {
         // Получаем разрешение по его значению
-        $permission = Permission::where('value', $permissionValue)->first();
+        $permission = Permission::where('value', $permissionValue)
+            ->where('com_id', $companyId)
+            ->first();
 
         if (!$permission) {
             return collect(); // Возвращаем пустую коллекцию, если разрешение не найдено

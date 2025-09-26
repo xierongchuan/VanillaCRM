@@ -300,10 +300,11 @@
                                 <div class="bg-body-tertiary rounded p-3 mb-2">
 
                                     @php
-                                        $sales = @$sales_data[$company->id];
+
+                                        $sales = [];
                                         
-                                        if (!$sales) {
-                                            $sales = [];
+                                        if (isset($sales_data[$company->id])) {
+                                          $sales = $sales_data[$company->id];
                                         }
                                         
                                         $totalSum = array_sum($sales);
