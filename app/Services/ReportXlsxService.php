@@ -456,8 +456,6 @@ class ReportXlsxService
             $sales_data[$company->id] = $sums;
         }
 
-        Log::info($sales_data);
-
         return $sales_data;
     }
 
