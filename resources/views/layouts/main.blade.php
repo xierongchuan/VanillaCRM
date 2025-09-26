@@ -46,7 +46,7 @@
   --dark: #000;
 
   position: relative;      /* нужно для абсолютных псевдоэлементов */
-  color: #ffffff;
+  color: #ffffff!important;
   font-weight: 700;
   /* text-align: center; */
 
@@ -203,7 +203,7 @@
 <body data-bs-theme="{{ session('theme') ?? 'light' }}">
 
     <header>
-        <nav class="navbar navbar-expand-lg {{ config('app.debug') ? 'bg-body-test' : 'bg-body-secondary' }} px-2h">
+        <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home.index') }}"> {{ config('app.name') }}</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
