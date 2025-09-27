@@ -36,10 +36,9 @@ RUN pecl install redis-6.2.0 \
 # 5) Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 6) Установка зависимостей приложения
+# 6) Копирование composer.json и composer.lock в конте
 WORKDIR /var/www/vanillacrm_src
 COPY composer.json composer.lock ./
-RUN composer install --optimize-autoloader --no-dev --no-scripts
 
 # 7) Копирование кодовой базы в контейнер
 COPY . .
@@ -49,11 +48,8 @@ RUN mkdir -p storage/logs storage/framework/sessions bootstrap/cache \
   && chown -R www-data:www-data storage bootstrap/cache \
   && chmod -R 775 storage bootstrap/cache
 
-# 9) Линковка директорий
-RUN php artisan storage:link
-
-# 10) Документирование порта PHP-FPM
+# 9) Документирование порта PHP-FPM
 EXPOSE 9000
 
-# 11) Ждём запуска MariaDB и выполняем миграции, затем старт PHP-FPM
-CMD ["bash", "-lc", "/wait-for-it.sh mariadb:3306 --timeout=30 --strict -- php artisan migrate && exec php-fpm"]
+# 10) Ждём запуска MariaDB и выполняем миграции, затем старт PHP-FPM
+CMD ["bash", "-lc", "/wait-for-it.sh mariadb:3306 --timeout=30 --strict -- composer install --optimize-autoloader --no-dev --no-scripts && php artisan storage:link && php artisan migrate && exec php-fpm"]
