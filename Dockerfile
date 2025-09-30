@@ -48,8 +48,13 @@ RUN mkdir -p storage/logs storage/framework/sessions bootstrap/cache \
   && chown -R www-data:www-data storage bootstrap/cache \
   && chmod -R 775 storage bootstrap/cache
 
-# 9) Документирование порта PHP-FPM
+# 9) Настройка PHP для загрузки больших файлов
+RUN echo "upload_max_filesize = 100M" >> /usr/local/etc/php/conf.d/docker-php-upload.ini \
+  && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/docker-php-upload.ini \
+  && echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/docker-php-upload.ini
+
+# 10) Документирование порта PHP-FPM
 EXPOSE 9000
 
-# 10) Ждём запуска MariaDB и выполняем миграции, затем старт PHP-FPM
+# 11) Ждём запуска MariaDB и выполняем миграции, затем старт PHP-FPM
 CMD ["bash", "-lc", "/wait-for-it.sh mariadb:3306 --timeout=30 --strict -- composer install --optimize-autoloader --no-dev --no-scripts && php artisan storage:link && php artisan migrate && exec php-fpm"]
