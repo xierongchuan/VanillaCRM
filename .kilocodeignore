@@ -1,0 +1,6 @@
+/storage/framework
+/node_modules
+/vendor
+/storage
+/public/storage
+.env
