@@ -405,7 +405,7 @@
 
                                                             $percentages = [];
                                                             foreach ($reportData['sales'] as $id => $sale) {
-                                                                if (((int)$sale) == 0) {
+                                                                if (((int) $sale) == 0) {
                                                                     $percentages[$id] = 0;
                                                                     continue;
                                                                 }
@@ -586,7 +586,7 @@
             @endforeach
         </div>
 
-        <div class="card mt-5">
+        {{-- <div class="card mt-5">
             <div class="card-header">
                 <h2 class="mb-0">
                     Старый архив
@@ -631,7 +631,7 @@
                     </div>
                 @endforeach
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <script>
@@ -658,14 +658,14 @@
 
             fullElements.forEach(element => {
                 const sumValue = element.textContent.replace(/\s/g,
-                ''); // Удаляем пробелы для преобразования в число
+                    ''); // Удаляем пробелы для преобразования в число
                 const formattedSumWithSpaces = formatNumberWithSpaces(sumValue);
                 element.textContent = formattedSumWithSpaces;
             });
 
             shortElements.forEach(element => {
                 const sumValue = element.textContent.replace(/\s/g,
-                ''); // Удаляем пробелы для преобразования в число
+                    ''); // Удаляем пробелы для преобразования в число
                 const formattedSum = formatNumber(Number(sumValue)); // Преобразуем строку в число
                 element.textContent = formattedSum;
             });

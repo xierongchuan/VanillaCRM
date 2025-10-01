@@ -5,6 +5,8 @@
 /public/storage
 /storage/app
 /storage/*.key
+/certbot/www
+/certbot/conf
 /vendor
 .env
 .env.backup

@@ -15,16 +15,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Run the expense request seeder
-        $this->call(ExpenseRequestSeeder::class);
+        // $this->call(ExpenseRequestSeeder::class);
         
-        User::factory()->create([
+        echo 'Введите пароль Администратора: ';
+        $password = trim(fgets(STDIN));
+        
+        User::create([
             'login' => 'admin',
             'role' => 'admin',
-            'password' => function () {
-                echo 'Введите пароль Администратора: ';
-
-                return Hash::make(trim(fgets(STDIN)));
-            },
+            'in_bot_role' => 'user',
+            'status' => 'active',
+            'password' => Hash::make($password),
             'remember_token' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

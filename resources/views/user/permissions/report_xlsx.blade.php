@@ -3,7 +3,7 @@
 
     $workers = PermissionService::getUsersWithPermission(
         'sales_consultant',
-        \Illuminate\Support\Facades\Auth::user()->dep_id,
+        \Illuminate\Support\Facades\Auth::user()->com_id,
     );
 @endphp
 

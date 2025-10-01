@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Log;
 
 class ReportXlsxService
 {
@@ -432,12 +433,10 @@ class ReportXlsxService
 
             $managerId = array_key_first($monthSales[0]);
 
-            // Получение менеджера из отчёта
-            $manager = User::where('id', $managerId)->first();
             // Получение сотрудников из департамента менеджера отчёта
             $workers = PermissionService::getUsersWithPermission(
                 'sales_consultant',
-                $manager->dep_id,
+                $company->id,
             );
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
@@ -512,7 +511,7 @@ class ReportXlsxService
             // Получение менеджера из отчёта
             $manager = User::where('id', $managerId)->first();
             // Получение сотрудников из департамента менеджера отчёта
-            $workers = User::where('dep_id', $manager->dep_id)->get();
+            $workers = User::where('dep_id', @$manager->dep_id)->get();
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();
 
@@ -580,7 +579,7 @@ class ReportXlsxService
             // Получение сотрудников из департамента менеджера отчёта
             $workers = PermissionService::getUsersWithPermission(
                 'sales_consultant',
-                $manager->dep_id,
+                $manager->com_id,
             );
             // Перевод ID сотрудников на массив
             $workerIds = $workers->pluck('id')->toArray();

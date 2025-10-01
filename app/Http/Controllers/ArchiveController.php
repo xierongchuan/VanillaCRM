@@ -22,45 +22,45 @@ class ArchiveController extends Controller
 {
     public function archive(Company $company)
     {
-        $archivePath = storage_path('app/public/archive');
-        if (! File::exists($archivePath)) {
-            File::makeDirectory($archivePath, 0755, true);
-        }
-        $files = File::allFiles($archivePath);
+        // $archivePath = storage_path('app/public/archive');
+        // if (! File::exists($archivePath)) {
+        //     File::makeDirectory($archivePath, 0755, true);
+        // }
+        // $files = File::allFiles($archivePath);
 
-        // Инициализируем пустой массив для хранения URL файлов
-        $files_data = [];
+        // // Инициализируем пустой массив для хранения URL файлов
+        // $files_data = [];
 
-        // Перебираем каждый файл и получаем его URL
-        foreach ($files as $file) {
-            // Получаем путь к файлу относительно public директории
-            $filePath = 'storage/app/public' . str_replace(storage_path('app/public'), '', $file);
-            $file_name_data = explode('_', basename($file));
-            if ($file_name_data[0] != $company->name) {
-                continue;
-            }
-            // Генерируем данные файла
-            $file_data = [
-                'name' => basename($file),
-                'company' => $file_name_data[0],
-                'url' => (string) asset($filePath),
-                'date' => $this->getRussianMonthName($file_name_data[1]),
-                'sum' => number_format((int) $file_name_data[3], 0, '', ' '),
-                'count' => number_format((int) $file_name_data[4], 0, '', ' '),
-                'fakt' => number_format(@(int) $file_name_data[5], 0, '', ' '),
-            ];
+        // // Перебираем каждый файл и получаем его URL
+        // foreach ($files as $file) {
+        //     // Получаем путь к файлу относительно public директории
+        //     $filePath = 'storage/app/public' . str_replace(storage_path('app/public'), '', $file);
+        //     $file_name_data = explode('_', basename($file));
+        //     if ($file_name_data[0] != $company->name) {
+        //         continue;
+        //     }
+        //     // Генерируем данные файла
+        //     $file_data = [
+        //         'name' => basename($file),
+        //         'company' => $file_name_data[0],
+        //         'url' => (string) asset($filePath),
+        //         'date' => $this->getRussianMonthName($file_name_data[1]),
+        //         'sum' => number_format((int) $file_name_data[3], 0, '', ' '),
+        //         'count' => number_format((int) $file_name_data[4], 0, '', ' '),
+        //         'fakt' => number_format(@(int) $file_name_data[5], 0, '', ' '),
+        //     ];
 
-            // Добавляем URL в массив
-            $files_data[] = (object) $file_data;
-        }
+        //     // Добавляем URL в массив
+        //     $files_data[] = (object) $file_data;
+        // }
 
-        $files_data = array_reverse($files_data);
+        // $files_data = array_reverse($files_data);
 
         $groupedReports = $this->groupReportsByMonth($company);
 
         // dd($groupedReports);
 
-        return view('company.archive', compact('company', 'files_data', 'groupedReports'));
+        return view('company.archive', compact('company', 'groupedReports'));
     }
 
     public function groupReportsByMonth(Company $company)

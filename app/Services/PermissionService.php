@@ -36,13 +36,15 @@ class PermissionService
      * Получает пользователей с указанной должностью
      *
      * @param string $permissionValue
-     * @param int $departmentId
+     * @param int $companyId
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getUsersWithPermission(string $permissionValue, int $departmentId)
+    public static function getUsersWithPermission(string $permissionValue, int $companyId)
     {
         // Получаем разрешение по его значению
-        $permission = Permission::where('value', $permissionValue)->first();
+        $permission = Permission::where('value', $permissionValue)
+            ->where('com_id', $companyId)
+            ->first();
 
         if (!$permission) {
             return collect(); // Возвращаем пустую коллекцию, если разрешение не найдено
@@ -51,7 +53,7 @@ class PermissionService
         // Получаем пользователей с активным статусом из указанного отдела,
         // у которых должность имеет указанное разрешение
         return \App\Models\User::where('status', 'active')
-            ->where('dep_id', $departmentId)
+            ->where('com_id', $companyId)
             ->whereHas('post', function ($query) use ($permission) {
                 $query->whereRaw("JSON_SEARCH(permission, 'one', ?) IS NOT NULL", [$permission->id]);
             })

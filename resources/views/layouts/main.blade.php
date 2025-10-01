@@ -40,14 +40,6 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
 
-        .bg-body-test {
-            background: repeating-linear-gradient(45deg,
-                    rgb(109, 109, 0),
-                    rgb(109, 109, 0) 10px,
-                    black 10px,
-                    black 20px);
-        }
-
         /* Custom column sizes */
         .col-1-5 {
             flex: 0 0 12.5%;
@@ -157,7 +149,7 @@
 <body data-bs-theme="{{ session('theme') ?? 'light' }}">
 
     <header>
-        <nav class="navbar navbar-expand-lg {{ config('app.debug') ? 'bg-body-test' : 'bg-body-secondary' }} px-2h">
+        <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home.index') }}"> {{ config('app.name') }}</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
