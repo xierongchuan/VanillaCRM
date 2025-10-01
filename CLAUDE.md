@@ -4,7 +4,7 @@
 VanillaCRM is a Laravel-based Customer Relationship Management system built with PHP 8.4 and modern web technologies. This project serves as a comprehensive CRM solution with expense management, user role management, and reporting capabilities.
 
 ## Technology Stack
-- **Backend**: Laravel 12.21.0 with PHP 8.4
+- **Backend**: Laravel 12 with PHP 8.4
 - **Frontend**: Vite with Bootstrap 5.3.2, jQuery 3.7.1
 - **Database**: MariaDB/MySQL
 - **Testing**: PHPUnit 11.0 with Pest 3.8
