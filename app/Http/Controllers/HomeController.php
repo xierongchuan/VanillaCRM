@@ -240,6 +240,7 @@ class HomeController extends Controller
             'rs' => $result->rs ?? 0,
             'plastic' => $result->plastic ?? 0,
             'skidki' => $result->skidki ?? 0,
+            'sdano' => $result->sdano ?? 0,
             // Суммы за месяц
             'oborot_plus_sum' => $monthlySums->oborot_plus_sum ?? 0,
             'oborot_minus_sum' => $monthlySums->oborot_minus_sum ?? 0,
@@ -248,6 +249,7 @@ class HomeController extends Controller
             'rs_sum' => $monthlySums->rs_sum ?? 0,
             'plastic_sum' => $monthlySums->plastic_sum ?? 0,
             'skidki_sum' => $monthlySums->skidki_sum ?? 0,
+            'sdano_sum' => $monthlySums->sdano_sum ?? 0,
             'for_date' => $latestReport->for_date,
             'created_at' => $latestReport->created_at,
             'updated_at' => $latestReport->updated_at,
