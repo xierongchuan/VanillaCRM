@@ -532,7 +532,8 @@ class ArchiveController extends Controller
         $sheet->setCellValue('F1', 'Р/С');
         $sheet->setCellValue('G1', 'Пластик');
         $sheet->setCellValue('H1', 'Скидки');
-        $sheet->setCellValue('I1', 'Файл отчёта');
+        $sheet->setCellValue('I1', 'Сдано');
+        $sheet->setCellValue('J1', 'Файл отчёта');
 
         $i = 2;
         foreach ($reports as $key => $value) {
@@ -546,14 +547,15 @@ class ArchiveController extends Controller
             $sheet->setCellValue('F' . $i, $val->rs ?? 0);
             $sheet->setCellValue('G' . $i, $val->plastic ?? 0);
             $sheet->setCellValue('H' . $i, $val->skidki ?? 0);
+            $sheet->setCellValue('I' . $i, $val->sdano ?? 0);
 
             // Add hyperlink to report file if exists
             if (!empty($val->file)) {
                 $fileUrl = asset('storage/cashier_reports/' . $val->file);
-                $sheet->getCell('I' . $i)->setValue('Скачать файл');
-                $sheet->getCell('I' . $i)->setHyperlink(new Hyperlink($fileUrl));
-                $sheet->getStyle('I' . $i)->getFont()->getColor()->setARGB(Color::COLOR_BLUE);
-                $sheet->getStyle('I' . $i)->getFont()->setUnderline(true);
+                $sheet->getCell('J' . $i)->setValue('Скачать файл');
+                $sheet->getCell('J' . $i)->setHyperlink(new Hyperlink($fileUrl));
+                $sheet->getStyle('J' . $i)->getFont()->getColor()->setARGB(Color::COLOR_BLUE);
+                $sheet->getStyle('J' . $i)->getFont()->setUnderline(true);
             }
 
             $i++;
@@ -567,6 +569,7 @@ class ArchiveController extends Controller
         $sheet->setCellValue('F33', '=SUM(F2:F32)');
         $sheet->setCellValue('G33', '=SUM(G2:G32)');
         $sheet->setCellValue('H33', '=SUM(H2:H32)');
+        $sheet->setCellValue('I33', '=SUM(I2:I32)');
 
         // Add links
         $j = 35;
