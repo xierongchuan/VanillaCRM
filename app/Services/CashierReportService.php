@@ -42,6 +42,7 @@ class CashierReportService
             'rs' => $request->rs ? (int) $request->rs : null,
             'plastic' => $request->plastic ? (int) $request->plastic : null,
             'skidki' => $request->skidki ? (int) $request->skidki : null,
+            'sdano' => $request->nalichka - $request->oborot_minus,
         ];
 
         $forDate = date('Y-m-d H:i:s', strtotime($request->date));

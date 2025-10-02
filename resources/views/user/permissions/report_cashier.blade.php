@@ -63,8 +63,14 @@
 
             <!-- Вывод суммы -->
             <div class="form-group mb-2">
-                <label for="total">Итого:</label>
+                <label for="total">Итого: </label>
                 <p id="total" class="form-control-static">0.00</p>
+            </div>
+
+            <!-- Вывод к сдаче -->
+            <div class="form-group mb-2">
+                <label for="sdacha">К сдаче: </label>
+                <p id="sdacha" class="form-control-static">0.00</p>
             </div>
 
             <div class="d-flex justify-content-center">
@@ -105,6 +111,16 @@
             .toLocaleString("ru-RU", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
-            });;
+            });
+
+        // Считаем сдачу
+        var sdacha = nalichka - oborot_minus;
+        // Записываем сумму в элемент "К сдаче"
+        document.getElementById("sdacha").textContent = sdacha
+            .toLocaleString("ru-RU", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
     });
 </script>

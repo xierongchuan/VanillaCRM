@@ -302,11 +302,11 @@
                                     @php
 
                                         $sales = [];
-                                        
+
                                         if (isset($sales_data[$company->id])) {
-                                          $sales = $sales_data[$company->id];
+                                            $sales = $sales_data[$company->id];
                                         }
-                                        
+
                                         $totalSum = array_sum($sales);
 
                                         $percentages = [];
@@ -1938,6 +1938,15 @@
                                         </td>
                                         <td class="text-nowrap overflow-hidden text-end">
                                             {{ number_format($cashier_rep['skidki_sum'], 0, '', ' ') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Сдано</td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format(@$cashier_rep['sdano'], 0, '', ' ') }}
+                                        </td>
+                                        <td class="text-nowrap overflow-hidden text-end">
+                                            {{ number_format(@$cashier_rep['sdano_sum'], 0, '', ' ') }}
                                         </td>
                                     </tr>
                                 </tbody>

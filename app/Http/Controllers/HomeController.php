@@ -207,7 +207,8 @@ class HomeController extends Controller
                 DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.nalichka")) AS SIGNED)) as nalichka_sum'),
                 DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.rs")) AS SIGNED)) as rs_sum'),
                 DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.plastic")) AS SIGNED)) as plastic_sum'),
-                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.skidki")) AS SIGNED)) as skidki_sum')
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.skidki")) AS SIGNED)) as skidki_sum'),
+                DB::raw('SUM(CAST(JSON_UNQUOTE(JSON_EXTRACT(data, "$.sdano")) AS SIGNED)) as sdano_sum')
             )
             ->where('for_date', '>=', $startDate)
             ->where('for_date', '<=', $endDate)
