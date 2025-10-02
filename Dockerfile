@@ -45,8 +45,8 @@ COPY . .
 
 # 8) Создание нужных директорий и установка прав
 RUN mkdir -p storage/logs storage/framework/sessions bootstrap/cache \
-  && chown -R www-data:www-data storage bootstrap/cache \
   && chmod -R 775 storage bootstrap/cache
+# && chown -R www-data:www-data storage bootstrap/cache \
 
 # 9) Настройка PHP для загрузки больших файлов
 RUN echo "upload_max_filesize = 100M" >> /usr/local/etc/php/conf.d/docker-php-upload.ini \

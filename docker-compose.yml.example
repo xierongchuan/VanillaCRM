@@ -65,9 +65,11 @@ services:
         image: nginx:latest
         container_name: vanillacrm_nginx
         restart: on-failure:3
-        ports:
-            - "80:80"
-            - "443:443"
+        ports: # Дя локальной разработки
+            - "8002:80"
+        # ports: # Для продакшена
+        #     - "80:80"
+        #     - "443:443"
         volumes:
             - ./:/var/www/vanillacrm_src:ro
             - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro

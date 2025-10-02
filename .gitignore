@@ -19,3 +19,4 @@ auth.json
 npm-debug.log
 yarn-error.log
 nginx.conf
+docker-compose.yml
