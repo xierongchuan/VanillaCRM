@@ -1038,6 +1038,15 @@
                                                     {{ number_format($cashier_reps[$company->id]['skidki_sum'], 0, '', ' ') }}
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td>Сдано</td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format(@$cashier_reps[$company->id]['sdano'], 0, '', ' ') }}
+                                                </td>
+                                                <td class="text-nowrap overflow-hidden text-end">
+                                                    {{ number_format(@$cashier_reps[$company->id]['sdano_sum'], 0, '', ' ') }}
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
