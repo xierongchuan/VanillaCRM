@@ -101,3 +101,13 @@ php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 ```
+
+---
+
+Issue to solve: https://github.com/xierongchuan/VanillaCRM/issues/1
+Your prepared branch: issue-1-9c296167
+Your prepared working directory: /tmp/gh-issue-solver-1760133090452
+Your forked repository: konard/VanillaCRM
+Original repository (upstream): xierongchuan/VanillaCRM
+
+Proceed.
