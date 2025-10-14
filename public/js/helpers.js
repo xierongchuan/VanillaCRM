@@ -191,7 +191,7 @@ function route(routeName, params = {}) {
     'home.index': '/',
     'auth.sign_in': '/sign_in',
     'auth.logout': '/logout',
-    'company.list': '/company',
+    'company.list': '/company/list',
     'company.create': '/company/create',
     'admin.index': '/admin',
     'stat.index': '/stat',
