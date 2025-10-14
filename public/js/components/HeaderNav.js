@@ -126,7 +126,7 @@ const HeaderNav = {
           <!-- Mobile menu button -->
           <button
             @click="toggleMobileMenu"
-            class="tw-lg:hidden tw-p-2 tw-text-gray-600 tw-dark:text-gray-300 tw-hover:text-gray-900 tw-dark:hover:text-white tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500 tw-rounded"
+            class="lg:tw-hidden tw-p-2 tw-text-gray-600 tw-dark:text-gray-300 tw-hover:text-gray-900 tw-dark:hover:text-white tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500 tw-rounded"
             aria-label="Toggle navigation"
             aria-expanded="false">
             <svg class="tw-w-6 tw-h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,7 +136,7 @@ const HeaderNav = {
           </button>
 
           <!-- Desktop Navigation -->
-          <div class="tw-hidden tw-lg:flex tw-lg:items-center tw-lg:space-x-6">
+          <div class="tw-hidden lg:tw-flex lg:tw-items-center lg:tw-space-x-6">
             <!-- Nav Links -->
             <div class="tw-flex tw-items-center tw-space-x-1">
               <a v-for="item in navItems"
@@ -193,7 +193,7 @@ const HeaderNav = {
           leave-active-class="tw-transition tw-ease-in tw-duration-150"
           leave-from-class="tw-opacity-100 tw-translate-y-0"
           leave-to-class="tw-opacity-0 tw--translate-y-1">
-          <div v-show="isMobileMenuOpen" class="tw-lg:hidden tw-mt-4 tw-pb-3 tw-space-y-1">
+          <div v-show="isMobileMenuOpen" class="lg:tw-hidden tw-mt-4 tw-pb-3 tw-space-y-1">
             <!-- Mobile Nav Links -->
             <a v-for="item in navItems"
                :key="item.route"
