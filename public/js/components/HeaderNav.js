@@ -109,7 +109,7 @@ const HeaderNav = {
             @click="toggleMobileMenu"
             class="lg:tw-hidden tw-p-2 tw-text-gray-600 tw-dark:text-gray-300 tw-hover:text-gray-900 tw-dark:hover:text-white tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500 tw-rounded"
             aria-label="Toggle navigation"
-            aria-expanded="false">
+            :aria-expanded="isMobileMenuOpen ? 'true' : 'false'">
             <svg class="tw-w-6 tw-h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path v-if="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
               <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>

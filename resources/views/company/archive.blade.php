@@ -2,13 +2,17 @@
 
 @section('title', 'Архив «' . $company->name . '»')
 
-@section('nav_right')
-    <li class="nav-item">
-        <a class="btn btn-danger" aria-current="page" href="{{ route('company.remove_last_report', compact('company')) }}">
-            Удалить отчёт на последнюю дату
-        </a>
-    </li>
-@endsection
+@php
+    // Pass action buttons to header navigation component
+    // This replaces the old @section('nav_right') pattern
+    $__navRightButtons = [
+        [
+            'text' => 'Удалить отчёт на последнюю дату',
+            'href' => route('company.remove_last_report', compact('company')),
+            'class' => 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-bg-red-600 tw-text-white tw-hover:bg-red-700 tw-transition-colors tw-no-underline'
+        ]
+    ];
+@endphp
 
 @section('content')
     <h1 class="text-center my-4">

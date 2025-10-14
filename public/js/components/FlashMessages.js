@@ -40,7 +40,11 @@ const FlashMessages = {
         warning: this.messages.warning,
         errors: [...(this.messages.errors || [])]
       },
-      dismissTimeouts: []
+      dismissTimeouts: {
+        success: null,
+        warning: null,
+        errors: null
+      }
     };
   },
   watch: {
@@ -69,45 +73,62 @@ const FlashMessages = {
   methods: {
     dismissSuccess() {
       this.localMessages.success = null;
-      this.clearTimeouts();
+      if (this.dismissTimeouts.success) {
+        clearTimeout(this.dismissTimeouts.success);
+        this.dismissTimeouts.success = null;
+      }
     },
     dismissWarning() {
       this.localMessages.warning = null;
-      this.clearTimeouts();
+      if (this.dismissTimeouts.warning) {
+        clearTimeout(this.dismissTimeouts.warning);
+        this.dismissTimeouts.warning = null;
+      }
     },
     dismissErrors() {
       this.localMessages.errors = [];
-      this.clearTimeouts();
+      if (this.dismissTimeouts.errors) {
+        clearTimeout(this.dismissTimeouts.errors);
+        this.dismissTimeouts.errors = null;
+      }
     },
     startAutoDismissTimers() {
       // Clear any existing timers
       this.clearTimeouts();
 
-      // Set new timers
+      // Set new timers for each message type
       if (this.localMessages.success) {
-        const timeout = setTimeout(() => {
+        this.dismissTimeouts.success = setTimeout(() => {
           this.dismissSuccess();
         }, this.dismissDelay);
-        this.dismissTimeouts.push(timeout);
       }
 
       if (this.localMessages.warning) {
-        const timeout = setTimeout(() => {
+        this.dismissTimeouts.warning = setTimeout(() => {
           this.dismissWarning();
         }, this.dismissDelay);
-        this.dismissTimeouts.push(timeout);
       }
 
       if (this.localMessages.errors && this.localMessages.errors.length > 0) {
-        const timeout = setTimeout(() => {
+        this.dismissTimeouts.errors = setTimeout(() => {
           this.dismissErrors();
         }, this.dismissDelay);
-        this.dismissTimeouts.push(timeout);
       }
     },
     clearTimeouts() {
-      this.dismissTimeouts.forEach(timeout => clearTimeout(timeout));
-      this.dismissTimeouts = [];
+      // Clear all timers (used when component unmounts or when resetting all timers)
+      if (this.dismissTimeouts.success) {
+        clearTimeout(this.dismissTimeouts.success);
+        this.dismissTimeouts.success = null;
+      }
+      if (this.dismissTimeouts.warning) {
+        clearTimeout(this.dismissTimeouts.warning);
+        this.dismissTimeouts.warning = null;
+      }
+      if (this.dismissTimeouts.errors) {
+        clearTimeout(this.dismissTimeouts.errors);
+        this.dismissTimeouts.errors = null;
+      }
     }
   },
   mounted() {

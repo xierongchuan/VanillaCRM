@@ -4,7 +4,7 @@
 
 VanillaCRM is migrating from Bootstrap 5 + jQuery to **Tailwind CSS + Vue 3**. This document provides instructions for developers working with the new frontend architecture.
 
-## Current Status: Stage 2 - Header/Navigation Complete ✅
+## Current Status: Stage 3 - Flash Messages Complete ✅
 
 ### What's Implemented
 
@@ -15,13 +15,21 @@ VanillaCRM is migrating from Bootstrap 5 + jQuery to **Tailwind CSS + Vue 3**. T
 - ✅ **Main Layout** - Updated `resources/views/layouts/main.blade.php` with Vue mount point
 - ✅ **Header/Navigation** - Migrated to Vue 3 component (`public/js/components/HeaderNav.js`)
   - Mobile-responsive hamburger menu
-  - Theme switcher dropdown
+  - Theme switcher (simplified toggle button)
   - Role-based navigation
+  - Page-specific action buttons support (replaces @section('nav_right'))
+  - Tailwind CSS styling with `tw-` prefix
+- ✅ **Flash Messages** - Migrated to Vue 3 component (`public/js/components/FlashMessages.js`)
+  - Success, warning, and error message types
+  - Auto-dismiss functionality (configurable delay)
+  - Manual dismiss with close button
+  - Smooth fade-slide animations
+  - Bootstrap Icons integration
+  - Full dark mode support
   - Tailwind CSS styling with `tw-` prefix
 
 ### What's NOT Yet Migrated
 
-- ⏳ Flash Messages (still Bootstrap + Blade)
 - ⏳ All page components (still using jQuery)
 - ⏳ Forms (still using traditional HTML forms)
 - ⏳ Tables (still using Blade loops)
@@ -30,10 +38,34 @@ VanillaCRM is migrating from Bootstrap 5 + jQuery to **Tailwind CSS + Vue 3**. T
 ## Tech Stack
 
 ### Frontend
-- **Framework**: Vue 3 (Composition API)
-- **CSS**: Tailwind CSS 3.x
+- **Framework**: Vue 3 (Composition API) - Via CDN
+- **CSS**: Tailwind CSS 3.x - Via CDN
 - **Icons**: Bootstrap Icons (kept from original)
-- **Build Tool**: Vite (Laravel Vite Plugin)
+- **Build Tool**: Vite (Laravel Vite Plugin) - For legacy assets only
+
+### Architectural Decision: CDN vs Build System
+
+**Why CDN?** This migration uses CDN delivery for Vue 3 and Tailwind CSS instead of integrating them into the existing Vite build system. This decision was made for the following reasons:
+
+1. **Explicit Requirement**: The original issue (#5) specifically requested using Vue 3 and Tailwind CSS via CDN
+2. **Minimal Backend Impact**: CDN approach requires no changes to build configuration, package.json dependencies, or deployment pipelines
+3. **Rapid Prototyping**: Faster iteration during the migration phase without build step delays
+4. **Gradual Migration**: Allows Vue components to coexist with legacy jQuery code during the transition
+5. **Zero Breaking Changes**: Existing Vite build for SASS/Bootstrap continues to work unchanged
+
+**Trade-offs**:
+- ✅ **Pro**: Instant updates, no build required, smaller deployment package
+- ✅ **Pro**: Easier rollback if issues arise
+- ⚠️ **Con**: External dependency on CDN availability (mitigated by using unpkg.com, a reliable CDN)
+- ⚠️ **Con**: Less control over versioning (locked to specific version in CDN URL)
+
+**Future Considerations**: Once the migration is complete and stable, the team may choose to integrate Vue/Tailwind into the Vite build system for production optimization. This would require:
+- Installing `vue` and `tailwindcss` npm packages
+- Configuring Vite to bundle Vue components
+- Setting up PostCSS for Tailwind compilation
+- Updating all script/link tags to use Vite's `@vite` directive
+
+For now, the CDN approach aligns with project requirements and minimizes risk during the migration phase.
 
 ### Backend (Unchanged)
 - **Framework**: Laravel 12
@@ -422,7 +454,7 @@ console.log(window.__FLASH_MESSAGES__);  // Should show flash data
 - [x] Pass flash messages to JavaScript
 - [x] Create FRONTEND/README.md
 
-### Stage 2: Header/Navigation ✅ (Current)
+### Stage 2: Header/Navigation ✅
 - [x] Migrate Header/Navigation to Vue
 - [x] Convert Bootstrap navbar to Tailwind with tw- prefix
 - [x] Create HeaderNav component with mobile menu
@@ -430,10 +462,14 @@ console.log(window.__FLASH_MESSAGES__);  // Should show flash data
 - [x] Add role-based navigation
 - [x] Fix all code review issues
 
-### Stage 3: Flash Messages
-- [ ] Create FlashMessages Vue component
-- [ ] Style with Tailwind
-- [ ] Auto-dismiss functionality
+### Stage 3: Flash Messages ✅ (Current)
+- [x] Create FlashMessages Vue component
+- [x] Style with Tailwind
+- [x] Auto-dismiss functionality
+- [x] Manual dismiss with close button
+- [x] Smooth fade-slide animations
+- [x] Dark mode support
+- [x] Fix timer clearing bug for multiple message types
 
 ### Stage 4-18: See PLANS/plan-vue3-tailwind.md
 
