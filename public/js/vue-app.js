@@ -78,8 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('HeaderNav component registered');
   }
 
+  // Stage 3: Flash Messages
+  if (typeof window.FlashMessages !== 'undefined') {
+    app.component('flash-messages', window.FlashMessages);
+    console.log('FlashMessages component registered');
+  }
+
   // Future components will be registered here:
-  // app.component('flash-messages', FlashMessages);
   // app.component('reports-carousel', ReportsCarousel);
   // etc.
 

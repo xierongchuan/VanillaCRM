@@ -159,6 +159,22 @@
             }
 
         }
+
+        /* Vue Transition Animations for Flash Messages */
+        .fade-slide-enter-active,
+        .fade-slide-leave-active {
+            transition: all 0.3s ease;
+        }
+
+        .fade-slide-enter-from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .fade-slide-leave-to {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
     </style>
 
 </head>
@@ -178,31 +194,12 @@
 
     <main class="container">
 
-        @if (Session::has('success'))
-            <div class="alert alert-success mt-3">
-                <ul class="m-0 my-1">
-                    <li>{{ Session::get('success') }}</li>
-                </ul>
-            </div>
-        @endif
-
-        @if (Session::has('warning'))
-            <div class="alert alert-warning mt-3">
-                <ul class="m-0 my-1">
-                    <li>{{ Session::get('warning') }}</li>
-                </ul>
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger mt-3">
-                <ul class="m-0 my-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        {{-- Vue Flash Messages Component --}}
+        <flash-messages
+            :messages="flashMessages"
+            :auto-dismiss="true"
+            :dismiss-delay="5000"
+        ></flash-messages>
 
         @yield('content')
 
@@ -224,6 +221,7 @@
 
     {{-- Vue Components (must load before vue-app.js) --}}
     <script src="/js/components/HeaderNav.js"></script>
+    <script src="/js/components/FlashMessages.js"></script>
 
     {{-- Vue App Initialization (must load last) --}}
     <script src="/js/vue-app.js" defer></script>
