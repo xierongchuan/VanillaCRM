@@ -16,7 +16,7 @@ VanillaCRM is migrating from Bootstrap 5 + jQuery to **Tailwind CSS + Vue 3**. T
 
 ### What's NOT Yet Migrated
 
-- ⏳ Header/Navigation (still Bootstrap + Blade)
+- ✅ Header/Navigation migrated to Vue (HeaderNav component)
 - ⏳ Flash Messages (still Bootstrap + Blade)
 - ⏳ All page components (still using jQuery)
 - ⏳ Forms (still using traditional HTML forms)
