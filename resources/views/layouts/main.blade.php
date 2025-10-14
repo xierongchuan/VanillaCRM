@@ -13,6 +13,18 @@
     {{-- Import Styles --}}
     @vite(['resources/sass/app.scss'])
 
+    {{-- Tailwind CSS CDN --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind config for dark mode
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+
     @yield('includes')
 
     <style>
@@ -149,6 +161,7 @@
 
 <body data-bs-theme="{{ session('theme') ?? 'light' }}">
 
+    <div id="app">
     <header>
         <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
             <div class="container">
@@ -304,6 +317,26 @@
     <footer>
 
     </footer>
+
+    </div>{{-- End #app --}}
+
+    {{-- Vue 3 CDN --}}
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    {{-- Vue App Initialization --}}
+    <script src="/js/vue-app.js" defer></script>
+
+    {{-- Helpers for CSRF and fetch --}}
+    <script src="/js/helpers.js"></script>
+
+    {{-- Pass flash messages to JavaScript --}}
+    <script>
+        window.__FLASH_MESSAGES__ = {
+            success: @json(Session::get('success')),
+            warning: @json(Session::get('warning')),
+            errors: @json($errors->all())
+        };
+    </script>
 
     {{-- Import JavaScript --}}
     @if (@Auth::user()->role === 'admin')
