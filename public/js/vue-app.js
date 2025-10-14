@@ -5,21 +5,30 @@
  * It provides global state management and component registration.
  */
 
-const { createApp, ref, onMounted } = Vue;
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if Vue is available before destructuring
+  if (typeof Vue === 'undefined') {
+    console.error('Vue 3 is not loaded! Please check CDN connection.');
+    return;
+  }
 
-const App = {
-  setup() {
-    // Global state
-    const user = ref(null);
-    const theme = ref(document.body.getAttribute('data-bs-theme') || 'light');
-    const flashMessages = ref({
-      success: null,
-      warning: null,
-      errors: []
-    });
+  // Destructure Vue safely after checking availability
+  const { createApp, ref, onMounted } = Vue;
 
-    // Initialize flash messages from Laravel session
-    onMounted(() => {
+  const App = {
+    setup() {
+      // Global state
+      const user = ref(null);
+      const theme = ref(document.body.getAttribute('data-bs-theme') || 'light');
+      const flashMessages = ref({
+        success: null,
+        warning: null,
+        errors: []
+      });
+
+      // Initialize flash messages from Laravel session
+      onMounted(() => {
       // Flash messages are passed from Blade template via window.__FLASH_MESSAGES__
       const flashData = window.__FLASH_MESSAGES__ || {};
       if (flashData.success) {
@@ -49,23 +58,15 @@ const App = {
       document.body.setAttribute('data-bs-theme', newTheme);
     };
 
-    return {
-      user,
-      theme,
-      flashMessages,
-      clearFlash,
-      setTheme
-    };
-  }
-};
-
-// Wait for DOM to be ready
-document.addEventListener('DOMContentLoaded', function() {
-  // Check if Vue is available
-  if (typeof Vue === 'undefined') {
-    console.error('Vue 3 is not loaded! Please check CDN connection.');
-    return;
-  }
+      return {
+        user,
+        theme,
+        flashMessages,
+        clearFlash,
+        setTheme
+      };
+    }
+  };
 
   // Create Vue app instance
   const app = createApp(App);

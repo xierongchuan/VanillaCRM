@@ -351,21 +351,21 @@ export default {
 
 ```html
 <form @submit.prevent="submit">
-  <div class="mb-4">
-    <label class="block mb-2 text-sm font-medium">Name</label>
+  <div class="tw-mb-4">
+    <label class="tw-block tw-mb-2 tw-text-sm tw-font-medium">Name</label>
     <input
       v-model="form.name"
       type="text"
-      class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      :class="{ 'border-red-500': errors.name }"
+      class="tw-w-full tw-px-3 tw-py-2 tw-border tw-rounded-lg tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500"
+      :class="{ 'tw-border-red-500': errors.name }"
     />
-    <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
+    <p v-if="errors.name" class="tw-mt-1 tw-text-sm tw-text-red-600">{{ errors.name }}</p>
   </div>
 
   <button
     type="submit"
     :disabled="loading"
-    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+    class="tw-px-4 tw-py-2 tw-bg-blue-600 tw-text-white tw-rounded tw-hover:bg-blue-700 tw-disabled:opacity-50"
   >
     {{ loading ? 'Saving...' : 'Save' }}
   </button>
@@ -386,7 +386,7 @@ After starting the development server:
 2. **Verify Tailwind CSS is loaded**
    - Inspect any element
    - Tailwind utility classes should work
-   - Try adding `class="bg-red-500 text-white p-4"` to test
+   - Try adding `class="tw-bg-red-500 tw-text-white tw-p-4"` to test (remember the tw- prefix!)
 
 3. **Verify helpers are available**
    - Open browser console

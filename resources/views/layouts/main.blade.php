@@ -173,6 +173,7 @@
         user-role="{{ @Auth::user()->role ?? 'guest' }}"
         current-route="{{ Route::currentRouteName() }}"
         theme="{{ session('theme') ?? 'light' }}"
+        :nav-right-buttons='@json($__navRightButtons ?? [])'
     ></header-nav>
 
     <main class="container">

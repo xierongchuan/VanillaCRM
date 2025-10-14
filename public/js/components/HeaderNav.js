@@ -27,6 +27,11 @@ const HeaderNav = {
     theme: {
       type: String,
       default: 'light'
+    },
+    // Additional navigation buttons from page-specific @section('nav_right')
+    navRightButtons: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -85,23 +90,15 @@ const HeaderNav = {
       return this.currentRoute === route;
     },
     getRouteUrl(routeName, params = {}) {
-      // Use Laravel route helper if available
+      // Always use the route helper from helpers.js
+      // This ensures a single source of truth for routing
       if (typeof window.route === 'function') {
         return window.route(routeName, params);
       }
-      // Fallback: construct URL manually
-      // This is a simple fallback, may need adjustment based on actual routes
-      const routeMap = {
-        'home.index': '/',
-        'admin.index': '/admin',
-        'company.list': '/company/list',
-        'stat.index': '/stat',
-        'user.permission': '/user/permission',
-        'auth.sign_in': '/auth/sign_in',
-        'auth.logout': '/auth/logout',
-        'theme.switch': '/theme/switch/'
-      };
-      return routeMap[routeName] || '/';
+
+      // Fallback if route helper is not loaded (should not happen in production)
+      console.warn(`Route helper not available for ${routeName}. Loading helpers.js is required.`);
+      return '#';
     }
   },
   mounted() {
@@ -149,6 +146,14 @@ const HeaderNav = {
 
             <!-- Right side navigation -->
             <div class="tw-flex tw-items-center tw-space-x-4 tw-border-l tw-border-gray-300 tw-dark:border-gray-600 tw-pl-4">
+              <!-- Page-specific action buttons (replaces @yield('nav_right')) -->
+              <a v-for="(button, index) in navRightButtons"
+                 :key="index"
+                 :href="button.href"
+                 :class="button.class || 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-bg-green-600 tw-text-white tw-hover:bg-green-700 tw-transition-colors'">
+                {{ button.text }}
+              </a>
+
               <!-- Theme Switcher Dropdown -->
               <div class="tw-relative theme-dropdown">
                 <button
@@ -202,6 +207,17 @@ const HeaderNav = {
                :class="[ 'tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-transition-colors', isActive(item.route) ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
               {{ item.name }}
             </a>
+
+            <!-- Mobile Page-specific action buttons -->
+            <div v-if="navRightButtons.length > 0" class="tw-border-t tw-border-gray-300 tw-dark:border-gray-600 tw-pt-3 tw-mt-3">
+              <a v-for="(button, index) in navRightButtons"
+                 :key="index"
+                 :href="button.href"
+                 @click="closeMobileMenu"
+                 :class="button.class || 'tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-bg-green-600 tw-text-white tw-hover:bg-green-700 tw-transition-colors'">
+                {{ button.text }}
+              </a>
+            </div>
 
             <!-- Mobile Theme Switcher -->
             <div class="tw-border-t tw-border-gray-300 tw-dark:border-gray-600 tw-pt-3 tw-mt-3">

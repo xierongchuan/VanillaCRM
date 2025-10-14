@@ -36,22 +36,27 @@ async function apiFetch(url, options = {}) {
     'Accept': 'application/json'
   };
 
-  // Only add Content-Type for JSON if body is not FormData
-  // FormData needs to set its own Content-Type with boundary
-  if (options.body && !(options.body instanceof FormData)) {
-    if (typeof options.body === 'string' || typeof options.body === 'object') {
-      defaultHeaders['Content-Type'] = 'application/json';
-    }
+  // Serialize body if it's a plain object (not FormData, not string)
+  let body = options.body;
+  if (body && typeof body === 'object' && !(body instanceof FormData) && typeof body !== 'string') {
+    body = JSON.stringify(body);
+    defaultHeaders['Content-Type'] = 'application/json';
+  } else if (typeof body === 'string') {
+    // If body is already a string (JSON.stringify was called manually), add Content-Type
+    defaultHeaders['Content-Type'] = 'application/json';
   }
+  // For FormData, don't add Content-Type - let browser set it with boundary
 
-  // Merge default headers with custom headers
-  const headers = Object.assign(defaultHeaders, options.headers || {});
+  // Merge headers: custom headers should NOT overwrite essential headers
+  // First apply custom headers, then override with essentials to ensure CSRF is always present
+  const headers = Object.assign({}, options.headers || {}, defaultHeaders);
 
-  // Merge default config with custom options
-  const config = Object.assign({
+  // Merge config, but use our processed body and headers
+  const config = Object.assign({}, options, {
     credentials: 'same-origin',
-    headers
-  }, options);
+    headers,
+    body
+  });
 
   try {
     const res = await fetch(url, config);
@@ -187,6 +192,7 @@ function route(routeName, params = {}) {
     'auth.sign_in': '/sign_in',
     'auth.logout': '/logout',
     'company.list': '/company',
+    'company.create': '/company/create',
     'admin.index': '/admin',
     'stat.index': '/stat',
     'user.permission': '/user/permission',
