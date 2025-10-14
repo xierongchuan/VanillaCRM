@@ -4,19 +4,23 @@
 
 VanillaCRM is migrating from Bootstrap 5 + jQuery to **Tailwind CSS + Vue 3**. This document provides instructions for developers working with the new frontend architecture.
 
-## Current Status: Stage 1 - Scaffold Complete ✅
+## Current Status: Stage 2 - Header/Navigation Complete ✅
 
 ### What's Implemented
 
 - ✅ **Vue 3** - Loaded via CDN (`https://unpkg.com/vue@3/dist/vue.global.prod.js`)
-- ✅ **Tailwind CSS** - Loaded via CDN (`https://cdn.tailwindcss.com`)
+- ✅ **Tailwind CSS** - Loaded via CDN with `tw-` prefix (`https://cdn.tailwindcss.com`)
 - ✅ **Base Vue App** - Initialized in `public/js/vue-app.js`
 - ✅ **Helper Functions** - CSRF and fetch utilities in `public/js/helpers.js`
 - ✅ **Main Layout** - Updated `resources/views/layouts/main.blade.php` with Vue mount point
+- ✅ **Header/Navigation** - Migrated to Vue 3 component (`public/js/components/HeaderNav.js`)
+  - Mobile-responsive hamburger menu
+  - Theme switcher dropdown
+  - Role-based navigation
+  - Tailwind CSS styling with `tw-` prefix
 
 ### What's NOT Yet Migrated
 
-- ✅ Header/Navigation migrated to Vue (HeaderNav component)
 - ⏳ Flash Messages (still Bootstrap + Blade)
 - ⏳ All page components (still using jQuery)
 - ⏳ Forms (still using traditional HTML forms)
@@ -172,15 +176,30 @@ The root Vue app provides global reactive state:
 
 #### Accessing Global State in Components
 
+**Note**: Currently, the root app does NOT provide global state via `provide/inject`. To access global state in components, use one of these approaches:
+
+**Option 1: Props** (Recommended for now)
 ```javascript
-// In a component
+// Pass data as props from Blade template
+<my-component
+  :user="{{ json_encode(Auth::user()) }}"
+  theme="{{ session('theme') ?? 'light' }}"
+></my-component>
+```
+
+**Option 2: Window object** (For shared data)
+```javascript
+// In component
 export default {
-  inject: ['user', 'theme', 'flashMessages'],
   setup() {
-    // Use injected values
+    const theme = document.body.getAttribute('data-bs-theme') || 'light';
+    const flashMessages = window.__FLASH_MESSAGES__ || {};
+    // Use these values
   }
 }
 ```
+
+**Future Enhancement**: In later stages, we may add `provide/inject` pattern to the root app for better state management.
 
 ### Helper Functions
 
@@ -239,29 +258,29 @@ const searchDebounced = debounce((query) => {
 
 ## Working with Tailwind CSS
 
-### Using Tailwind Classes
+### Using Tailwind Classes with tw- Prefix
 
-Tailwind CSS is loaded via CDN and supports dark mode out of the box.
+**IMPORTANT**: To avoid conflicts with Bootstrap 5, all Tailwind classes use the `tw-` prefix. Additionally, Tailwind's preflight (reset) is disabled.
 
 #### Example Conversions
 
-| Bootstrap 5 | Tailwind CSS |
-|-------------|--------------|
-| `btn btn-primary` | `px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700` |
-| `container` | `container mx-auto` |
-| `row` | `flex flex-wrap` |
-| `col-md-6` | `w-full md:w-1/2` |
-| `d-flex justify-content-between` | `flex justify-between` |
-| `text-center` | `text-center` |
-| `alert alert-success` | `p-4 mb-4 text-green-800 bg-green-100 rounded-lg` |
-| `form-control` | `w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500` |
+| Bootstrap 5 | Tailwind CSS (with tw- prefix) |
+|-------------|--------------------------------|
+| `btn btn-primary` | `tw-px-4 tw-py-2 tw-bg-blue-600 tw-text-white tw-rounded tw-hover:bg-blue-700` |
+| `container` | `tw-container tw-mx-auto` |
+| `row` | `tw-flex tw-flex-wrap` |
+| `col-md-6` | `tw-w-full tw-md:w-1/2` |
+| `d-flex justify-content-between` | `tw-flex tw-justify-between` |
+| `text-center` | `tw-text-center` |
+| `alert alert-success` | `tw-p-4 tw-mb-4 tw-text-green-800 tw-bg-green-100 tw-rounded-lg` |
+| `form-control` | `tw-w-full tw-px-3 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500` |
 
 #### Dark Mode
 
-Tailwind is configured to use class-based dark mode. Add `dark:` prefix for dark mode styles:
+Tailwind is configured to use class-based dark mode. Add `tw-dark:` prefix for dark mode styles:
 
 ```html
-<div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+<div class="tw-bg-white tw-dark:bg-gray-800 tw-text-gray-900 tw-dark:text-gray-100">
   Content adapts to theme
 </div>
 ```
@@ -272,11 +291,15 @@ Tailwind is configured inline in `main.blade.php`:
 
 ```javascript
 tailwind.config = {
+  prefix: 'tw-',                    // Prefix to avoid Bootstrap conflicts
   darkMode: 'class',
   theme: {
     extend: {
       // Add custom colors, spacing, etc. here
     }
+  },
+  corePlugins: {
+    preflight: false                // Disable reset to prevent Bootstrap conflicts
   }
 }
 ```
@@ -389,19 +412,23 @@ console.log(window.__FLASH_MESSAGES__);  // Should show flash data
 
 ## Migration Checklist
 
-### Stage 1: Scaffold ✅ (Current)
+### Stage 1: Scaffold ✅
 - [x] Add Vue 3 CDN to main layout
-- [x] Add Tailwind CSS CDN to main layout
+- [x] Add Tailwind CSS CDN to main layout with tw- prefix
+- [x] Configure Tailwind to avoid Bootstrap conflicts
 - [x] Create Vue app initialization
-- [x] Create helper functions
+- [x] Create helper functions with proper namespace
 - [x] Add `#app` mount point
 - [x] Pass flash messages to JavaScript
 - [x] Create FRONTEND/README.md
 
-### Stage 2: Layout Components (Next)
-- [ ] Migrate Header/Navigation to Vue
-- [ ] Convert Bootstrap navbar to Tailwind
-- [ ] Create HeaderNav component
+### Stage 2: Header/Navigation ✅ (Current)
+- [x] Migrate Header/Navigation to Vue
+- [x] Convert Bootstrap navbar to Tailwind with tw- prefix
+- [x] Create HeaderNav component with mobile menu
+- [x] Implement theme switcher dropdown
+- [x] Add role-based navigation
+- [x] Fix all code review issues
 
 ### Stage 3: Flash Messages
 - [ ] Create FlashMessages Vue component

@@ -29,13 +29,23 @@ function csrfToken() {
 async function apiFetch(url, options = {}) {
   const token = csrfToken();
 
-  // Merge default headers with custom headers
-  const headers = Object.assign({
+  // Build default headers
+  const defaultHeaders = {
     'X-Requested-With': 'XMLHttpRequest',
     'X-CSRF-TOKEN': token,
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  }, options.headers || {});
+    'Accept': 'application/json'
+  };
+
+  // Only add Content-Type for JSON if body is not FormData
+  // FormData needs to set its own Content-Type with boundary
+  if (options.body && !(options.body instanceof FormData)) {
+    if (typeof options.body === 'string' || typeof options.body === 'object') {
+      defaultHeaders['Content-Type'] = 'application/json';
+    }
+  }
+
+  // Merge default headers with custom headers
+  const headers = Object.assign(defaultHeaders, options.headers || {});
 
   // Merge default config with custom options
   const config = Object.assign({
@@ -203,11 +213,21 @@ if (typeof module !== 'undefined' && module.exports) {
   };
 }
 
-// Make functions available globally
+// Create a single namespace object to avoid global pollution
+// Following best practice from FRONTEND/README.md: "Don't create global variables"
+window.VanillaCRM = window.VanillaCRM || {};
+window.VanillaCRM.helpers = {
+  csrfToken,
+  apiFetch,
+  formatDate,
+  formatNumber,
+  debounce,
+  confirmAction,
+  route
+};
+
+// For backward compatibility and convenience, also expose commonly used functions
+// These are namespaced under VanillaCRM to minimize collision risk
 window.csrfToken = csrfToken;
 window.apiFetch = apiFetch;
-window.formatDate = formatDate;
-window.formatNumber = formatNumber;
-window.debounce = debounce;
-window.confirmAction = confirmAction;
 window.route = route;

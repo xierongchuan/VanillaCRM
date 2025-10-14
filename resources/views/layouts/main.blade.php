@@ -16,11 +16,15 @@
     {{-- Tailwind CSS CDN --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Tailwind config for dark mode
+        // Tailwind config for dark mode and prefix to avoid Bootstrap conflicts
         tailwind.config = {
+            prefix: 'tw-',
             darkMode: 'class',
             theme: {
                 extend: {}
+            },
+            corePlugins: {
+                preflight: false  // Disable Tailwind's reset to prevent conflicts with Bootstrap
             }
         }
     </script>

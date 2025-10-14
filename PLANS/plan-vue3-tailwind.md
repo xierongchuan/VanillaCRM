@@ -602,16 +602,28 @@ export function csrfToken() {
 
 /**
  * Wrapper for fetch API with CSRF and error handling
+ * Note: Content-Type is only added for non-FormData payloads
+ * to support file uploads properly
  */
 export async function apiFetch(url, options = {}) {
   const token = csrfToken();
 
-  const headers = Object.assign({
+  // Build default headers
+  const defaultHeaders = {
     'X-Requested-With': 'XMLHttpRequest',
     'X-CSRF-TOKEN': token,
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-  }, options.headers || {});
+    'Accept': 'application/json'
+  };
+
+  // Only add Content-Type for JSON if body is not FormData
+  // FormData needs to set its own Content-Type with boundary
+  if (options.body && !(options.body instanceof FormData)) {
+    if (typeof options.body === 'string' || typeof options.body === 'object') {
+      defaultHeaders['Content-Type'] = 'application/json';
+    }
+  }
+
+  const headers = Object.assign(defaultHeaders, options.headers || {});
 
   const config = Object.assign({
     credentials: 'same-origin',

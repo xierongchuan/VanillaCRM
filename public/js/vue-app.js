@@ -5,7 +5,7 @@
  * It provides global state management and component registration.
  */
 
-const { createApp, ref, reactive, computed, onMounted } = Vue;
+const { createApp, ref, onMounted } = Vue;
 
 const App = {
   setup() {
