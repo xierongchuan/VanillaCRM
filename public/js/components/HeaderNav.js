@@ -36,8 +36,7 @@ const HeaderNav = {
   },
   data() {
     return {
-      isMobileMenuOpen: false,
-      isThemeDropdownOpen: false
+      isMobileMenuOpen: false
     };
   },
   computed: {
@@ -77,14 +76,8 @@ const HeaderNav = {
     toggleMobileMenu() {
       this.isMobileMenuOpen = !this.isMobileMenuOpen;
     },
-    toggleThemeDropdown() {
-      this.isThemeDropdownOpen = !this.isThemeDropdownOpen;
-    },
     closeMobileMenu() {
       this.isMobileMenuOpen = false;
-    },
-    closeThemeDropdown() {
-      this.isThemeDropdownOpen = false;
     },
     isActive(route) {
       return this.currentRoute === route;
@@ -101,22 +94,13 @@ const HeaderNav = {
       return '#';
     }
   },
-  mounted() {
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (event) => {
-      const target = event.target;
-      if (this.isThemeDropdownOpen && !target.closest('.theme-dropdown')) {
-        this.closeThemeDropdown();
-      }
-    });
-  },
   template: `
     <header class="tw-bg-gray-100 tw-dark:bg-gray-800 tw-shadow-sm">
       <nav class="tw-container tw-mx-auto tw-px-4 tw-py-3">
         <div class="tw-flex tw-items-center tw-justify-between">
           <!-- Brand/Logo -->
           <a :href="getRouteUrl('home.index')"
-             class="tw-text-xl tw-font-bold tw-text-gray-900 tw-dark:text-white tw-hover:text-blue-600 tw-dark:hover:text-blue-400 tw-transition-colors">
+             class="tw-text-xl tw-font-bold tw-text-gray-900 tw-dark:text-white tw-hover:text-blue-600 tw-dark:hover:text-blue-400 tw-transition-colors tw-no-underline">
             {{ appName }}
           </a>
 
@@ -139,7 +123,7 @@ const HeaderNav = {
               <a v-for="item in navItems"
                  :key="item.route"
                  :href="getRouteUrl(item.route)"
-                 :class="[ 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors', isActive(item.route) ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
+                 :class="[ 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors tw-no-underline', isActive(item.route) ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
                 {{ item.name }}
               </a>
             </div>
@@ -150,40 +134,27 @@ const HeaderNav = {
               <a v-for="(button, index) in navRightButtons"
                  :key="index"
                  :href="button.href"
-                 :class="button.class || 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-bg-green-600 tw-text-white tw-hover:bg-green-700 tw-transition-colors'">
+                 :class="button.class || 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-bg-green-600 tw-text-white tw-hover:bg-green-700 tw-transition-colors tw-no-underline'">
                 {{ button.text }}
               </a>
 
-              <!-- Theme Switcher Dropdown -->
-              <div class="tw-relative theme-dropdown">
-                <button
-                  @click="toggleThemeDropdown"
-                  class="tw-p-2 tw-text-gray-600 tw-dark:text-gray-300 tw-hover:text-blue-600 tw-dark:hover:text-blue-400 tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500 tw-rounded tw-transition-colors"
-                  aria-label="Switch theme">
-                  <i :class="['bi', themeIcon, 'tw-text-xl']"></i>
-                </button>
-                <div v-show="isThemeDropdownOpen"
-                     class="tw-absolute right-0 tw-mt-2 tw-w-48 tw-bg-white tw-dark:bg-gray-700 tw-rounded-lg tw-shadow-lg tw-py-1 tw-z-50 tw-border tw-border-gray-200 tw-dark:border-gray-600">
-                  <a :href="getRouteUrl('theme.switch', 'light')"
-                     class="tw-flex tw-items-center tw-px-4 tw-py-2 tw-text-sm tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-100 tw-dark:hover:bg-gray-600 tw-transition-colors">
-                    <i class="bi bi-lightbulb-fill tw-mr-2"></i> Светлая
-                  </a>
-                  <a :href="getRouteUrl('theme.switch', 'dark')"
-                     class="tw-flex tw-items-center tw-px-4 tw-py-2 tw-text-sm tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-100 tw-dark:hover:bg-gray-600 tw-transition-colors">
-                    <i class="bi bi-cloud-haze2 tw-mr-2"></i> Тёмная
-                  </a>
-                </div>
-              </div>
+              <!-- Theme Switcher Toggle -->
+              <a :href="getRouteUrl('theme.switch', theme === 'light' ? 'dark' : 'light')"
+                 class="tw-p-2 tw-text-gray-600 tw-dark:text-gray-300 tw-hover:text-blue-600 tw-dark:hover:text-blue-400 tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500 tw-rounded tw-transition-colors tw-no-underline"
+                 aria-label="Switch theme"
+                 title="Переключить тему">
+                <i :class="['bi', themeIcon, 'tw-text-xl']"></i>
+              </a>
 
               <!-- Auth Links -->
               <a v-if="!isAuthenticated"
                  :href="getRouteUrl('auth.sign_in')"
-                 :class="[ 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors', isActive('auth.sign_in') ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
+                 :class="[ 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-transition-colors tw-no-underline', isActive('auth.sign_in') ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
                 Войти
               </a>
               <a v-else
                  :href="getRouteUrl('auth.logout')"
-                 class="tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-red-600 tw-dark:hover:text-red-400 tw-transition-colors">
+                 class="tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-red-600 tw-dark:hover:text-red-400 tw-transition-colors tw-no-underline">
                 Выйти
               </a>
             </div>
@@ -204,7 +175,7 @@ const HeaderNav = {
                :key="item.route"
                :href="getRouteUrl(item.route)"
                @click="closeMobileMenu"
-               :class="[ 'tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-transition-colors', isActive(item.route) ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
+               :class="[ 'tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-transition-colors tw-no-underline', isActive(item.route) ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
               {{ item.name }}
             </a>
 
@@ -214,25 +185,19 @@ const HeaderNav = {
                  :key="index"
                  :href="button.href"
                  @click="closeMobileMenu"
-                 :class="button.class || 'tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-bg-green-600 tw-text-white tw-hover:bg-green-700 tw-transition-colors'">
+                 :class="button.class || 'tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-bg-green-600 tw-text-white tw-hover:bg-green-700 tw-transition-colors tw-no-underline'">
                 {{ button.text }}
               </a>
             </div>
 
             <!-- Mobile Theme Switcher -->
             <div class="tw-border-t tw-border-gray-300 tw-dark:border-gray-600 tw-pt-3 tw-mt-3">
-              <div class="tw-px-3 tw-py-2 tw-text-xs tw-font-semibold tw-text-gray-500 tw-dark:text-gray-400 tw-uppercase tw-tracking-wider">
-                Тема
-              </div>
-              <a :href="getRouteUrl('theme.switch', 'light')"
+              <a :href="getRouteUrl('theme.switch', theme === 'light' ? 'dark' : 'light')"
                  @click="closeMobileMenu"
-                 class="tw-flex tw-items-center tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-transition-colors">
-                <i class="bi bi-lightbulb-fill tw-mr-2"></i> Светлая
-              </a>
-              <a :href="getRouteUrl('theme.switch', 'dark')"
-                 @click="closeMobileMenu"
-                 class="tw-flex tw-items-center tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-transition-colors">
-                <i class="bi bi-cloud-haze2 tw-mr-2"></i> Тёмная
+                 class="tw-flex tw-items-center tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-transition-colors tw-no-underline">
+                <i :class="['bi', themeIcon, 'tw-mr-2']"></i>
+                <span v-if="theme === 'light'">Переключить на тёмную</span>
+                <span v-else>Переключить на светлую</span>
               </a>
             </div>
 
@@ -241,13 +206,13 @@ const HeaderNav = {
               <a v-if="!isAuthenticated"
                  :href="getRouteUrl('auth.sign_in')"
                  @click="closeMobileMenu"
-                 :class="[ 'tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-transition-colors', isActive('auth.sign_in') ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
+                 :class="[ 'tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-transition-colors tw-no-underline', isActive('auth.sign_in') ? 'tw-bg-blue-600 tw-text-white' : 'tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-blue-600 tw-dark:hover:text-blue-400' ]">
                 Войти
               </a>
               <a v-else
                  :href="getRouteUrl('auth.logout')"
                  @click="closeMobileMenu"
-                 class="tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-red-600 tw-dark:hover:text-red-400 tw-transition-colors">
+                 class="tw-block tw-px-3 tw-py-2 tw-rounded-md tw-text-base tw-font-medium tw-text-gray-700 tw-dark:text-gray-300 tw-hover:bg-gray-200 tw-dark:hover:bg-gray-700 tw-hover:text-red-600 tw-dark:hover:text-red-400 tw-transition-colors tw-no-underline">
                 Выйти
               </a>
             </div>
