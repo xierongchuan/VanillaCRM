@@ -70,9 +70,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Create Vue app instance
   const app = createApp(App);
 
-  // Register global components here (will be added in future stages)
-  // Example:
-  // app.component('header-nav', HeaderNav);
+  // Register global components
+  // Stage 2: Header Navigation
+  if (typeof window.HeaderNav !== 'undefined') {
+    app.component('header-nav', window.HeaderNav);
+    console.log('HeaderNav component registered');
+  }
+
+  // Future components will be registered here:
   // app.component('flash-messages', FlashMessages);
   // app.component('reports-carousel', ReportsCarousel);
   // etc.

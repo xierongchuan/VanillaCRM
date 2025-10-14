@@ -162,123 +162,14 @@
 <body data-bs-theme="{{ session('theme') ?? 'light' }}">
 
     <div id="app">
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
-            <div class="container">
-                <a class="navbar-brand" href="{{ route('home.index') }}"> {{ config('app.name') }}</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'home.index') active @endif
-
-								"
-                                aria-current="page" href="{{ route('home.index') }}">Главная</a>
-                        </li>
-
-
-                        @if (@Auth::user()->role === 'admin')
-                            <li class="nav-item">
-                                <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'admin.index') active @endif
-
-								"
-                                    aria-current="page" href="{{ route('admin.index') }}">Администраторы</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'company.list') active @endif
-
-								"
-                                    aria-current="page" href="{{ route('company.list') }}">Настройки</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'stat.index') active @endif
-
-								"
-                                    aria-current="page" href="{{ route('stat.index') }}">Статистика</a>
-                            </li>
-                        @endif
-
-                        @if (@Auth::user()->role === 'user')
-                            <li class="nav-item">
-                                <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'user.permission') active @endif
-
-								"
-                                    aria-current="page" href="{{ route('user.permission') }}">Задачи</a>
-                            </li>
-                        @endif
-
-                    </ul>
-
-
-                    <ul class="d-flex navbar-nav mb-2 mb-lg-0">
-                        @yield('nav_right')
-
-                        @hasSection('nav_right')
-                            <div class="vr mx-1  mr-2 d-none d-lg-block"></div>
-                        @endif
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle fs-5 p-0" style="padding-top: 0.38rem!important;"
-                                href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @if (session('theme') == 'light')
-                                    <i class="bi bi-lightbulb-fill"></i>
-                                @elseif (session('theme') == 'dark')
-                                    <i class="bi bi-cloud-haze2"></i>
-                                @else
-                                    <i class="bi bi-palette2"></i>
-                                @endif
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('theme.switch', 'light') }}"><i
-                                            class="bi bi-lightbulb-fill"></i> Светлая</a></li>
-                                <li><a class="dropdown-item" href="{{ route('theme.switch', 'dark') }}"><i
-                                            class="bi bi-cloud-haze2"></i> Тёмная</a></li>
-                            </ul>
-                        </li>
-
-                        @if (!Auth::check())
-                            <li class="nav-item">
-                                <a class="
-									nav-link
-
-									@if (Route::currentRouteName() == 'auth.sign_in') active @endif
-
-									"
-                                    aria-current="page" href="{{ route('auth.sign_in') }}">Войти</a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="{{ route('auth.logout') }}">Выйти</a>
-                            </li>
-                        @endif
-
-                    </ul>
-
-                </div>
-            </div>
-        </nav>
-    </header>
+    {{-- Vue Header Navigation Component --}}
+    <header-nav
+        app-name="{{ config('app.name') }}"
+        :is-authenticated="{{ Auth::check() ? 'true' : 'false' }}"
+        user-role="{{ @Auth::user()->role ?? 'guest' }}"
+        current-route="{{ Route::currentRouteName() }}"
+        theme="{{ session('theme') ?? 'light' }}"
+    ></header-nav>
 
     <main class="container">
 
@@ -323,11 +214,14 @@
     {{-- Vue 3 CDN --}}
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
-    {{-- Vue App Initialization --}}
-    <script src="/js/vue-app.js" defer></script>
-
     {{-- Helpers for CSRF and fetch --}}
     <script src="/js/helpers.js"></script>
+
+    {{-- Vue Components (must load before vue-app.js) --}}
+    <script src="/js/components/HeaderNav.js"></script>
+
+    {{-- Vue App Initialization (must load last) --}}
+    <script src="/js/vue-app.js" defer></script>
 
     {{-- Pass flash messages to JavaScript --}}
     <script>
