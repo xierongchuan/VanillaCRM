@@ -178,6 +178,20 @@
             opacity: 0;
             transform: translateY(-10px);
         }
+
+        /* Vue Transition Animations for Slide (StatsDashboard collapsible sections) */
+        .tw-slide-enter-active,
+        .tw-slide-leave-active {
+            transition: all 0.3s ease;
+            max-height: 10000px;
+            overflow: hidden;
+        }
+
+        .tw-slide-enter-from,
+        .tw-slide-leave-to {
+            opacity: 0;
+            max-height: 0;
+        }
     </style>
 
 </head>
@@ -238,6 +252,7 @@
     <script src="/js/components/ItemList.js"></script>
     <script src="/js/components/DataTable.js"></script>
     <script src="/js/components/ExpenseDashboard.js"></script>
+    <script src="/js/components/StatsDashboard.js"></script>
 
     {{-- Vue App Initialization (must load last) --}}
     <script src="/js/vue-app.js" defer></script>

@@ -145,6 +145,12 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('ExpenseDashboard component registered');
   }
 
+  // Stage 10: Statistics Dashboard
+  if (typeof window.StatsDashboard !== 'undefined') {
+    app.component('stats-dashboard', window.StatsDashboard);
+    console.log('StatsDashboard component registered');
+  }
+
   // Future components will be registered here:
   // etc.
 

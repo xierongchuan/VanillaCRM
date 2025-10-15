@@ -8,6 +8,21 @@
 
 @section('content')
 
+    {{-- Vue 3 Statistics Dashboard Component (Stage 10) --}}
+    <stats-dashboard
+        :sales-data="{{ json_encode($sales) }}"
+        :growth-data="{{ json_encode($growthStatistics) }}"
+    ></stats-dashboard>
+
+    {{--
+    ============================================================
+    ORIGINAL IMPLEMENTATION (PRESERVED FOR ROLLBACK)
+    ============================================================
+    Below is the original Bootstrap + inline scripts implementation.
+    To rollback to the old version, uncomment this section and remove
+    the <stats-dashboard> component above.
+    ============================================================
+
     <div class="m-2"></div>
 
     <span id="repsAccordion" class="accordion">
@@ -414,5 +429,9 @@
 
     </span>
 
+    ============================================================
+    END OF ORIGINAL IMPLEMENTATION
+    ============================================================
+    --}}
 
 @endsection
