@@ -2,11 +2,18 @@
 
 @section('title', 'Настройки')
 
-@section('nav_right')
-    <li class="nav-item">
-        <a class="btn btn-success" aria-current="page" href="{{ route('company.create') }}">Создать Компанию</a>
-    </li>
-@endsection
+@php
+    // Pass action buttons to header navigation component
+    // This replaces the old @yield('nav_right') pattern
+    $__navRightButtons = [
+        [
+            'text' => 'Создать Компанию',
+            'href' => route('company.create'),
+            // Optional: custom Tailwind classes (defaults to green button if not specified)
+            // 'class' => 'tw-px-3 tw-py-2 tw-rounded-md tw-text-sm tw-font-medium tw-bg-green-600 tw-text-white tw-hover:bg-green-700 tw-transition-colors'
+        ]
+    ];
+@endphp
 
 @section('content')
 

@@ -6,12 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
     <title>{{ config('app.name') }} - @yield('title')</title>
     <link rel="icon" href="/icon.png" type="image/png">
 
     {{-- Import Styles --}}
     @vite(['resources/sass/app.scss'])
+
+    {{-- Tailwind CSS CDN (Play CDN - Development/Prototyping)
+         Note: SRI (Subresource Integrity) cannot be used with cdn.tailwindcss.com
+         because it's a JIT (Just-In-Time) compiler that dynamically generates CSS
+         based on your markup. For production with SRI, use cdnjs.cloudflare.com instead. --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind config for dark mode and prefix to avoid Bootstrap conflicts
+        tailwind.config = {
+            prefix: 'tw-',
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            },
+            corePlugins: {
+                preflight: false  // Disable Tailwind's reset to prevent conflicts with Bootstrap
+            }
+        }
+    </script>
 
     @yield('includes')
 
@@ -143,157 +162,47 @@
             }
 
         }
+
+        /* Vue Transition Animations for Flash Messages */
+        .fade-slide-enter-active,
+        .fade-slide-leave-active {
+            transition: all 0.3s ease;
+        }
+
+        .fade-slide-enter-from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .fade-slide-leave-to {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
     </style>
 
 </head>
 
 <body data-bs-theme="{{ session('theme') ?? 'light' }}">
 
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
-            <div class="container">
-                <a class="navbar-brand" href="{{ route('home.index') }}"> {{ config('app.name') }}</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'home.index') active @endif
-
-								"
-                                aria-current="page" href="{{ route('home.index') }}">Главная</a>
-                        </li>
-
-
-                        @if (@Auth::user()->role === 'admin')
-                            <li class="nav-item">
-                                <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'admin.index') active @endif
-
-								"
-                                    aria-current="page" href="{{ route('admin.index') }}">Администраторы</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'company.list') active @endif
-
-								"
-                                    aria-current="page" href="{{ route('company.list') }}">Настройки</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'stat.index') active @endif
-
-								"
-                                    aria-current="page" href="{{ route('stat.index') }}">Статистика</a>
-                            </li>
-                        @endif
-
-                        @if (@Auth::user()->role === 'user')
-                            <li class="nav-item">
-                                <a class="
-								nav-link
-
-								@if (Route::currentRouteName() == 'user.permission') active @endif
-
-								"
-                                    aria-current="page" href="{{ route('user.permission') }}">Задачи</a>
-                            </li>
-                        @endif
-
-                    </ul>
-
-
-                    <ul class="d-flex navbar-nav mb-2 mb-lg-0">
-                        @yield('nav_right')
-
-                        @hasSection('nav_right')
-                            <div class="vr mx-1  mr-2 d-none d-lg-block"></div>
-                        @endif
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle fs-5 p-0" style="padding-top: 0.38rem!important;"
-                                href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @if (session('theme') == 'light')
-                                    <i class="bi bi-lightbulb-fill"></i>
-                                @elseif (session('theme') == 'dark')
-                                    <i class="bi bi-cloud-haze2"></i>
-                                @else
-                                    <i class="bi bi-palette2"></i>
-                                @endif
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('theme.switch', 'light') }}"><i
-                                            class="bi bi-lightbulb-fill"></i> Светлая</a></li>
-                                <li><a class="dropdown-item" href="{{ route('theme.switch', 'dark') }}"><i
-                                            class="bi bi-cloud-haze2"></i> Тёмная</a></li>
-                            </ul>
-                        </li>
-
-                        @if (!Auth::check())
-                            <li class="nav-item">
-                                <a class="
-									nav-link
-
-									@if (Route::currentRouteName() == 'auth.sign_in') active @endif
-
-									"
-                                    aria-current="page" href="{{ route('auth.sign_in') }}">Войти</a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="{{ route('auth.logout') }}">Выйти</a>
-                            </li>
-                        @endif
-
-                    </ul>
-
-                </div>
-            </div>
-        </nav>
-    </header>
+    <div id="app">
+    {{-- Vue Header Navigation Component --}}
+    <header-nav
+        app-name="{{ config('app.name') }}"
+        :is-authenticated="{{ Auth::check() ? 'true' : 'false' }}"
+        user-role="{{ @Auth::user()->role ?? 'guest' }}"
+        current-route="{{ Route::currentRouteName() }}"
+        theme="{{ session('theme') ?? 'light' }}"
+        :nav-right-buttons='@json($__navRightButtons ?? [])'
+    ></header-nav>
 
     <main class="container">
 
-        @if (Session::has('success'))
-            <div class="alert alert-success mt-3">
-                <ul class="m-0 my-1">
-                    <li>{{ Session::get('success') }}</li>
-                </ul>
-            </div>
-        @endif
-
-        @if (Session::has('warning'))
-            <div class="alert alert-warning mt-3">
-                <ul class="m-0 my-1">
-                    <li>{{ Session::get('warning') }}</li>
-                </ul>
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger mt-3">
-                <ul class="m-0 my-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        {{-- Vue Flash Messages Component --}}
+        <flash-messages
+            :messages="flashMessages"
+            :auto-dismiss="true"
+            :dismiss-delay="5000"
+        ></flash-messages>
 
         @yield('content')
 
@@ -304,6 +213,32 @@
     <footer>
 
     </footer>
+
+    </div>{{-- End #app --}}
+
+    {{-- Vue 3 CDN (pinned to v3.5.22 for SRI) --}}
+    <script src="https://unpkg.com/vue@3.5.22/dist/vue.global.prod.js"
+            integrity="sha256-2unBeOhuCSQOWHIc20aoGslq4dxqhw0bG7n/ruPG0/4="
+            crossorigin="anonymous"></script>
+
+    {{-- Helpers for CSRF and fetch --}}
+    <script src="/js/helpers.js"></script>
+
+    {{-- Vue Components (must load before vue-app.js) --}}
+    <script src="/js/components/HeaderNav.js"></script>
+    <script src="/js/components/FlashMessages.js"></script>
+
+    {{-- Vue App Initialization (must load last) --}}
+    <script src="/js/vue-app.js" defer></script>
+
+    {{-- Pass flash messages to JavaScript --}}
+    <script>
+        window.__FLASH_MESSAGES__ = {
+            success: @json(Session::get('success')),
+            warning: @json(Session::get('warning')),
+            errors: @json($errors->all())
+        };
+    </script>
 
     {{-- Import JavaScript --}}
     @if (@Auth::user()->role === 'admin')

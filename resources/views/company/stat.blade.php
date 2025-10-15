@@ -2,8 +2,11 @@
 
 @section('title', 'Статистика')
 
-@section('content')
+@section('includes')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@endsection
+
+@section('content')
 
     <div class="m-2"></div>
 
@@ -42,7 +45,8 @@
                 </div>
 
                 <script>
-                    document.addEventListener('DOMContentLoaded', function() {
+                    // Initialize chart after Vue mounts (use immediate timeout to defer execution)
+                    setTimeout(function() {
                         const data = @json($sale);
                         const labels = Object.keys(data).sort(); // Даты в порядке возрастания
 
@@ -90,7 +94,7 @@
                             }
                             return color;
                         }
-                    });
+                    }, 100);
                 </script>
             @endforeach
 
@@ -153,7 +157,7 @@
 
                     // 1
 
-                    document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(function() {
                         const data = @json($data);
                         const labels = Object.keys(data).sort(); // Даты в порядке возрастания
 
@@ -212,8 +216,8 @@
                             }
                             return color;
                         }
-                    });
-                    document.addEventListener('DOMContentLoaded', function() {
+                    }, 100);
+                    setTimeout(function() {
                         const data = @json($data);
                         const labels = Object.keys(data).sort(); // Даты в порядке возрастания
 
@@ -274,11 +278,11 @@
                             }
                             return color;
                         }
-                    });
+                    }, 100);
 
                     // 2
 
-                    document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(function() {
                         const data = @json($data);
                         const labels = Object.keys(data).sort(); // Даты в порядке возрастания
 
@@ -338,8 +342,8 @@
                             }
                             return color;
                         }
-                    });
-                    document.addEventListener('DOMContentLoaded', function() {
+                    }, 100);
+                    setTimeout(function() {
                         const data = @json($data);
                         const labels = Object.keys(data).sort(); // Даты в порядке возрастания
 
@@ -402,7 +406,7 @@
                             }
                             return color;
                         }
-                    });
+                    }, 100);
                 </script>
             @endforeach
 
