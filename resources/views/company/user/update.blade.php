@@ -11,24 +11,16 @@
                 class="bg-body-tertiary rounded p-3">
                 @csrf
 
-                <input type="hidden" id="user_post_id" value="{{ $user->post_id }}">
-
-                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="user_department"
-                    name="department" required>
-                    @foreach ($departments as $department)
-                        <option value="{{ $department->id }}" @if ($user->dep_id == $department->id) selected @endif>
-                            {{ $department->name }}</option>
-                    @endforeach
-                </select>
-
-                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="user_post"
-                    name="post">
-                    <option value="" selected>Select Post</option>
-                    @foreach ($posts as $post)
-                        <option value="{{ $post->id }}" @if ($user->post_id == $post->id) selected @endif>
-                            {{ $post->name }}</option>
-                    @endforeach
-                </select>
+                {{-- Stage 5: Vue Component for Department/Post Selector with dynamic loading --}}
+                <department-post-selector
+                    company-id="{{ $company->id }}"
+                    :departments='@json($departments)'
+                    selected-department-id="{{ $user->dep_id }}"
+                    selected-post-id="{{ $user->post_id }}"
+                    :show-post="true"
+                    department-name="department"
+                    post-name="post">
+                </department-post-selector>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Role:</label>

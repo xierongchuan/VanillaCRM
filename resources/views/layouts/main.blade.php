@@ -228,6 +228,7 @@
     <script src="/js/components/HeaderNav.js"></script>
     <script src="/js/components/FlashMessages.js"></script>
     <script src="/js/components/ReportsCarousel.js"></script>
+    <script src="/js/components/DepartmentPostSelector.js"></script>
 
     {{-- Vue App Initialization (must load last) --}}
     <script src="/js/vue-app.js" defer></script>

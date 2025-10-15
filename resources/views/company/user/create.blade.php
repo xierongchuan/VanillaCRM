@@ -18,13 +18,13 @@
                     <label for="password">Password:</label>
                     <input type="password" autocomplete="off" class="form-control" id="password" name="password" required>
                 </div>
-                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="department"
-                    required>
-                    <option value="" selected>Select Department</option>
-                    @foreach ($departments as $department)
-                        <option value="{{ $department->id }}">{{ $department->name }}</option>
-                    @endforeach
-                </select>
+                {{-- Stage 5: Vue Component for Department Selector (Post not needed for create) --}}
+                <department-post-selector
+                    company-id="{{ $company->id }}"
+                    :departments='@json($departments)'
+                    :show-post="false"
+                    department-name="department">
+                </department-post-selector>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Role:</label>
                     <div class="btn-group d-flex flex-wrap gap-2" role="group" aria-label="Role selection">

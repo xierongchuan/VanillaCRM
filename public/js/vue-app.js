@@ -90,6 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('ReportsCarousel component registered');
   }
 
+  // Stage 5: Department/Post Selector (AJAX Forms)
+  if (typeof window.DepartmentPostSelector !== 'undefined') {
+    app.component('department-post-selector', window.DepartmentPostSelector);
+    console.log('DepartmentPostSelector component registered');
+  }
+
   // Future components will be registered here:
   // etc.
 

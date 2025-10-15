@@ -11,6 +11,16 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel";
 
+// ===================================================================
+// STAGE 5: Department/Post AJAX code commented out - replaced with Vue 3
+// ===================================================================
+// The department/post selector functionality is now handled by Vue 3 component
+// See: public/js/components/DepartmentPostSelector.js
+// And: resources/views/company/user/create.blade.php (Vue component integration)
+// And: resources/views/company/user/update.blade.php (Vue component integration)
+// ===================================================================
+
+/*
 $(document).ready(function () {
 	$("#worker_department").on("change", function () {
 		let depValue = $(this).val();
@@ -49,6 +59,9 @@ $(document).ready(function () {
 			},
 		});
 	});
+*/
+
+$(document).ready(function () {
 
 	$(".perm_panel_switch").click(function () {
 		let panelId = $(this).attr("panel"); // Получаем значение атрибута panel
