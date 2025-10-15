@@ -229,6 +229,8 @@
     <script src="/js/components/FlashMessages.js"></script>
     <script src="/js/components/ReportsCarousel.js"></script>
     <script src="/js/components/DepartmentPostSelector.js"></script>
+    <script src="/js/components/PermissionPanel.js"></script>
+    <script src="/js/components/XlsxReportForm.js"></script>
 
     {{-- Vue App Initialization (must load last) --}}
     <script src="/js/vue-app.js" defer></script>

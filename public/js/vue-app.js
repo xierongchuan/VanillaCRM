@@ -96,6 +96,17 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DepartmentPostSelector component registered');
   }
 
+  // Stage 6: User Panels (Permission Panels & XLSX Forms)
+  if (typeof window.PermissionPanel !== 'undefined') {
+    app.component('permission-panel', window.PermissionPanel);
+    console.log('PermissionPanel component registered');
+  }
+
+  if (typeof window.XlsxReportForm !== 'undefined') {
+    app.component('xlsx-report-form', window.XlsxReportForm);
+    console.log('XlsxReportForm component registered');
+  }
+
   // Future components will be registered here:
   // etc.
 
