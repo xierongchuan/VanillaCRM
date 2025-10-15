@@ -74,6 +74,16 @@ $(document).ready(function () {
 		});
 	});
 });
+
+// ===================================================================
+// STAGE 4: Slick Carousel code commented out - replaced with Vue 3
+// ===================================================================
+// The carousel functionality is now handled by Vue 3 components
+// See: public/js/components/ReportsCarousel.js
+// And: resources/views/home.blade.php (Vue components integration)
+// ===================================================================
+
+/*
 $(document).ready(function () {
 	// Инициализация слайдера
 	$('[id^="perm_panel_"]').slick({
@@ -107,3 +117,4 @@ $(document).ready(function () {
 		$("#perm_panel_" + slideId).slick("slickPrev");
 	});
 });
+*/

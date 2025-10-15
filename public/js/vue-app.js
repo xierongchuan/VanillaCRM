@@ -84,8 +84,13 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('FlashMessages component registered');
   }
 
+  // Stage 4: Reports Carousel
+  if (typeof window.ReportsCarousel !== 'undefined') {
+    app.component('reports-carousel', window.ReportsCarousel);
+    console.log('ReportsCarousel component registered');
+  }
+
   // Future components will be registered here:
-  // app.component('reports-carousel', ReportsCarousel);
   // etc.
 
   // Mount the app

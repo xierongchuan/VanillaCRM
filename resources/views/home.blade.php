@@ -39,7 +39,7 @@
 
                     {{-- @dd($coms_perms) --}}
 
-                    <span id="perm_panel_{{ $company->id }}">
+                    <span id="perm_panel_{{ $company->id }}" data-carousel-company="{{ $company->id }}">
                         @if (in_array('report_xlsx', $coms_perms[$company->id]) && !empty($coms_data[$company->id]))
                             {{-- Ежедневный отчёт --}}
                             <div id="stat_perm_panel_{{ $company->id }}" class="collapse show perm-panel w-100">
@@ -672,7 +672,7 @@
 
                         @if (in_array('report_caffe', $coms_perms[$company->id]))
                             {{-- Отчёт кафе --}}
-                            <div id="serv_perm_panel_{{ $company->id }}" class="collapse perm-panel w-100">
+                            <div id="caffe_perm_panel_{{ $company->id }}" class="collapse perm-panel w-100">
                                 <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
                                     <div class="d-flex flex-wrap justify-content-center">
                                         <h2>Отчёт кафе</h2>
@@ -1083,7 +1083,7 @@
                         </h1>
                     </span>
 
-                    <span id="perm_panel_{{ $company->id }}">
+                    <span id="perm_panel_{{ $company->id }}" data-carousel-company="{{ $company->id }}">
                         <div id="stat_perm_panel_{{ $company->id }}" class="collapse show perm-panel w-100">
                             <div class="bg-body-tertiary mt-2 rounded p-3 pb-2 mb-2">
                                 <div class="d-flex flex-wrap justify-content-center">
@@ -2012,5 +2012,8 @@
             });
         });
     </script>
+
+    {{-- Vue 3 Carousel Logic for Reports (Stage 4) --}}
+    <script src="/js/home-carousel.js"></script>
 
 @endsection

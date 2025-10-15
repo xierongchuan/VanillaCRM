@@ -227,6 +227,7 @@
     {{-- Vue Components (must load before vue-app.js) --}}
     <script src="/js/components/HeaderNav.js"></script>
     <script src="/js/components/FlashMessages.js"></script>
+    <script src="/js/components/ReportsCarousel.js"></script>
 
     {{-- Vue App Initialization (must load last) --}}
     <script src="/js/vue-app.js" defer></script>
