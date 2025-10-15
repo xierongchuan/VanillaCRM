@@ -38,18 +38,27 @@ async function apiFetch(url, options = {}) {
 
   // Serialize body if it's a plain object (not FormData, not string)
   let body = options.body;
+  let shouldAddContentType = false;
+
   if (body && typeof body === 'object' && !(body instanceof FormData) && typeof body !== 'string') {
     body = JSON.stringify(body);
-    defaultHeaders['Content-Type'] = 'application/json';
+    shouldAddContentType = true;
   } else if (typeof body === 'string') {
-    // If body is already a string (JSON.stringify was called manually), add Content-Type
-    defaultHeaders['Content-Type'] = 'application/json';
+    // If body is already a string (JSON.stringify was called manually), suggest Content-Type
+    // but allow custom headers to override it
+    shouldAddContentType = true;
   }
   // For FormData, don't add Content-Type - let browser set it with boundary
 
-  // Merge headers: custom headers should NOT overwrite essential headers
-  // First apply custom headers, then override with essentials to ensure CSRF is always present
-  const headers = Object.assign({}, options.headers || {}, defaultHeaders);
+  // Merge headers: custom headers should NOT overwrite essential headers like CSRF
+  // First apply custom headers, then override with essentials, then conditionally add Content-Type
+  const customHeaders = options.headers || {};
+  const headers = Object.assign({}, customHeaders, defaultHeaders);
+
+  // Only add Content-Type if caller didn't provide one and body needs it
+  if (shouldAddContentType && !customHeaders['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   // Merge config, but use our processed body and headers
   const config = Object.assign({}, options, {

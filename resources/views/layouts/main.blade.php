@@ -13,7 +13,10 @@
     {{-- Import Styles --}}
     @vite(['resources/sass/app.scss'])
 
-    {{-- Tailwind CSS CDN --}}
+    {{-- Tailwind CSS CDN (Play CDN - Development/Prototyping)
+         Note: SRI (Subresource Integrity) cannot be used with cdn.tailwindcss.com
+         because it's a JIT (Just-In-Time) compiler that dynamically generates CSS
+         based on your markup. For production with SRI, use cdnjs.cloudflare.com instead. --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         // Tailwind config for dark mode and prefix to avoid Bootstrap conflicts
@@ -213,8 +216,10 @@
 
     </div>{{-- End #app --}}
 
-    {{-- Vue 3 CDN --}}
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    {{-- Vue 3 CDN (pinned to v3.5.22 for SRI) --}}
+    <script src="https://unpkg.com/vue@3.5.22/dist/vue.global.prod.js"
+            integrity="sha256-2unBeOhuCSQOWHIc20aoGslq4dxqhw0bG7n/ruPG0/4="
+            crossorigin="anonymous"></script>
 
     {{-- Helpers for CSRF and fetch --}}
     <script src="/js/helpers.js"></script>

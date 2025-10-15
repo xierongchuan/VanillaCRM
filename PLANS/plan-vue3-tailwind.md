@@ -617,13 +617,22 @@ export async function apiFetch(url, options = {}) {
 
   // Only add Content-Type for JSON if body is not FormData
   // FormData needs to set its own Content-Type with boundary
+  let shouldAddContentType = false;
   if (options.body && !(options.body instanceof FormData)) {
     if (typeof options.body === 'string' || typeof options.body === 'object') {
-      defaultHeaders['Content-Type'] = 'application/json';
+      shouldAddContentType = true;
     }
   }
 
-  const headers = Object.assign(defaultHeaders, options.headers || {});
+  // Merge headers: custom headers should NOT overwrite essential headers like CSRF
+  // First apply custom headers, then override with essentials
+  const customHeaders = options.headers || {};
+  const headers = Object.assign({}, customHeaders, defaultHeaders);
+
+  // Only add Content-Type if caller didn't provide one and body needs it
+  if (shouldAddContentType && !customHeaders['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   const config = Object.assign({
     credentials: 'same-origin',
