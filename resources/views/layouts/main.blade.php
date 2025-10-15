@@ -231,6 +231,10 @@
     <script src="/js/components/DepartmentPostSelector.js"></script>
     <script src="/js/components/PermissionPanel.js"></script>
     <script src="/js/components/XlsxReportForm.js"></script>
+    <script src="/js/components/FormInput.js"></script>
+    <script src="/js/components/FormTextarea.js"></script>
+    <script src="/js/components/FormRadioGroup.js"></script>
+    <script src="/js/components/FormMultiSelect.js"></script>
 
     {{-- Vue App Initialization (must load last) --}}
     <script src="/js/vue-app.js" defer></script>

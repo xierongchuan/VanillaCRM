@@ -107,6 +107,27 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('XlsxReportForm component registered');
   }
 
+  // Stage 7: CRUD Form Components
+  if (typeof window.FormInput !== 'undefined') {
+    app.component('form-input', window.FormInput);
+    console.log('FormInput component registered');
+  }
+
+  if (typeof window.FormTextarea !== 'undefined') {
+    app.component('form-textarea', window.FormTextarea);
+    console.log('FormTextarea component registered');
+  }
+
+  if (typeof window.FormRadioGroup !== 'undefined') {
+    app.component('form-radio-group', window.FormRadioGroup);
+    console.log('FormRadioGroup component registered');
+  }
+
+  if (typeof window.FormMultiSelect !== 'undefined') {
+    app.component('form-multi-select', window.FormMultiSelect);
+    console.log('FormMultiSelect component registered');
+  }
+
   // Future components will be registered here:
   // etc.
 

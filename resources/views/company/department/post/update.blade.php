@@ -4,27 +4,41 @@
 
 @section('content')
 
-	<div class="row justify-content-center">
-		<div class="col-lg-6">
-			<h2 class="text-center mt-4">Update Post in <b>{{$department -> name}}</b></h2>
-			<form action="{{route('company.department.post.modify', compact('company', 'department', 'post'))}}" method="post" class="bg-body-tertiary rounded p-3">
+	{{-- Stage 7: Migrated to Vue form components with Tailwind --}}
+	<div class="tw-flex tw-justify-center">
+		<div class="tw-w-full lg:tw-w-2/3 xl:tw-w-1/2">
+			<h2 class="tw-text-center tw-mt-6 tw-mb-4 tw-text-2xl tw-font-bold tw-text-gray-800 dark:tw-text-gray-100">
+				Update Post in <b>{{$department -> name}}</b>
+			</h2>
+			<form action="{{route('company.department.post.modify', compact('company', 'department', 'post'))}}" method="post"
+				class="tw-bg-gray-100 dark:tw-bg-gray-800 tw-rounded-lg tw-p-6 tw-shadow-md">
 				@csrf
 
-				<div class="form-group mb-2">
-					<label for="name">Name:</label>
-					<input type="text" class="form-control" id="name" name="name" value="{{$post -> name}}" required>
-				</div>
+				<form-input
+					label="Name"
+					name="name"
+					type="text"
+					:required="true"
+					placeholder="Введите название должности"
+					old-value="{{ old('name', $post->name) }}"
+				></form-input>
 
-				<div class="form-group mb-2">
-					<label for="permissions">Permissions: </label>
-					<select class="form-select" multiple size="8" aria-label="size 3 select example" name="permission[]">
-						@foreach($permissions as $permission)
-							<option value="{{$permission -> id}}" @if(in_array($permission -> id, (array)json_decode($post -> permission))) selected @endif>{{$permission -> name}}</option>
-						@endforeach
-					</select>
-				</div>
-				<div class="d-flex justify-content-center">
-					<button type="submit" class="btn btn-primary">Update</button>
+				<form-multi-select
+					label="Permissions"
+					name="permission[]"
+					:options='@json(array_map(function($p) use ($post) { return ["value" => $p->id, "label" => $p->name, "selected" => in_array($p->id, (array)json_decode($post->permission))]; }, $permissions->all()))'
+					:size="8"
+					help-text="Выберите несколько прав доступа (удерживайте Ctrl/Cmd)"
+				></form-multi-select>
+
+				<div class="tw-flex tw-justify-center">
+					<button type="submit"
+						class="tw-px-6 tw-py-3 tw-bg-blue-600 tw-text-white tw-rounded-lg
+							   tw-font-medium tw-transition-colors tw-duration-200
+							   hover:tw-bg-blue-700 focus:tw-outline-none focus:tw-ring-2
+							   focus:tw-ring-blue-500 focus:tw-ring-offset-2">
+						Update
+					</button>
 				</div>
 			</form>
 		</div>
