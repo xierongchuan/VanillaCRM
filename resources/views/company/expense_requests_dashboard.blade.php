@@ -2,6 +2,15 @@
 
 @section('title', 'Панель Заявок на Расходы')
 @section('content')
+    {{-- Vue 3 Expense Dashboard Component --}}
+    <expense-dashboard
+        :company-id="{{ $companyId ?? 1 }}"
+        initial-tab="pending"
+        :auto-refresh-interval="300000"
+    ></expense-dashboard>
+
+    {{-- Old implementation commented out for reference/rollback --}}
+    {{--
     <div class="container-fluid">
         <h1 class="text-center my-3">Панель Заявок на Расходы</h1>
 
@@ -211,19 +220,16 @@
 
         .sort-indicator::after {
             content: " \2195";
-            /* Up/Down arrow */
             opacity: 0.3;
         }
 
         .sort-indicator.asc::after {
             content: " \2191";
-            /* Up arrow */
             opacity: 1;
         }
 
         .sort-indicator.desc::after {
             content: " \2193";
-            /* Down arrow */
             opacity: 1;
         }
     </style>
@@ -644,4 +650,5 @@
             });
         });
     </script>
+    --}}
 @endsection

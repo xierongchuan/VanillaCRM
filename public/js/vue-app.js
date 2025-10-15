@@ -139,6 +139,12 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DataTable component registered');
   }
 
+  // Stage 9: Expense Dashboard
+  if (typeof window.ExpenseDashboard !== 'undefined') {
+    app.component('expense-dashboard', window.ExpenseDashboard);
+    console.log('ExpenseDashboard component registered');
+  }
+
   // Future components will be registered here:
   // etc.
 
