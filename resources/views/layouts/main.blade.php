@@ -235,6 +235,8 @@
     <script src="/js/components/FormTextarea.js"></script>
     <script src="/js/components/FormRadioGroup.js"></script>
     <script src="/js/components/FormMultiSelect.js"></script>
+    <script src="/js/components/ItemList.js"></script>
+    <script src="/js/components/DataTable.js"></script>
 
     {{-- Vue App Initialization (must load last) --}}
     <script src="/js/vue-app.js" defer></script>

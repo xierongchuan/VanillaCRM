@@ -128,6 +128,17 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('FormMultiSelect component registered');
   }
 
+  // Stage 8: Table and List Components
+  if (typeof window.ItemList !== 'undefined') {
+    app.component('item-list', window.ItemList);
+    console.log('ItemList component registered');
+  }
+
+  if (typeof window.DataTable !== 'undefined') {
+    app.component('data-table', window.DataTable);
+    console.log('DataTable component registered');
+  }
+
   // Future components will be registered here:
   // etc.
 

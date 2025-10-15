@@ -29,19 +29,19 @@
 
             <div class="p-2 border bg-body-tertiary rounded p-3 mt-2">
                 <span class="lead">Администраторы: </span><br>
-                @foreach ($admins as $admin)
-                    <span>
-                        <div class="d-flex justify-content-between rounded bg-body shadow gx-1 my-1 p-2 pb-0">
-                            <div class="col-lg-9 lead"><a class="nav-link"
-                                    style="font-size: 1.5rem;">{{ $admin->full_name }}</a></div>
-
-                            <div class="btn-group col-lg-3 p-0 mb-2" role="group" aria-label="Basic mixed styles example">
-                                <a href="{{ route('admin.delete', compact('admin')) }}" type="button"
-                                    class="btn btn-danger"><i class="bi bi-trash"></i></a>
-                            </div>
-                        </div>
-                    </span>
-                @endforeach
+                <div class="mt-2">
+                    <item-list
+                        :items='@json($admins)'
+                        :actions='[
+                            { icon: "bi bi-trash", variant: "danger", href: (item) => `/admin/${item.id}/delete`, confirm: true, confirmMessage: "Вы уверены, что хотите удалить администратора?" }
+                        ]'
+                        empty-text="Нет администраторов"
+                    >
+                        <template #item="{ item }">
+                            <a href="#" class="tw-text-xl tw-font-medium tw-text-gray-800 dark:tw-text-gray-200 tw-no-underline">@{{ item.full_name }}</a>
+                        </template>
+                    </item-list>
+                </div>
             </div>
         </div>
     </div>
