@@ -80,10 +80,9 @@ export default {
   },
   watch: {
     modelValue(newVal) {
-      // Only update if there's no oldValue (oldValue takes precedence on initial load only)
-      if (!this.oldValue) {
-        this.internalValue = newVal;
-      }
+      // Allow parent to update the value
+      // oldValue is only for initial population, not for locking the value forever
+      this.internalValue = newVal;
     }
   },
   methods: {

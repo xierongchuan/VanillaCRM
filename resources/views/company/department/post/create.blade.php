@@ -4,6 +4,11 @@
 
 @section('content')
 
+	@php
+		// Preserve selected permissions after validation errors
+		$oldPermissions = old('permission', []);
+	@endphp
+
 	{{-- Stage 7: Migrated to Vue form components with Tailwind --}}
 	<div class="tw-flex tw-justify-center">
 		<div class="tw-w-full lg:tw-w-2/3 xl:tw-w-1/2">
@@ -26,7 +31,7 @@
 				<form-multi-select
 					label="Права доступа"
 					name="permission[]"
-					:options='@json(array_map(function($p) { return ["value" => $p->id, "label" => $p->name, "selected" => false]; }, $permissions->all()))'
+					:options='@json(array_map(function($p) use ($oldPermissions) { return ["value" => (string)$p->id, "label" => $p->name, "selected" => in_array((string)$p->id, $oldPermissions)]; }, $permissions->all()))'
 					:size="8"
 					help-text="Выберите несколько прав доступа (удерживайте Ctrl/Cmd)"
 				></form-multi-select>

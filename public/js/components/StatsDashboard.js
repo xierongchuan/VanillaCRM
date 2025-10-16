@@ -157,6 +157,12 @@ window.StatsDashboard = {
         return;
       }
 
+      // Destroy existing chart if it exists to avoid "Canvas is already in use" error
+      const existingChart = Chart.getChart(canvas);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+
       const data = this.salesData[companyId];
       const labels = Object.keys(data).sort(); // Dates sorted ascending
 
@@ -290,6 +296,12 @@ window.StatsDashboard = {
       if (!canvas) {
         console.warn(`Canvas ${canvasId} not found`);
         return;
+      }
+
+      // Destroy existing chart if it exists to avoid "Canvas is already in use" error
+      const existingChart = Chart.getChart(canvas);
+      if (existingChart) {
+        existingChart.destroy();
       }
 
       // Create datasets for specified metrics

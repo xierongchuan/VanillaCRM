@@ -31,7 +31,7 @@
                 <span class="lead">Администраторы: </span><br>
                 <div class="mt-2">
                     <item-list
-                        :items='@json($admins)'
+                        :items='@json($admins->map(function($admin) { return ["id" => $admin->id, "full_name" => $admin->full_name]; })->values())'
                         :actions='[
                             { icon: "bi bi-trash", variant: "danger", href: (item) => `/admin/${item.id}/delete`, confirm: true, confirmMessage: "Вы уверены, что хотите удалить администратора?" }
                         ]'
