@@ -19,7 +19,7 @@
 
 const { ref, reactive, computed, onMounted, onUnmounted } = Vue;
 
-export default {
+window.ExpenseDashboard = {
   name: 'ExpenseDashboard',
 
   props: {

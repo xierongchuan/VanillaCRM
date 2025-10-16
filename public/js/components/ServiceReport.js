@@ -109,7 +109,7 @@ const ServiceReport = {
             <thead>
               <tr class="tw-bg-gray-200 dark:tw-bg-gray-700">
                 <th class="tw-border tw-border-gray-300 dark:tw-border-gray-600 tw-px-4 tw-py-2 tw-text-left tw-text-gray-900 dark:tw-text-white">
-                  Навзания
+                  Названия
                 </th>
                 <th class="tw-border tw-border-gray-300 dark:tw-border-gray-600 tw-px-4 tw-py-2 tw-text-left tw-text-gray-900 dark:tw-text-white">
                   Сегодня

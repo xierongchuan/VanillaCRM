@@ -47,7 +47,8 @@ const DepartmentPostSelector = {
       currentPostId: this.selectedPostId,
       posts: [],
       isLoadingPosts: false,
-      error: null
+      error: null,
+      loadPostsRequestCounter: 0
     };
   },
   computed: {
@@ -86,6 +87,9 @@ const DepartmentPostSelector = {
       this.isLoadingPosts = true;
       this.error = null;
 
+      // Increment counter to track this request
+      const requestId = ++this.loadPostsRequestCounter;
+
       try {
         const url = `/company/${this.companyId}/department/${departmentId}/posts`;
 
@@ -93,6 +97,13 @@ const DepartmentPostSelector = {
         const data = await apiFetch(url, {
           method: 'POST'
         });
+
+        // Guard against stale async responses
+        // Only update if this is still the most recent request
+        if (requestId !== this.loadPostsRequestCounter) {
+          console.log(`Ignoring stale response for department ${departmentId}`);
+          return;
+        }
 
         this.posts = data || [];
 
@@ -110,12 +121,20 @@ const DepartmentPostSelector = {
 
         console.log(`Loaded ${this.posts.length} posts for department ${departmentId}`);
       } catch (err) {
+        // Only show error if this is still the most recent request
+        if (requestId !== this.loadPostsRequestCounter) {
+          return;
+        }
+
         console.error('Error loading posts:', err);
         this.error = 'Failed to load posts. Please try again.';
         this.posts = [];
         this.currentPostId = null;
       } finally {
-        this.isLoadingPosts = false;
+        // Only update loading state if this is still the most recent request
+        if (requestId === this.loadPostsRequestCounter) {
+          this.isLoadingPosts = false;
+        }
       }
     }
   },

@@ -166,9 +166,14 @@ window.StatsDashboard = {
       const data = this.salesData[companyId];
       const labels = Object.keys(data).sort(); // Dates sorted ascending
 
-      // Get all manager names from first date
-      const firstDate = labels[0];
-      const managerNames = Object.keys(data[firstDate]);
+      // Collect all manager names across all dates
+      const managerNamesSet = new Set();
+      labels.forEach(date => {
+        Object.keys(data[date]).forEach(managerName => {
+          managerNamesSet.add(managerName);
+        });
+      });
+      const managerNames = Array.from(managerNamesSet);
 
       // Create datasets for each manager
       const datasets = managerNames.map(managerName => {
@@ -305,17 +310,16 @@ window.StatsDashboard = {
       }
 
       // Create datasets for specified metrics
-      const datasets = Object.keys(data[labels[0]] || {})
-        .filter(name => name in metricLabels)
-        .map(name => {
-          return {
-            label: metricLabels[name],
-            data: labels.map(date => data[date][name] || 0),
-            fill: false,
-            borderColor: this.getRandomColor(),
-            tension: 0.1
-          };
-        });
+      // Iterate metricLabels keys instead of data keys to ensure all configured metrics render
+      const datasets = Object.keys(metricLabels).map(name => {
+        return {
+          label: metricLabels[name],
+          data: labels.map(date => data[date] && data[date][name] !== undefined ? data[date][name] : 0),
+          fill: false,
+          borderColor: this.getRandomColor(),
+          tension: 0.1
+        };
+      });
 
       const ctx = canvas.getContext('2d');
       const chart = new Chart(ctx, {

@@ -273,6 +273,15 @@ const DataTable = {
         });
 
         /**
+         * Reset to valid page when totalPages decreases
+         */
+        watch(totalPages, (newTotal) => {
+            if (currentPage.value > newTotal && newTotal > 0) {
+                currentPage.value = newTotal;
+            }
+        });
+
+        /**
          * Check if table is empty
          */
         const isEmpty = computed(() => {

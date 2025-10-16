@@ -108,6 +108,7 @@ export default {
         :required="required"
         :placeholder="placeholder"
         :autocomplete="autocomplete"
+        v-bind="$attrs"
         class="tw-w-full tw-px-3 tw-py-2 tw-border tw-border-gray-300 dark:tw-border-gray-600
                tw-rounded-lg tw-bg-white dark:tw-bg-gray-800
                tw-text-gray-900 dark:tw-text-gray-100

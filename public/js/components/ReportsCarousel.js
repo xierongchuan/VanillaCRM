@@ -18,7 +18,7 @@ const ReportsCarousel = {
     },
     // Array of report slots to display
     // Each slot contains report HTML content
-    reportSlots: {
+    slides: {
       type: Array,
       default: () => []
     }
@@ -31,20 +31,20 @@ const ReportsCarousel = {
   },
   computed: {
     hasMultipleSlides() {
-      return this.reportSlots.length > 1;
+      return this.slides.length > 1;
     },
     canGoPrev() {
       return this.currentSlide > 0;
     },
     canGoNext() {
-      return this.currentSlide < this.reportSlots.length - 1;
+      return this.currentSlide < this.slides.length - 1;
     }
   },
   methods: {
     nextSlide() {
       if (this.canGoNext) {
         this.currentSlide++;
-      } else if (this.reportSlots.length > 0) {
+      } else if (this.slides.length > 0) {
         // Loop back to first slide
         this.currentSlide = 0;
       }
@@ -52,9 +52,9 @@ const ReportsCarousel = {
     prevSlide() {
       if (this.canGoPrev) {
         this.currentSlide--;
-      } else if (this.reportSlots.length > 0) {
+      } else if (this.slides.length > 0) {
         // Loop to last slide
-        this.currentSlide = this.reportSlots.length - 1;
+        this.currentSlide = this.slides.length - 1;
       }
     },
     togglePanel() {
@@ -78,14 +78,14 @@ const ReportsCarousel = {
               <button
                 @click="prevSlide"
                 class="tw-px-3 tw-py-2 tw-bg-blue-600 tw-text-white tw-rounded tw-hover:bg-blue-700 tw-transition-colors tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500"
-                :disabled="!canGoPrev && reportSlots.length === 0"
+                :disabled="!canGoPrev && slides.length === 0"
                 aria-label="Previous slide">
                 <i class="bi bi-chevron-left"></i>
               </button>
               <button
                 @click="nextSlide"
                 class="tw-px-3 tw-py-2 tw-bg-blue-600 tw-text-white tw-rounded tw-hover:bg-blue-700 tw-transition-colors tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-blue-500"
-                :disabled="!canGoNext && reportSlots.length === 0"
+                :disabled="!canGoNext && slides.length === 0"
                 aria-label="Next slide">
                 <i class="bi bi-chevron-right"></i>
               </button>
@@ -115,9 +115,9 @@ const ReportsCarousel = {
             class="tw-mt-2 tw-w-full">
             <!-- Render current slide -->
             <div
-              v-if="reportSlots.length > 0"
+              v-if="slides.length > 0"
               class="tw-w-full"
-              v-html="reportSlots[currentSlide]">
+              v-html="slides[currentSlide]">
             </div>
 
             <!-- Empty state -->
@@ -131,10 +131,10 @@ const ReportsCarousel = {
 
         <!-- Slide indicator (dots) - only show if multiple slides and panel is open -->
         <div
-          v-if="hasMultipleSlides && isPanelOpen && reportSlots.length > 0"
+          v-if="hasMultipleSlides && isPanelOpen && slides.length > 0"
           class="tw-flex tw-justify-center tw-space-x-2 tw-mt-3">
           <button
-            v-for="(slot, index) in reportSlots"
+            v-for="(slot, index) in slides"
             :key="index"
             @click="currentSlide = index"
             :class="[
