@@ -69,7 +69,7 @@
                             'salesData' => $salesData,
                             'archiveReports' => $archiveList,
                             'companyFields' => $companyFields,
-                            'archiveRoute' => route('archive.index', ['id' => $company->id])
+                            'archiveRoute' => route('company.archive', compact('company'))
                         ]
                     ];
                 }
@@ -84,8 +84,8 @@
                             'companyName' => $company->name,
                             'reportData' => $serviceReportData,
                             'companyFields' => $companyFields,
-                            'archiveUrl' => route('archive.service_archive', ['id' => $company->id]),
-                            'archiveListUrl' => route('archive.service_archive', ['id' => $company->id])
+                            'archiveUrl' => !empty($serviceReportData['updated_at']) ? route('company.service.archive', [$company, $serviceReportData['updated_at']]) : '',
+                            'archiveListUrl' => route('company.service.archive.list', compact('company'))
                         ]
                     ];
                 }
@@ -100,8 +100,8 @@
                             'companyName' => $company->name,
                             'reportData' => $cafeReportData,
                             'companyFields' => $companyFields,
-                            'archiveUrl' => route('archive.caffe_archive', ['id' => $company->id]),
-                            'archiveListUrl' => route('archive.caffe_archive', ['id' => $company->id])
+                            'archiveUrl' => !empty($cafeReportData['updated_at']) ? route('company.caffe.archive', [$company, $cafeReportData['updated_at']]) : '',
+                            'archiveListUrl' => route('company.caffe.archive.list', compact('company'))
                         ]
                     ];
                 }
@@ -116,8 +116,8 @@
                             'companyName' => $company->name,
                             'reportData' => $cashierReportData,
                             'companyFields' => $companyFields,
-                            'archiveUrl' => route('archive.cashier_archive', ['id' => $company->id]),
-                            'archiveListUrl' => route('archive.cashier_archive', ['id' => $company->id]),
+                            'archiveUrl' => !empty($cashierReportData['updated_at']) ? route('company.cashier.archive', [$company, $cashierReportData['updated_at']]) : '',
+                            'archiveListUrl' => route('company.cashier.archive.list', compact('company')),
                             'reportUrl' => isset($cashierReportData['link']) ? $cashierReportData['link'] : ''
                         ]
                     ];
@@ -191,7 +191,7 @@
                         'salesData' => $salesData,
                         'archiveReports' => $archiveList,
                         'companyFields' => $companyFields,
-                        'archiveRoute' => route('archive.index', ['id' => $company->id])
+                        'archiveRoute' => route('company.archive', compact('company'))
                     ]
                 ];
             }
@@ -206,8 +206,8 @@
                         'companyName' => $company->name,
                         'reportData' => $serviceReportData,
                         'companyFields' => $companyFields,
-                        'archiveUrl' => route('archive.service_archive', ['id' => $company->id]),
-                        'archiveListUrl' => route('archive.service_archive', ['id' => $company->id])
+                        'archiveUrl' => !empty($serviceReportData['updated_at']) ? route('company.service.archive', [$company, $serviceReportData['updated_at']]) : '',
+                        'archiveListUrl' => route('company.service.archive.list', compact('company'))
                     ]
                 ];
             }
@@ -222,8 +222,8 @@
                         'companyName' => $company->name,
                         'reportData' => $cafeReportData,
                         'companyFields' => $companyFields,
-                        'archiveUrl' => route('archive.caffe_archive', ['id' => $company->id]),
-                        'archiveListUrl' => route('archive.caffe_archive', ['id' => $company->id])
+                        'archiveUrl' => !empty($cafeReportData['updated_at']) ? route('company.caffe.archive', [$company, $cafeReportData['updated_at']]) : '',
+                        'archiveListUrl' => route('company.caffe.archive.list', compact('company'))
                     ]
                 ];
             }
@@ -238,8 +238,8 @@
                         'companyName' => $company->name,
                         'reportData' => $cashierReportData,
                         'companyFields' => $companyFields,
-                        'archiveUrl' => route('archive.cashier_archive', ['id' => $company->id]),
-                        'archiveListUrl' => route('archive.cashier_archive', ['id' => $company->id]),
+                        'archiveUrl' => !empty($cashierReportData['updated_at']) ? route('company.cashier.archive', [$company, $cashierReportData['updated_at']]) : '',
+                        'archiveListUrl' => route('company.cashier.archive.list', compact('company')),
                         'reportUrl' => isset($cashierReportData['link']) ? $cashierReportData['link'] : ''
                     ]
                 ];
