@@ -372,7 +372,7 @@ const DataTable = {
                                     getAlignClass(column.align)
                                 ]"
                             >
-                                <div v-html="formatValue(row, column)"></div>
+                                {{ formatValue(row, column) }}
                             </td>
                         </tr>
                     </tbody>

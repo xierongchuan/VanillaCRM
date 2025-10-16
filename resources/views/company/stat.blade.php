@@ -12,6 +12,7 @@
     <stats-dashboard
         :sales-data="{{ json_encode($sales) }}"
         :growth-data="{{ json_encode($growthStatistics) }}"
+        :company-names="{{ json_encode($companyNames) }}"
     ></stats-dashboard>
 
     {{--

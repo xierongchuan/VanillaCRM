@@ -17,6 +17,9 @@ class StatController extends Controller
         $sales = $reportService->getSalesDataNoSum($companies);
         $growthStatistics = $reportService->getGrowthStatistics($companies);
 
-        return view('company.stat', compact('sales', 'growthStatistics'));
+        // Create a map of company ID => company name for Vue component
+        $companyNames = $companies->pluck('name', 'id')->toArray();
+
+        return view('company.stat', compact('sales', 'growthStatistics', 'companyNames'));
     }
 }

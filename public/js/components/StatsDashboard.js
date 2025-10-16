@@ -37,6 +37,10 @@ window.StatsDashboard = {
     growthData: {
       type: Object,
       default: () => ({})
+    },
+    companyNames: {
+      type: Object,
+      default: () => ({})
     }
   },
 
@@ -126,14 +130,10 @@ window.StatsDashboard = {
     },
 
     /**
-     * Get company name by ID
-     * This is a placeholder - in real implementation, company data should be passed as prop
+     * Get company name by ID from companyNames prop
      */
     getCompanyName(companyId) {
-      // In the Blade template, company names are fetched via PHP
-      // For Vue component, we'll display the ID for now
-      // TODO: Pass company names as prop or fetch via API
-      return `Company ${companyId}`;
+      return this.companyNames[companyId] || `Company ${companyId}`;
     },
 
     /**

@@ -63,14 +63,32 @@ export default {
     }
   },
   emits: ['update:modelValue'],
+  data() {
+    return {
+      internalValue: ''
+    };
+  },
+  mounted() {
+    // Initialize with oldValue (for validation errors) or modelValue
+    this.internalValue = this.oldValue || this.modelValue;
+  },
   computed: {
     textareaValue() {
-      // Priority: oldValue (from Laravel validation) > modelValue (from Vue)
-      return this.oldValue || this.modelValue;
+      // Use internal value which tracks user input
+      return this.internalValue;
+    }
+  },
+  watch: {
+    modelValue(newVal) {
+      // Only update if there's no oldValue (oldValue takes precedence on initial load only)
+      if (!this.oldValue) {
+        this.internalValue = newVal;
+      }
     }
   },
   methods: {
     onInput(event) {
+      this.internalValue = event.target.value;
       this.$emit('update:modelValue', event.target.value);
     }
   },

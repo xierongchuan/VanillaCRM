@@ -18,6 +18,7 @@
                     selected-department-id="{{ $user->dep_id }}"
                     selected-post-id="{{ $user->post_id }}"
                     :show-post="true"
+                    :post-required="false"
                     department-name="department"
                     post-name="post">
                 </department-post-selector>

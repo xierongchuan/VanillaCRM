@@ -140,6 +140,7 @@ const CashierReport = {
                     v-if="hasLink"
                     :href="reportData.link"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="tw-text-blue-600 dark:tw-text-blue-400 hover:tw-underline">
                     Открыть отчёт
                   </a>

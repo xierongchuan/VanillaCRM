@@ -323,7 +323,8 @@ const CafeReport = {
             <a
               :href="field.link"
               class="tw-text-blue-600 dark:tw-text-blue-400 hover:tw-underline"
-              target="_blank">
+              target="_blank"
+              rel="noopener noreferrer">
               Открыть
             </a>
           </div>

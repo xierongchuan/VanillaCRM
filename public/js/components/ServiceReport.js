@@ -55,8 +55,9 @@ const ServiceReport = {
   },
   methods: {
     // Format number with spaces (Russian format)
+    // Use Math.round() to preserve rounding behavior (not parseInt which truncates)
     formatNumber(num) {
-      return parseInt(num || 0).toLocaleString('ru-RU').replace(/,/g, ' ');
+      return Math.round(num || 0).toLocaleString('ru-RU').replace(/,/g, ' ');
     }
   },
   template: `

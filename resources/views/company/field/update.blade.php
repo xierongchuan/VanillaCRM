@@ -26,7 +26,7 @@
 				<form-input
 					label="Link"
 					name="link"
-					type="url"
+					type="text"
 					:required="true"
 					placeholder="https://example.com"
 					old-value="{{ old('link', $field->link) }}"

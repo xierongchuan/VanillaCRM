@@ -35,6 +35,10 @@ const DepartmentPostSelector = {
     showPost: {
       type: Boolean,
       default: true
+    },
+    postRequired: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -143,7 +147,7 @@ const DepartmentPostSelector = {
           class="form-select form-select-lg mb-3"
           aria-label="Post selection"
           :disabled="!currentDepartmentId || isLoadingPosts"
-          required>
+          :required="postRequired">
           <option value="">
             {{ isLoadingPosts ? 'Loading posts...' : 'Select Post' }}
           </option>

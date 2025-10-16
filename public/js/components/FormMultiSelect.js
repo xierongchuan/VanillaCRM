@@ -71,8 +71,9 @@ export default {
   },
   mounted() {
     // Initialize selected values from options or modelValue
+    // Convert to strings for proper comparison with option values
     if (this.modelValue && this.modelValue.length > 0) {
-      this.selectedValues = [...this.modelValue];
+      this.selectedValues = this.modelValue.map(val => String(val));
     } else {
       this.selectedValues = this.options
         .filter(opt => opt.selected)
@@ -82,7 +83,8 @@ export default {
   watch: {
     modelValue(newVal) {
       if (newVal) {
-        this.selectedValues = [...newVal];
+        // Convert to strings for proper comparison with option values
+        this.selectedValues = newVal.map(val => String(val));
       }
     }
   },
