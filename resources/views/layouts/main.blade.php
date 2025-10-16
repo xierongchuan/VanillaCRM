@@ -253,6 +253,10 @@
     <script src="/js/components/DataTable.js"></script>
     <script src="/js/components/ExpenseDashboard.js"></script>
     <script src="/js/components/StatsDashboard.js"></script>
+    <script src="/js/components/DailyStatsReport.js"></script>
+    <script src="/js/components/ServiceReport.js"></script>
+    <script src="/js/components/CafeReport.js"></script>
+    <script src="/js/components/CashierReport.js"></script>
 
     {{-- Vue App Initialization (must load last) --}}
     <script src="/js/vue-app.js" defer></script>

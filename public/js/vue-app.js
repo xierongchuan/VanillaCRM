@@ -151,6 +151,27 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('StatsDashboard component registered');
   }
 
+  // Stage 11: Home Page Report Components
+  if (typeof window.DailyStatsReport !== 'undefined') {
+    app.component('daily-stats-report', window.DailyStatsReport);
+    console.log('DailyStatsReport component registered');
+  }
+
+  if (typeof window.ServiceReport !== 'undefined') {
+    app.component('service-report', window.ServiceReport);
+    console.log('ServiceReport component registered');
+  }
+
+  if (typeof window.CafeReport !== 'undefined') {
+    app.component('cafe-report', window.CafeReport);
+    console.log('CafeReport component registered');
+  }
+
+  if (typeof window.CashierReport !== 'undefined') {
+    app.component('cashier-report', window.CashierReport);
+    console.log('CashierReport component registered');
+  }
+
   // Future components will be registered here:
   // etc.
 
