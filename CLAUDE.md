@@ -101,13 +101,3 @@ php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 ```
-
----
-
-Issue to solve: undefined
-Your prepared branch: issue-18-5166c7f4
-Your prepared working directory: /tmp/gh-issue-solver-1760902601254
-Your forked repository: konard/VanillaCRM
-Original repository (upstream): xierongchuan/VanillaCRM
-
-Proceed.
