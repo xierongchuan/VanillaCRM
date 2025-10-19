@@ -289,6 +289,6 @@ class PostManagementTest extends TestCase
             'post' => $post,
         ]));
 
-        $response->assertStatus(403);
+        $response->assertRedirect(route('auth.sign_in'));
     }
 }

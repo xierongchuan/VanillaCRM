@@ -191,7 +191,7 @@ class CompanyManagementTest extends TestCase
 
         $response = $this->get(route('company.list'));
 
-        $response->assertStatus(403);
+        $response->assertRedirect(route('auth.sign_in'));
     }
 
     public function test_guest_cannot_access_company_list(): void

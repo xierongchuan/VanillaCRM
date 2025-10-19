@@ -125,11 +125,11 @@ class FieldManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $field = Field::create([
-            'com_id' => $this->company->id,
-            'title' => 'Test Field',
-            'link' => 'https://example.com',
-        ]);
+        $field = new Field();
+        $field->com_id = $this->company->id;
+        $field->title = 'Test Field';
+        $field->link = 'https://example.com';
+        $field->save();
 
         $response = $this->get(route('company.field.update', [
             'company' => $this->company,
@@ -146,11 +146,11 @@ class FieldManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $field = Field::create([
-            'com_id' => $this->company->id,
-            'title' => 'Old Title',
-            'link' => 'https://old-example.com',
-        ]);
+        $field = new Field();
+        $field->com_id = $this->company->id;
+        $field->title = 'Old Title';
+        $field->link = 'https://old-example.com';
+        $field->save();
 
         $response = $this->post(route('company.field.modify', [
             'company' => $this->company,
@@ -174,11 +174,11 @@ class FieldManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $field = Field::create([
-            'com_id' => $this->company->id,
-            'title' => 'Test Field',
-            'link' => 'https://example.com',
-        ]);
+        $field = new Field();
+        $field->com_id = $this->company->id;
+        $field->title = 'Test Field';
+        $field->link = 'https://example.com';
+        $field->save();
 
         $response = $this->get(route('company.field.delete', [
             'company' => $this->company,
@@ -200,6 +200,6 @@ class FieldManagementTest extends TestCase
 
         $response = $this->get(route('company.field.create', $this->company));
 
-        $response->assertStatus(403);
+        $response->assertRedirect(route('auth.sign_in'));
     }
 }
