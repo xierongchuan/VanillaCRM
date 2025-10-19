@@ -23,6 +23,8 @@ class AuthenticationTest extends TestCase
 
     public function test_user_can_login_with_valid_credentials(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
         $user = User::factory()->create([
             'login' => 'testuser',
             'password' => Hash::make('password123'),
@@ -42,6 +44,8 @@ class AuthenticationTest extends TestCase
 
     public function test_user_cannot_login_with_invalid_credentials(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
         User::factory()->create([
             'login' => 'testuser',
             'password' => Hash::make('password123'),
@@ -60,6 +64,8 @@ class AuthenticationTest extends TestCase
 
     public function test_login_requires_login_field(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
         $response = $this->from(route('auth.sign_in'))
             ->post(route('auth.login'), [
                 'password' => 'password123',
@@ -71,6 +77,8 @@ class AuthenticationTest extends TestCase
 
     public function test_login_requires_password_field(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
         $response = $this->from(route('auth.sign_in'))
             ->post(route('auth.login'), [
                 'login' => 'testuser',

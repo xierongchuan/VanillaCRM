@@ -51,6 +51,7 @@ class CompanyManagementTest extends TestCase
 
     public function test_admin_can_create_company(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $companyData = [
@@ -70,6 +71,7 @@ class CompanyManagementTest extends TestCase
 
     public function test_company_name_must_be_unique(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         Company::factory()->create(['name' => 'Existing Company']);
@@ -84,6 +86,7 @@ class CompanyManagementTest extends TestCase
 
     public function test_company_name_must_be_at_least_3_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.create'))
@@ -96,6 +99,7 @@ class CompanyManagementTest extends TestCase
 
     public function test_company_name_must_not_exceed_20_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.create'))
@@ -121,6 +125,7 @@ class CompanyManagementTest extends TestCase
 
     public function test_admin_can_update_company(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $company = Company::factory()->create(['name' => 'Old Name']);

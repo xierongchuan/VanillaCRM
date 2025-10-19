@@ -74,6 +74,7 @@ class PostManagementTest extends TestCase
 
     public function test_admin_can_create_post_without_permissions(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $postData = [
@@ -104,6 +105,7 @@ class PostManagementTest extends TestCase
 
     public function test_admin_can_create_post_with_permissions(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $permission = Permission::factory()->create([
@@ -136,6 +138,7 @@ class PostManagementTest extends TestCase
 
     public function test_post_name_is_required(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.department.post.create', [
@@ -154,6 +157,7 @@ class PostManagementTest extends TestCase
 
     public function test_post_name_must_be_at_least_3_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.department.post.create', [
@@ -172,6 +176,7 @@ class PostManagementTest extends TestCase
 
     public function test_post_name_must_not_exceed_30_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.department.post.create', [
@@ -213,6 +218,7 @@ class PostManagementTest extends TestCase
 
     public function test_admin_can_update_post(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $post = Post::factory()->create([

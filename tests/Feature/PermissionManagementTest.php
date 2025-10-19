@@ -43,6 +43,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_admin_can_create_permission(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $permissionData = [
@@ -67,6 +68,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_permission_name_is_required(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.permission.create', $this->company))
@@ -80,6 +82,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_permission_value_is_required(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.permission.create', $this->company))
@@ -93,6 +96,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_permission_name_must_be_at_least_3_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.permission.create', $this->company))
@@ -106,6 +110,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_permission_name_must_not_exceed_30_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.permission.create', $this->company))
@@ -119,6 +124,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_permission_value_must_be_at_least_3_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.permission.create', $this->company))
@@ -132,6 +138,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_permission_value_must_not_exceed_20_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.permission.create', $this->company))
@@ -145,6 +152,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_permission_value_must_match_regex_pattern(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.permission.create', $this->company))
@@ -158,6 +166,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_permission_value_must_be_unique_per_company(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         Permission::factory()->create([
@@ -196,6 +205,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_admin_can_update_permission(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $permission = Permission::factory()->create([
@@ -276,6 +286,7 @@ class PermissionManagementTest extends TestCase
 
     public function test_non_admin_cannot_access_permission_management(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $user = User::factory()->create(['role' => 'user']);
         $this->actingAs($user);
 
