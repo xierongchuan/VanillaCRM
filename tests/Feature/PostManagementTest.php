@@ -80,14 +80,10 @@ class PostManagementTest extends TestCase
             'name' => 'Test Post',
         ];
 
-        $response = $this->from(route('company.department.post.create', [
+        $response = $this->post(route('company.department.post.store', [
             'company' => $this->company,
             'department' => $this->department,
-        ]))
-            ->post(route('company.department.post.store', [
-                'company' => $this->company,
-                'department' => $this->department,
-            ]), $postData);
+        ]), $postData);
 
         $response->assertRedirect(route('company.department.index', [
             'company' => $this->company,
@@ -115,14 +111,10 @@ class PostManagementTest extends TestCase
             'permission' => [$permission->id],
         ];
 
-        $response = $this->from(route('company.department.post.create', [
+        $response = $this->post(route('company.department.post.store', [
             'company' => $this->company,
             'department' => $this->department,
-        ]))
-            ->post(route('company.department.post.store', [
-                'company' => $this->company,
-                'department' => $this->department,
-            ]), $postData);
+        ]), $postData);
 
         $response->assertRedirect();
         $response->assertSessionHas('success', 'Successfully created');
@@ -138,16 +130,12 @@ class PostManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.department.post.create', [
+        $response = $this->post(route('company.department.post.store', [
             'company' => $this->company,
             'department' => $this->department,
-        ]))
-            ->post(route('company.department.post.store', [
-                'company' => $this->company,
-                'department' => $this->department,
-            ]), [
-                'name' => '',
-            ]);
+        ]), [
+            'name' => '',
+        ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -156,16 +144,12 @@ class PostManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.department.post.create', [
+        $response = $this->post(route('company.department.post.store', [
             'company' => $this->company,
             'department' => $this->department,
-        ]))
-            ->post(route('company.department.post.store', [
-                'company' => $this->company,
-                'department' => $this->department,
-            ]), [
-                'name' => 'AB',
-            ]);
+        ]), [
+            'name' => 'AB',
+        ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -174,16 +158,12 @@ class PostManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.department.post.create', [
+        $response = $this->post(route('company.department.post.store', [
             'company' => $this->company,
             'department' => $this->department,
-        ]))
-            ->post(route('company.department.post.store', [
-                'company' => $this->company,
-                'department' => $this->department,
-            ]), [
-                'name' => str_repeat('A', 31),
-            ]);
+        ]), [
+            'name' => str_repeat('A', 31),
+        ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -221,18 +201,13 @@ class PostManagementTest extends TestCase
             'name' => 'Old Name',
         ]);
 
-        $response = $this->from(route('company.department.post.update', [
+        $response = $this->post(route('company.department.post.modify', [
             'company' => $this->company,
             'department' => $this->department,
             'post' => $post,
-        ]))
-            ->post(route('company.department.post.modify', [
-                'company' => $this->company,
-                'department' => $this->department,
-                'post' => $post,
-            ]), [
-                'name' => 'New Post Name',
-            ]);
+        ]), [
+            'name' => 'New Post Name',
+        ]);
 
         $response->assertRedirect(route('company.department.index', [
             'company' => $this->company,

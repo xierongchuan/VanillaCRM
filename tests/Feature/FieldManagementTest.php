@@ -48,11 +48,10 @@ class FieldManagementTest extends TestCase
             'link' => 'https://example.com',
         ];
 
-        $response = $this->from(route('company.field.create', $this->company))
-            ->post(
-                route('company.field.store', $this->company),
-                $fieldData
-            );
+        $response = $this->post(
+            route('company.field.store', $this->company),
+            $fieldData
+        );
 
         $response->assertRedirect(route('company.list', $this->company));
         $response->assertSessionHas('success', 'Successfully created');
@@ -72,11 +71,10 @@ class FieldManagementTest extends TestCase
             'title' => 'Test Field',
         ];
 
-        $response = $this->from(route('company.field.create', $this->company))
-            ->post(
-                route('company.field.store', $this->company),
-                $fieldData
-            );
+        $response = $this->post(
+            route('company.field.store', $this->company),
+            $fieldData
+        );
 
         $response->assertRedirect(route('company.list', $this->company));
         $response->assertSessionHas('success', 'Successfully created');
@@ -91,11 +89,10 @@ class FieldManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.field.create', $this->company))
-            ->post(route('company.field.store', $this->company), [
-                'title' => '',
-                'link' => 'https://example.com',
-            ]);
+        $response = $this->post(route('company.field.store', $this->company), [
+            'title' => '',
+            'link' => 'https://example.com',
+        ]);
 
         $response->assertSessionHasErrors('title');
     }
@@ -104,11 +101,10 @@ class FieldManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.field.create', $this->company))
-            ->post(route('company.field.store', $this->company), [
-                'title' => 'AB',
-                'link' => 'https://example.com',
-            ]);
+        $response = $this->post(route('company.field.store', $this->company), [
+            'title' => 'AB',
+            'link' => 'https://example.com',
+        ]);
 
         $response->assertSessionHasErrors('title');
     }
@@ -117,11 +113,10 @@ class FieldManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.field.create', $this->company))
-            ->post(route('company.field.store', $this->company), [
-                'title' => str_repeat('A', 31),
-                'link' => 'https://example.com',
-            ]);
+        $response = $this->post(route('company.field.store', $this->company), [
+            'title' => str_repeat('A', 31),
+            'link' => 'https://example.com',
+        ]);
 
         $response->assertSessionHasErrors('title');
     }
@@ -157,17 +152,13 @@ class FieldManagementTest extends TestCase
         $field->link = 'https://old-example.com';
         $field->save();
 
-        $response = $this->from(route('company.field.update', [
+        $response = $this->post(route('company.field.modify', [
             'company' => $this->company,
             'field' => $field,
-        ]))
-            ->post(route('company.field.modify', [
-                'company' => $this->company,
-                'field' => $field,
-            ]), [
-                'title' => 'New Title',
-                'link' => 'https://new-example.com',
-            ]);
+        ]), [
+            'title' => 'New Title',
+            'link' => 'https://new-example.com',
+        ]);
 
         $response->assertRedirect(route('company.list', $this->company));
         $response->assertSessionHas('success', 'Successfully updated');

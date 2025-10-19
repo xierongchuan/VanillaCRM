@@ -60,11 +60,10 @@ class UserManagementTest extends TestCase
             'in_bot_role' => 'user',
         ];
 
-        $response = $this->from(route('company.user.create', $this->company))
-            ->post(
-                route('company.user.store', $this->company),
-                $userData
-            );
+        $response = $this->post(
+            route('company.user.store', $this->company),
+            $userData
+        );
 
         $response->assertRedirect(route('company.list'));
 
@@ -85,15 +84,14 @@ class UserManagementTest extends TestCase
 
         User::factory()->create(['login' => 'existinguser']);
 
-        $response = $this->from(route('company.user.create', $this->company))
-            ->post(route('company.user.store', $this->company), [
-                'login' => 'existinguser',
-                'full_name' => 'New User',
-                'department' => $this->department->id,
-                'phone_number' => '+1234567890',
-                'password' => 'password123',
-                'in_bot_role' => 'user',
-            ]);
+        $response = $this->post(route('company.user.store', $this->company), [
+            'login' => 'existinguser',
+            'full_name' => 'New User',
+            'department' => $this->department->id,
+            'phone_number' => '+1234567890',
+            'password' => 'password123',
+            'in_bot_role' => 'user',
+        ]);
 
         $response->assertSessionHasErrors('login');
     }
@@ -102,15 +100,14 @@ class UserManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.user.create', $this->company))
-            ->post(route('company.user.store', $this->company), [
-                'login' => 'testuser',
-                'full_name' => '',
-                'department' => $this->department->id,
-                'phone_number' => '+1234567890',
-                'password' => 'password123',
-                'in_bot_role' => 'user',
-            ]);
+        $response = $this->post(route('company.user.store', $this->company), [
+            'login' => 'testuser',
+            'full_name' => '',
+            'department' => $this->department->id,
+            'phone_number' => '+1234567890',
+            'password' => 'password123',
+            'in_bot_role' => 'user',
+        ]);
 
         $response->assertSessionHasErrors('full_name');
     }
@@ -119,15 +116,14 @@ class UserManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.user.create', $this->company))
-            ->post(route('company.user.store', $this->company), [
-                'login' => 'testuser',
-                'full_name' => 'Test User',
-                'department' => $this->department->id,
-                'phone_number' => '',
-                'password' => 'password123',
-                'in_bot_role' => 'user',
-            ]);
+        $response = $this->post(route('company.user.store', $this->company), [
+            'login' => 'testuser',
+            'full_name' => 'Test User',
+            'department' => $this->department->id,
+            'phone_number' => '',
+            'password' => 'password123',
+            'in_bot_role' => 'user',
+        ]);
 
         $response->assertSessionHasErrors('phone_number');
     }
@@ -136,15 +132,14 @@ class UserManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->from(route('company.user.create', $this->company))
-            ->post(route('company.user.store', $this->company), [
-                'login' => 'testuser',
-                'full_name' => 'Test User',
-                'department' => $this->department->id,
-                'phone_number' => '+1234567890',
-                'password' => '12345',
-                'in_bot_role' => 'user',
-            ]);
+        $response = $this->post(route('company.user.store', $this->company), [
+            'login' => 'testuser',
+            'full_name' => 'Test User',
+            'department' => $this->department->id,
+            'phone_number' => '+1234567890',
+            'password' => '12345',
+            'in_bot_role' => 'user',
+        ]);
 
         $response->assertSessionHasErrors('password');
     }
@@ -159,15 +154,14 @@ class UserManagementTest extends TestCase
             'in_bot_role' => 'director',
         ]);
 
-        $response = $this->from(route('company.user.create', $this->company))
-            ->post(route('company.user.store', $this->company), [
-                'login' => 'testuser',
-                'full_name' => 'Test User',
-                'department' => $this->department->id,
-                'phone_number' => '+1234567890',
-                'password' => 'password123',
-                'in_bot_role' => 'director',
-            ]);
+        $response = $this->post(route('company.user.store', $this->company), [
+            'login' => 'testuser',
+            'full_name' => 'Test User',
+            'department' => $this->department->id,
+            'phone_number' => '+1234567890',
+            'password' => 'password123',
+            'in_bot_role' => 'director',
+        ]);
 
         $response->assertRedirect();
         $response->assertSessionHasErrors();
@@ -183,15 +177,14 @@ class UserManagementTest extends TestCase
             'in_bot_role' => 'cashier',
         ]);
 
-        $response = $this->from(route('company.user.create', $this->company))
-            ->post(route('company.user.store', $this->company), [
-                'login' => 'testuser',
-                'full_name' => 'Test User',
-                'department' => $this->department->id,
-                'phone_number' => '+1234567890',
-                'password' => 'password123',
-                'in_bot_role' => 'cashier',
-            ]);
+        $response = $this->post(route('company.user.store', $this->company), [
+            'login' => 'testuser',
+            'full_name' => 'Test User',
+            'department' => $this->department->id,
+            'phone_number' => '+1234567890',
+            'password' => 'password123',
+            'in_bot_role' => 'cashier',
+        ]);
 
         $response->assertRedirect();
         $response->assertSessionHasErrors();
@@ -227,19 +220,15 @@ class UserManagementTest extends TestCase
             'full_name' => 'Old Name',
         ]);
 
-        $response = $this->from(route('company.user.update', [
+        $response = $this->post(route('company.user.modify', [
             'company' => $this->company,
             'user' => $user,
-        ]))
-            ->post(route('company.user.modify', [
-                'company' => $this->company,
-                'user' => $user,
-            ]), [
-                'department' => $this->department->id,
-                'full_name' => 'Updated Name',
-                'phone_number' => '+9876543210',
-                'in_bot_role' => 'user',
-            ]);
+        ]), [
+            'department' => $this->department->id,
+            'full_name' => 'Updated Name',
+            'phone_number' => '+9876543210',
+            'in_bot_role' => 'user',
+        ]);
 
         $response->assertRedirect(route('company.list'));
 
@@ -259,20 +248,16 @@ class UserManagementTest extends TestCase
             'dep_id' => $this->department->id,
         ]);
 
-        $response = $this->from(route('company.user.update', [
+        $response = $this->post(route('company.user.modify', [
             'company' => $this->company,
             'user' => $user,
-        ]))
-            ->post(route('company.user.modify', [
-                'company' => $this->company,
-                'user' => $user,
-            ]), [
-                'department' => $this->department->id,
-                'full_name' => 'Test User',
-                'phone_number' => '+1234567890',
-                'password' => 'newpassword123',
-                'in_bot_role' => 'user',
-            ]);
+        ]), [
+            'department' => $this->department->id,
+            'full_name' => 'Test User',
+            'phone_number' => '+1234567890',
+            'password' => 'newpassword123',
+            'in_bot_role' => 'user',
+        ]);
 
         $response->assertRedirect(route('company.list'));
 
@@ -371,8 +356,7 @@ class UserManagementTest extends TestCase
             'password' => 'adminpassword123',
         ];
 
-        $response = $this->from(route('admin.index'))
-            ->post(route('admin.store'), $adminData);
+        $response = $this->post(route('admin.store'), $adminData);
 
         $response->assertRedirect(route('company.list'));
 
@@ -417,8 +401,7 @@ class UserManagementTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->from(route('home.index'))
-            ->get(route('user.permission'));
+        $response = $this->get(route('user.permission'));
 
         $response->assertStatus(200);
         $response->assertViewIs('user.permission');
@@ -430,8 +413,7 @@ class UserManagementTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $this->actingAs($user);
 
-        $response = $this->from(route('company.list'))
-            ->get(route('company.user.create', $this->company));
+        $response = $this->get(route('company.user.create', $this->company));
 
         $response->assertStatus(403);
     }
