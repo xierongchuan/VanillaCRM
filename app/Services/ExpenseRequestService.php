@@ -34,6 +34,8 @@ class ExpenseRequestService
                 ];
             }
 
+            // Log::info("Error fetching {$status} expense, token:'{$this->apiToken}', requests: " . $response->body());
+
             return [
                 'success' => false,
                 'error' => 'Failed to fetch expense requests',
