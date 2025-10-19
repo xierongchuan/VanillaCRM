@@ -239,6 +239,6 @@ class DepartmentManagementTest extends TestCase
             'department' => $department,
         ]));
 
-        $response->assertStatus(403);
+        $response->assertRedirect(route('auth.sign_in'));
     }
 }

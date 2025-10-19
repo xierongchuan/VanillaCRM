@@ -86,7 +86,7 @@ class HomeAndThemeTest extends TestCase
     {
         $response = $this->get(route('theme.switch', ['name' => 'invalid']));
 
-        $response->assertDontSeeText('theme');
+        $response->assertSessionMissing('theme');
     }
 
     public function test_theme_persists_in_session(): void
