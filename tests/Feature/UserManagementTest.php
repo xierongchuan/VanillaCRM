@@ -49,6 +49,7 @@ class UserManagementTest extends TestCase
 
     public function test_admin_can_create_user(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $userData = [
@@ -81,6 +82,7 @@ class UserManagementTest extends TestCase
 
     public function test_user_login_must_be_unique(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         User::factory()->create(['login' => 'existinguser']);
@@ -100,6 +102,7 @@ class UserManagementTest extends TestCase
 
     public function test_user_full_name_is_required(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.user.create', $this->company))
@@ -117,6 +120,7 @@ class UserManagementTest extends TestCase
 
     public function test_user_phone_number_is_required(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.user.create', $this->company))
@@ -134,6 +138,7 @@ class UserManagementTest extends TestCase
 
     public function test_user_password_must_be_at_least_6_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.user.create', $this->company))
@@ -151,6 +156,7 @@ class UserManagementTest extends TestCase
 
     public function test_only_one_director_per_company(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         User::factory()->create([
@@ -175,6 +181,7 @@ class UserManagementTest extends TestCase
 
     public function test_only_one_cashier_per_company(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         User::factory()->create([
@@ -219,6 +226,7 @@ class UserManagementTest extends TestCase
 
     public function test_admin_can_update_user(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $user = User::factory()->create([
@@ -252,6 +260,7 @@ class UserManagementTest extends TestCase
 
     public function test_admin_can_update_user_password(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $user = User::factory()->create([
@@ -363,6 +372,7 @@ class UserManagementTest extends TestCase
 
     public function test_admin_can_create_another_admin(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $adminData = [
@@ -403,6 +413,7 @@ class UserManagementTest extends TestCase
 
     public function test_user_can_view_permission_page(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $post = Post::factory()->create([
             'com_id' => $this->company->id,
             'dep_id' => $this->department->id,
@@ -427,6 +438,7 @@ class UserManagementTest extends TestCase
 
     public function test_non_admin_cannot_access_user_management(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $user = User::factory()->create(['role' => 'user']);
         $this->actingAs($user);
 

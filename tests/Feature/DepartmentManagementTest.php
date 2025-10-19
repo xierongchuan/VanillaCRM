@@ -61,6 +61,7 @@ class DepartmentManagementTest extends TestCase
 
     public function test_admin_can_create_department(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $departmentData = [
@@ -83,6 +84,7 @@ class DepartmentManagementTest extends TestCase
 
     public function test_department_name_is_required(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.department.create', $this->company))
@@ -95,6 +97,7 @@ class DepartmentManagementTest extends TestCase
 
     public function test_department_name_must_be_at_least_3_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.department.create', $this->company))
@@ -107,6 +110,7 @@ class DepartmentManagementTest extends TestCase
 
     public function test_department_name_must_not_exceed_20_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.department.create', $this->company))
@@ -138,6 +142,7 @@ class DepartmentManagementTest extends TestCase
 
     public function test_admin_can_update_department(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $department = Department::factory()->create([
@@ -166,6 +171,7 @@ class DepartmentManagementTest extends TestCase
 
     public function test_admin_can_get_department_posts_as_json(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $department = Department::factory()->create([

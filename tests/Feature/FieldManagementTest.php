@@ -41,6 +41,7 @@ class FieldManagementTest extends TestCase
 
     public function test_admin_can_create_field(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $fieldData = [
@@ -66,6 +67,7 @@ class FieldManagementTest extends TestCase
 
     public function test_admin_can_create_field_without_link(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $fieldData = [
@@ -89,6 +91,7 @@ class FieldManagementTest extends TestCase
 
     public function test_field_title_is_required(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.field.create', $this->company))
@@ -102,6 +105,7 @@ class FieldManagementTest extends TestCase
 
     public function test_field_title_must_be_at_least_3_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.field.create', $this->company))
@@ -115,6 +119,7 @@ class FieldManagementTest extends TestCase
 
     public function test_field_title_must_not_exceed_30_characters(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $response = $this->from(route('company.field.create', $this->company))
@@ -149,6 +154,7 @@ class FieldManagementTest extends TestCase
 
     public function test_admin_can_update_field(): void
     {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
         $this->actingAs($this->admin);
 
         $field = new Field();
