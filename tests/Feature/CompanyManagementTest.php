@@ -58,7 +58,8 @@ class CompanyManagementTest extends TestCase
             'data' => 'Some additional data',
         ];
 
-        $response = $this->post(route('company.store'), $companyData);
+        $response = $this->from(route('company.create'))
+            ->post(route('company.store'), $companyData);
 
         $response->assertRedirect(route('company.list'));
 
@@ -73,9 +74,10 @@ class CompanyManagementTest extends TestCase
 
         Company::factory()->create(['name' => 'Existing Company']);
 
-        $response = $this->post(route('company.store'), [
-            'name' => 'Existing Company',
-        ]);
+        $response = $this->from(route('company.create'))
+            ->post(route('company.store'), [
+                'name' => 'Existing Company',
+            ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -84,9 +86,10 @@ class CompanyManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.store'), [
-            'name' => 'AB',
-        ]);
+        $response = $this->from(route('company.create'))
+            ->post(route('company.store'), [
+                'name' => 'AB',
+            ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -95,9 +98,10 @@ class CompanyManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.store'), [
-            'name' => str_repeat('A', 21),
-        ]);
+        $response = $this->from(route('company.create'))
+            ->post(route('company.store'), [
+                'name' => str_repeat('A', 21),
+            ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -121,9 +125,10 @@ class CompanyManagementTest extends TestCase
 
         $company = Company::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->post(route('company.modify', $company), [
-            'name' => 'New Company Name',
-        ]);
+        $response = $this->from(route('company.update', $company))
+            ->post(route('company.modify', $company), [
+                'name' => 'New Company Name',
+            ]);
 
         $response->assertRedirect(route('company.list'));
         $response->assertSessionHas('success', 'Successfully updated');
