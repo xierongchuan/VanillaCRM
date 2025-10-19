@@ -88,6 +88,8 @@ class ApiTest extends TestCase
 
     public function test_api_login_validates_minimum_length(): void
     {
+        $this->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class);
+
         $response = $this->postJson('/api/session', [
             'login' => 'abc',
             'password' => '12345',

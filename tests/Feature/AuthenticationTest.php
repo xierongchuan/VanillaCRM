@@ -29,10 +29,11 @@ class AuthenticationTest extends TestCase
             'role' => 'admin',
         ]);
 
-        $response = $this->post(route('auth.login'), [
-            'login' => 'testuser',
-            'password' => 'password123',
-        ]);
+        $response = $this->from(route('auth.sign_in'))
+            ->post(route('auth.login'), [
+                'login' => 'testuser',
+                'password' => 'password123',
+            ]);
 
         $response->assertRedirect(route('home.index'));
         $response->assertSessionHas('success', 'Вы успешно Аутентифицированы');
@@ -46,10 +47,11 @@ class AuthenticationTest extends TestCase
             'password' => Hash::make('password123'),
         ]);
 
-        $response = $this->post(route('auth.login'), [
-            'login' => 'testuser',
-            'password' => 'wrongpassword',
-        ]);
+        $response = $this->from(route('auth.sign_in'))
+            ->post(route('auth.login'), [
+                'login' => 'testuser',
+                'password' => 'wrongpassword',
+            ]);
 
         $response->assertRedirect();
         $response->assertSessionHasErrors('login');
@@ -58,9 +60,10 @@ class AuthenticationTest extends TestCase
 
     public function test_login_requires_login_field(): void
     {
-        $response = $this->post(route('auth.login'), [
-            'password' => 'password123',
-        ]);
+        $response = $this->from(route('auth.sign_in'))
+            ->post(route('auth.login'), [
+                'password' => 'password123',
+            ]);
 
         $response->assertSessionHasErrors('login');
         $this->assertGuest();
@@ -68,9 +71,10 @@ class AuthenticationTest extends TestCase
 
     public function test_login_requires_password_field(): void
     {
-        $response = $this->post(route('auth.login'), [
-            'login' => 'testuser',
-        ]);
+        $response = $this->from(route('auth.sign_in'))
+            ->post(route('auth.login'), [
+                'login' => 'testuser',
+            ]);
 
         $response->assertSessionHasErrors('password');
         $this->assertGuest();

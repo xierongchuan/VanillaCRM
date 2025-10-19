@@ -67,10 +67,11 @@ class DepartmentManagementTest extends TestCase
             'name' => 'Test Department',
         ];
 
-        $response = $this->post(
-            route('company.department.store', $this->company),
-            $departmentData
-        );
+        $response = $this->from(route('company.department.create', $this->company))
+            ->post(
+                route('company.department.store', $this->company),
+                $departmentData
+            );
 
         $response->assertRedirect(route('company.list'));
 
@@ -84,9 +85,10 @@ class DepartmentManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.department.store', $this->company), [
-            'name' => '',
-        ]);
+        $response = $this->from(route('company.department.create', $this->company))
+            ->post(route('company.department.store', $this->company), [
+                'name' => '',
+            ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -95,9 +97,10 @@ class DepartmentManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.department.store', $this->company), [
-            'name' => 'AB',
-        ]);
+        $response = $this->from(route('company.department.create', $this->company))
+            ->post(route('company.department.store', $this->company), [
+                'name' => 'AB',
+            ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -106,9 +109,10 @@ class DepartmentManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.department.store', $this->company), [
-            'name' => str_repeat('A', 21),
-        ]);
+        $response = $this->from(route('company.department.create', $this->company))
+            ->post(route('company.department.store', $this->company), [
+                'name' => str_repeat('A', 21),
+            ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -141,12 +145,16 @@ class DepartmentManagementTest extends TestCase
             'name' => 'Old Name',
         ]);
 
-        $response = $this->post(route('company.department.modify', [
+        $response = $this->from(route('company.department.update', [
             'company' => $this->company,
             'department' => $department,
-        ]), [
-            'name' => 'New Department Name',
-        ]);
+        ]))
+            ->post(route('company.department.modify', [
+                'company' => $this->company,
+                'department' => $department,
+            ]), [
+                'name' => 'New Department Name',
+            ]);
 
         $response->assertRedirect(route('company.list'));
 
@@ -169,10 +177,14 @@ class DepartmentManagementTest extends TestCase
             'dep_id' => $department->id,
         ]);
 
-        $response = $this->post(route('company.department.posts', [
+        $response = $this->from(route('company.department.index', [
             'company' => $this->company,
             'department' => $department,
-        ]));
+        ]))
+            ->post(route('company.department.posts', [
+                'company' => $this->company,
+                'department' => $department,
+            ]));
 
         $response->assertStatus(200);
         $response->assertJsonCount(3);

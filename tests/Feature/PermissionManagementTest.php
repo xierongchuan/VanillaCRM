@@ -50,10 +50,11 @@ class PermissionManagementTest extends TestCase
             'value' => 'test_permission',
         ];
 
-        $response = $this->post(
-            route('company.permission.store', $this->company),
-            $permissionData
-        );
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(
+                route('company.permission.store', $this->company),
+                $permissionData
+            );
 
         $response->assertRedirect(route('company.list'));
 
@@ -68,10 +69,11 @@ class PermissionManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.permission.store', $this->company), [
-            'name' => '',
-            'value' => 'test_value',
-        ]);
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(route('company.permission.store', $this->company), [
+                'name' => '',
+                'value' => 'test_value',
+            ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -80,10 +82,11 @@ class PermissionManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.permission.store', $this->company), [
-            'name' => 'Test Permission',
-            'value' => '',
-        ]);
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(route('company.permission.store', $this->company), [
+                'name' => 'Test Permission',
+                'value' => '',
+            ]);
 
         $response->assertSessionHasErrors('value');
     }
@@ -92,10 +95,11 @@ class PermissionManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.permission.store', $this->company), [
-            'name' => 'AB',
-            'value' => 'test_value',
-        ]);
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(route('company.permission.store', $this->company), [
+                'name' => 'AB',
+                'value' => 'test_value',
+            ]);
 
         $response->assertSessionHasErrors('name');
     }
@@ -104,7 +108,8 @@ class PermissionManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.permission.store', $this->company), [
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(route('company.permission.store', $this->company), [
             'name' => str_repeat('A', 31),
             'value' => 'test_value',
         ]);
@@ -116,10 +121,11 @@ class PermissionManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.permission.store', $this->company), [
-            'name' => 'Test Permission',
-            'value' => 'ab',
-        ]);
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(route('company.permission.store', $this->company), [
+                'name' => 'Test Permission',
+                'value' => 'ab',
+            ]);
 
         $response->assertSessionHasErrors('value');
     }
@@ -128,10 +134,11 @@ class PermissionManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.permission.store', $this->company), [
-            'name' => 'Test Permission',
-            'value' => str_repeat('a', 21),
-        ]);
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(route('company.permission.store', $this->company), [
+                'name' => 'Test Permission',
+                'value' => str_repeat('a', 21),
+            ]);
 
         $response->assertSessionHasErrors('value');
     }
@@ -140,10 +147,11 @@ class PermissionManagementTest extends TestCase
     {
         $this->actingAs($this->admin);
 
-        $response = $this->post(route('company.permission.store', $this->company), [
-            'name' => 'Test Permission',
-            'value' => 'Invalid-Value',
-        ]);
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(route('company.permission.store', $this->company), [
+                'name' => 'Test Permission',
+                'value' => 'Invalid-Value',
+            ]);
 
         $response->assertSessionHasErrors('value');
     }
@@ -157,10 +165,11 @@ class PermissionManagementTest extends TestCase
             'value' => 'existing_value',
         ]);
 
-        $response = $this->post(route('company.permission.store', $this->company), [
-            'name' => 'Test Permission',
-            'value' => 'existing_value',
-        ]);
+        $response = $this->from(route('company.permission.create', $this->company))
+            ->post(route('company.permission.store', $this->company), [
+                'name' => 'Test Permission',
+                'value' => 'existing_value',
+            ]);
 
         $response->assertRedirect(route('company.list'));
         $response->assertSessionHasErrors();
@@ -194,12 +203,16 @@ class PermissionManagementTest extends TestCase
             'name' => 'Old Name',
         ]);
 
-        $response = $this->post(route('company.permission.modify', [
+        $response = $this->from(route('company.permission.update', [
             'company' => $this->company,
             'permission' => $permission,
-        ]), [
-            'name' => 'New Permission Name',
-        ]);
+        ]))
+            ->post(route('company.permission.modify', [
+                'company' => $this->company,
+                'permission' => $permission,
+            ]), [
+                'name' => 'New Permission Name',
+            ]);
 
         $response->assertRedirect(route('company.list'));
 
@@ -266,7 +279,8 @@ class PermissionManagementTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $this->actingAs($user);
 
-        $response = $this->get(route('company.permission.create', $this->company));
+        $response = $this->from(route('company.list'))
+            ->get(route('company.permission.create', $this->company));
 
         $response->assertStatus(403);
     }
