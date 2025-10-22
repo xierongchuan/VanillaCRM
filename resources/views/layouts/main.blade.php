@@ -147,7 +147,7 @@
 
 </head>
 
-<body data-bs-theme="{{ session('theme') ?? 'light' }}">
+<body data-bs-theme="{{ session('theme') ?? 'dark' }}">
 
     <header>
         <nav class="navbar navbar-expand-lg bg-body-secondary px-2h">
