@@ -21,6 +21,7 @@ class PermissionController extends Controller
         $req->validate([
             'name' => 'required|min:3|max:30',
             'value' => 'required|min:3|max:20|regex:/^[a-z_]+$/',
+            'data' => 'max:8000',
         ]);
 
         if (@Permission::where('com_id', $company->id)->where('value', $req->value)->first()) {
@@ -32,6 +33,7 @@ class PermissionController extends Controller
             $per->com_id = $company->id;
             $per->name = $req->name;
             $per->value = $req->value;
+            $per->data = $req->data;
             $per->save();
 
             return redirect()->route('company.list');
@@ -49,10 +51,12 @@ class PermissionController extends Controller
     {
         $req = request()->validate([
             'name' => 'required|min:3|max:30',
+            'data' => 'max:8000',
         ]);
 
         if (Company::where('id', $company->id)->exists()) {
             $permission->name = $req['name'];
+            $permission->data = $req['data'];
             $permission->save();
 
             return redirect()->route('company.list');
