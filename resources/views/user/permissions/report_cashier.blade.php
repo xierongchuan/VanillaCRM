@@ -8,7 +8,7 @@
                     class="bi bi-nintendo-switch"></i></button>
         </span>
         <form id="perm_panel_report_cashier" action="{{ route('mod.report_cashier', $data->company->id) }}" method="post"
-            class="perm-panel-list perm-panel bg-body-tertiary rounded p-3" enctype="multipart/form-data">
+            class=" perm-panel bg-body-tertiary rounded p-3" enctype="multipart/form-data">
             @csrf
 
             <div class="form-group mb-2">
